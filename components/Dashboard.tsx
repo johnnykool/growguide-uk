@@ -93,10 +93,13 @@ export default function Dashboard({ profile, onEdit }: Props) {
           weather,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data) {
         setAdviceError(
-          data.error ?? "Something went wrong generating advice."
+          data?.error ??
+            (res.status === 504
+              ? "The advice took too long to generate — try a shorter timeline or fewer vegetables, then try again."
+              : "Something went wrong generating advice.")
         );
       } else {
         setAdvice(data);

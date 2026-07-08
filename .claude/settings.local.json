@@ -19,7 +19,18 @@
       "Bash(ssh -o StrictHostKeyChecking=no -o ConnectTimeout=6 -T git@github.com)",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git commit -q -m ' *)"
+      "Bash(git commit -q -m ' *)",
+      "Bash(mkdir -p ~/.local/bin)",
+      "Bash(cp /tmp/gh_2.96.0_macOS_amd64/bin/gh ~/.local/bin/gh)",
+      "Bash(chmod +x ~/.local/bin/gh)",
+      "Bash(~/.local/bin/gh auth *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" https://growguide-uk.vercel.app/)",
+      "Bash(curl -s -X POST https://growguide-uk.vercel.app/api/weather -H \"Content-Type: application/json\" -d '{\"lat\":53.4808,\"lng\":-2.2426}' --max-time 30)",
+      "Bash(curl -s -X POST https://growguide-uk.vercel.app/api/advice -H \"Content-Type: application/json\" -d '{\"postcode\":\"M1 1AE\",\"region\":\"North West\",\"lat\":53.4808,\"lng\":-2.2426,\"vegetables\":[\"tomato\",\"lettuce\"],\"plotSize\":\"medium\",\"environment\":[\"raised-beds\"],\"equipment\":[\"watering-can\",\"trowel\"],\"timeline\":\"7-days\",\"weather\":null}' --max-time 70)",
+      "Bash(echo \"\\(exit $?\\)\")",
+      "Bash(dig +short aitools.crystalpocket.com)",
+      "Bash(curl -sI https://aitools.crystalpocket.com --max-time 20)",
+      "Bash(curl -s https://aitools.crystalpocket.com --max-time 20)"
     ]
   }
 }
