@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #F1EAD8;        /* page background */
+  --sage: #B5C7AD;         /* cards, secondary fills */
+  --moss: #8A8E75;         /* text accents, icons */
+  --light-sage: #BEC5A4;   /* hover states, borders, tags */
+  --dark-earth: #68604D;   /* primary text, headings */
+  --blush: #E8D1C3;        /* warm highlights, selected states */
+  --terracotta: #B18B7E;   /* warnings, alerts, priority-high badges */
+  --warm-stone: #D5C7AD;   /* card backgrounds, dividers */
+
+  /* RGB channel variants of the palette above, so Tailwind opacity
+     modifiers (e.g. bg-sage/60) can compose an alpha channel. */
+  --cream-rgb: 241 234 216;
+  --sage-rgb: 181 199 173;
+  --moss-rgb: 138 142 117;
+  --light-sage-rgb: 190 197 164;
+  --dark-earth-rgb: 104 96 77;
+  --blush-rgb: 232 209 195;
+  --terracotta-rgb: 177 139 126;
+  --warm-stone-rgb: 213 199 173;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--dark-earth);
+  line-height: 1.6;
+}
+
+::selection {
+  background-color: var(--blush);
+  color: var(--dark-earth);
+}

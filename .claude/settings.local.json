@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//Users/johnworley/.nvm/versions/**)",
+      "Read(//Users/johnworley/.volta/**)",
+      "Bash(sw_vers -productVersion)",
+      "Bash(mkdir -p ~/.local/node)",
+      "Read(//Users/johnworley/.local/**)",
+      "Bash(curl -fsSL -o node.tar.gz https://nodejs.org/dist/v22.17.0/node-v22.17.0-darwin-x64.tar.gz)",
+      "Bash(tar -xzf node.tar.gz)",
+      "Bash(rm node.tar.gz)",
+      "Bash(git --version)",
+      "Bash(gh --version)",
+      "Bash(gh auth *)",
+      "Bash(git config *)",
+      "Read(//Users/johnworley/**)",
+      "Bash(ssh -o StrictHostKeyChecking=no -o ConnectTimeout=6 -T git@github.com)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m ' *)"
+    ]
+  }
+}
