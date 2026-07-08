@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
+import { HERO_SOIL } from "@/lib/images";
 import {
   ENVIRONMENT_OPTIONS,
   PLOT_SIZE_LABELS,
@@ -117,16 +119,31 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
   }
 
   return (
-    <main className="min-h-screen px-4 py-8 sm:py-12">
-      <div className="mx-auto max-w-3xl">
-        <header className="mb-8 text-center">
-          <h1 className="font-serif text-4xl sm:text-5xl mb-2">GrowGuide UK</h1>
-          <p className="text-moss">
-            {initial
-              ? "Update your plot details below."
-              : "Tell us about your plot and we'll help you grow — one season at a time."}
-          </p>
-        </header>
+    <main>
+      <section className="relative h-44 sm:h-56">
+        <Image
+          src={HERO_SOIL}
+          alt="Hands holding rich garden soil"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[center_60%]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-dark-earth/70 via-dark-earth/10 to-transparent" />
+        <div className="absolute inset-0">
+          <div className="mx-auto flex h-full max-w-3xl flex-col justify-end px-4 pb-5">
+            <h1 className="font-serif text-3xl text-cream sm:text-4xl">
+              {initial ? "Update your plot" : "Tell us about your plot"}
+            </h1>
+            <p className="text-sm text-cream/85">
+              {initial
+                ? "Change anything below, then save."
+                : "We'll tailor advice to your patch — one season at a time."}
+            </p>
+          </div>
+        </div>
+      </section>
+      <div className="mx-auto max-w-3xl px-4 py-8">
 
         <div className="space-y-6">
           {/* 1. Postcode */}

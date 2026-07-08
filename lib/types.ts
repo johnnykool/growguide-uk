@@ -78,6 +78,13 @@ export interface AdviceResponse {
   tasks: AdviceTask[];
 }
 
+export interface SavedAdvice {
+  timeline: Timeline;
+  generatedAt: string; // ISO date-time
+  advice: AdviceResponse;
+  completed: Record<string, boolean>; // task key → done
+}
+
 export type Timeline =
   | "24-hours"
   | "3-days"

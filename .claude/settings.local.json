@@ -30,7 +30,10 @@
       "Bash(echo \"\\(exit $?\\)\")",
       "Bash(dig +short aitools.crystalpocket.com)",
       "Bash(curl -sI https://aitools.crystalpocket.com --max-time 20)",
-      "Bash(curl -s https://aitools.crystalpocket.com --max-time 20)"
+      "Bash(curl -s https://aitools.crystalpocket.com --max-time 20)",
+      "Bash(file *)",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(grep -v '^$')"
     ]
   }
 }
