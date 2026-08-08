@@ -26,6 +26,7 @@ function isSetupDraftV1(value: unknown): value is SetupDraftV1 {
   return (
     draft.version === 1 &&
     typeof draft.activeStep === "number" &&
+    Number.isInteger(draft.activeStep) &&
     draft.activeStep >= 1 &&
     draft.activeStep <= 4 &&
     typeof draft.postcode === "string" &&

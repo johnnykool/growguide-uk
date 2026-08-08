@@ -47,6 +47,7 @@ describe("setup draft storage", () => {
   it("rejects drafts with invalid persisted properties", () => {
     const invalidDrafts = [
       { ...validDraft, activeStep: 5 },
+      { ...validDraft, activeStep: 1.5 },
       { ...validDraft, postcode: 123 },
       { ...validDraft, vegetables: "tomato" },
       { ...validDraft, plotSize: "allotment" },
