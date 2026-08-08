@@ -34,16 +34,43 @@ const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
 
+function normaliseActiveStep(
+  requestedStep: Step,
+  lookup: LookupResult | null,
+  vegetables: string[],
+): Step {
+  if (!lookup) return 1;
+  if (vegetables.length === 0 && requestedStep > 2) return 2;
+  return requestedStep;
+}
+
 export default function SetupWizard({ initial, onSave, onCancel }: Props) {
   const [restoredDraft] = useState(() =>
     initial ? null : loadSetupDraft(),
   );
-  const [activeStep, setActiveStep] = useState<Step>(
+  const initialLookup =
+    restoredDraft?.lookup ??
+    (initial
+      ? {
+          lat: initial.lat,
+          lng: initial.lng,
+          region: initial.region,
+          postcode: initial.postcode,
+        }
+      : null);
+  const initialVegetables =
+    restoredDraft?.vegetables ?? initial?.vegetables ?? [];
+  const initialActiveStep = normaliseActiveStep(
     restoredDraft?.activeStep ?? 1,
+    initialLookup,
+    initialVegetables,
+  );
+  const [activeStep, setActiveStep] = useState<Step>(
+    initialActiveStep,
   );
   const [completedSteps, setCompletedSteps] = useState<number[]>(() =>
     restoredDraft
-      ? Array.from({ length: restoredDraft.activeStep - 1 }, (_, index) =>
+      ? Array.from({ length: initialActiveStep - 1 }, (_, index) =>
           index + 1,
         )
       : [],
@@ -52,21 +79,13 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
     restoredDraft?.postcode ?? initial?.postcode ?? "",
   );
   const [lookup, setLookup] = useState<LookupResult | null>(
-    restoredDraft?.lookup ??
-      (initial
-        ? {
-            lat: initial.lat,
-            lng: initial.lng,
-            region: initial.region,
-            postcode: initial.postcode,
-          }
-        : null),
+    initialLookup,
   );
   const [lookupState, setLookupState] = useState<
     "idle" | "loading" | "error" | "invalid"
   >("idle");
   const [vegetables, setVegetables] = useState<string[]>(
-    restoredDraft?.vegetables ?? initial?.vegetables ?? [],
+    initialVegetables,
   );
   const [plotSize, setPlotSize] = useState<PlotSize>(
     restoredDraft?.plotSize ?? initial?.plotSize ?? "medium",
@@ -86,7 +105,15 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
   const [cropSearch, setCropSearch] = useState("");
   const headings = useRef<Partial<Record<Step, HTMLHeadingElement | null>>>({});
   const postcodeInput = useRef<HTMLInputElement | null>(null);
-  const shouldFocusHeading = useRef(false);
+  const cropSelection = useRef<HTMLDivElement | null>(null);
+  const hadCropSelection = useRef(vegetables.length > 0);
+  const pendingFocus = useRef<"heading" | "requirement" | null>(null);
+
+  const reachableCompletedSteps = completedSteps.filter((step) => {
+    if (!lookup) return false;
+    if (step === 1) return true;
+    return vegetables.length > 0;
+  });
 
   useEffect(() => {
     saveSetupDraft({
@@ -114,10 +141,25 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
   ]);
 
   useEffect(() => {
-    if (!shouldFocusHeading.current) return;
-    headings.current[activeStep]?.focus();
-    shouldFocusHeading.current = false;
+    if (pendingFocus.current === "heading") {
+      headings.current[activeStep]?.focus();
+    } else if (pendingFocus.current === "requirement") {
+      if (activeStep === 1) postcodeInput.current?.focus();
+      if (activeStep === 2) cropSelection.current?.focus();
+    }
+    pendingFocus.current = null;
   }, [activeStep]);
+
+  useEffect(() => {
+    if (
+      hadCropSelection.current &&
+      vegetables.length === 0 &&
+      activeStep === 2
+    ) {
+      cropSelection.current?.focus();
+    }
+    hadCropSelection.current = vegetables.length > 0;
+  }, [activeStep, vegetables.length]);
 
   async function lookupPostcode(value: string) {
     const trimmed = value.trim();
@@ -166,9 +208,22 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
     );
   }
 
-  function openStep(step: Step) {
-    shouldFocusHeading.current = true;
-    setActiveStep(step);
+  function openStep(requestedStep: Step) {
+    const reachableStep = normaliseActiveStep(
+      requestedStep,
+      lookup,
+      vegetables,
+    );
+
+    if (reachableStep === activeStep) {
+      if (reachableStep === 1) postcodeInput.current?.focus();
+      if (reachableStep === 2) cropSelection.current?.focus();
+      return;
+    }
+
+    pendingFocus.current =
+      reachableStep === requestedStep ? "heading" : "requirement";
+    setActiveStep(reachableStep);
   }
 
   function completeAndOpen(step: Step) {
@@ -233,7 +288,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
       <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
         <SetupProgress
           activeStep={activeStep}
-          completedSteps={completedSteps}
+          completedSteps={reachableCompletedSteps}
           onEdit={openStep}
         />
 
@@ -349,11 +404,14 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
               )}
             </p>
             <div
+              ref={cropSelection}
               role="group"
               aria-label="Crop selection"
               aria-required="true"
               aria-invalid={vegetables.length === 0}
               aria-describedby="crop-requirement"
+              tabIndex={-1}
+              className={focusRing}
             >
               <VegetableGrid
                 selected={vegetables}

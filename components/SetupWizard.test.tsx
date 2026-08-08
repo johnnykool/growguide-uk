@@ -96,6 +96,26 @@ async function validateLocation(user: ReturnType<typeof userEvent.setup>) {
   );
 }
 
+async function completeThroughStageFour(
+  user: ReturnType<typeof userEvent.setup>,
+) {
+  await validateLocation(user);
+  await user.click(
+    screen.getByRole("button", { name: /Continue to crops/i }),
+  );
+  await user.click(
+    screen.getByRole("button", { name: /Browse all crops/i }),
+  );
+  await user.click(screen.getByRole("button", { name: /Tomato/i }));
+  await user.click(
+    screen.getByRole("button", { name: /Continue to plot/i }),
+  );
+  await user.click(
+    screen.getByRole("button", { name: /Continue to tools/i }),
+  );
+  await user.click(screen.getByRole("button", { name: /Save my garden/i }));
+}
+
 describe("SetupWizard", () => {
   it("keeps the location gate disabled until the postcode has been checked", () => {
     render(<SetupWizard initial={null} onSave={vi.fn()} />);
@@ -228,6 +248,98 @@ describe("SetupWizard", () => {
       equipment: [],
       lastUpdated: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
     } satisfies UserProfile);
+  });
+
+  it("removes every forward route after an edited postcode becomes invalid", async () => {
+    const user = userEvent.setup();
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    await completeThroughStageFour(user);
+    await user.click(
+      screen.getByRole("button", { name: /Edit your location/i }),
+    );
+
+    const postcodeInput = screen.getByRole("textbox", { name: /postcode/i });
+    await user.clear(postcodeInput);
+    await user.type(postcodeInput, "not a postcode");
+    await user.click(screen.getByRole("button", { name: /Check postcode/i }));
+
+    expect(postcodeInput).toHaveFocus();
+    expect(
+      screen.getByRole("button", { name: /Continue to crops/i }),
+    ).toBeDisabled();
+    expect(
+      screen.queryByRole("button", { name: /Edit what you want to grow/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Edit your plot/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Edit your tool shed/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Save my garden/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("removes plot and tool routes after the final crop is deselected", async () => {
+    const user = userEvent.setup();
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    await completeThroughStageFour(user);
+    await user.click(
+      screen.getByRole("button", { name: /Edit what you want to grow/i }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: /Tomato/i, pressed: true }),
+    );
+
+    expect(
+      screen.getByRole("button", { name: /Continue to plot/i }),
+    ).toBeDisabled();
+    expect(screen.getByRole("group", { name: /Crop selection/i })).toHaveFocus();
+    expect(
+      screen.queryByRole("button", { name: /Edit your plot/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Edit your tool shed/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Save my garden/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it.each([
+    {
+      name: "location when a stage-four draft has no validated lookup",
+      draft: {
+        ...restoredDraft,
+        activeStep: 4,
+        lookup: null,
+      } satisfies SetupDraftV1,
+      stepText: "Step 1 of 4",
+      heading: /Where do you garden/i,
+    },
+    {
+      name: "crops when a stage-three draft has no crop selection",
+      draft: {
+        ...restoredDraft,
+        activeStep: 3,
+        vegetables: [],
+      } satisfies SetupDraftV1,
+      stepText: "Step 2 of 4",
+      heading: /What would you like to grow/i,
+    },
+  ])("normalises a restored draft to $name", ({ draft, stepText, heading }) => {
+    saveSetupDraft(draft);
+
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    expect(screen.getByText(stepText)).toBeVisible();
+    expect(screen.getByRole("heading", { level: 2, name: heading })).toBeVisible();
+    expect(
+      screen.queryByRole("button", { name: /Edit your plot|Edit your tool shed/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("restores persisted setup values and disclosure state after remount", async () => {

@@ -24,6 +24,11 @@ export default function Home() {
     window.scrollTo({ top: 0 });
   }
 
+  function handleCancel() {
+    clearSetupDraft();
+    setEditing(false);
+  }
+
   if (!ready) {
     return (
       <main
@@ -41,7 +46,7 @@ export default function Home() {
       <SetupWizard
         initial={profile}
         onSave={handleSave}
-        onCancel={profile ? () => setEditing(false) : undefined}
+        onCancel={profile ? handleCancel : undefined}
       />
     );
   }

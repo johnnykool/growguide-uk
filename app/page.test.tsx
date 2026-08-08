@@ -5,6 +5,7 @@ import type { SetupDraftV1, UserProfile } from "@/lib/types";
 import {
   loadProfile,
   loadSetupDraft,
+  saveProfile,
   saveSetupDraft,
 } from "@/lib/storage";
 import Home from "./page";
@@ -53,15 +54,38 @@ const draft: SetupDraftV1 = {
 };
 
 vi.mock("@/components/SetupWizard", () => ({
-  default: ({ onSave }: { onSave: (next: UserProfile) => void }) => (
-    <button type="button" onClick={() => onSave(profile)}>
-      Complete setup
-    </button>
+  default: ({
+    onSave,
+    onCancel,
+  }: {
+    onSave: (next: UserProfile) => void;
+    onCancel?: () => void;
+  }) => (
+    <div>
+      <button type="button" onClick={() => onSave(profile)}>
+        Complete setup
+      </button>
+      <button type="button" onClick={() => saveSetupDraft(draft)}>
+        Create edit draft
+      </button>
+      {onCancel && (
+        <button type="button" onClick={onCancel}>
+          Cancel edit
+        </button>
+      )}
+    </div>
   ),
 }));
 
 vi.mock("@/components/Dashboard", () => ({
-  default: () => <p>Garden dashboard</p>,
+  default: ({ onEdit }: { onEdit: () => void }) => (
+    <div>
+      <p>Garden dashboard</p>
+      <button type="button" onClick={onEdit}>
+        Edit garden
+      </button>
+    </div>
+  ),
 }));
 
 beforeEach(() => {
@@ -92,5 +116,23 @@ describe("Home", () => {
       expect(loadProfile()).toEqual(profile);
       expect(loadSetupDraft()).toBeNull();
     });
+  });
+
+  it("clears only the edit draft when a saved-profile edit is cancelled", async () => {
+    const user = userEvent.setup();
+    saveProfile(profile);
+
+    render(<Home />);
+    await user.click(await screen.findByRole("button", { name: /Edit garden/i }));
+    await user.click(
+      screen.getByRole("button", { name: /Create edit draft/i }),
+    );
+    expect(loadSetupDraft()).toEqual(draft);
+
+    await user.click(screen.getByRole("button", { name: /Cancel edit/i }));
+
+    expect(await screen.findByText("Garden dashboard")).toBeVisible();
+    expect(loadProfile()).toEqual(profile);
+    expect(loadSetupDraft()).toBeNull();
   });
 });
