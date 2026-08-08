@@ -9,9 +9,27 @@ interface Props {
 
 export default function AdviceRefreshConfirm({ onConfirm, onCancel }: Props) {
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const onCancelRef = useRef(onCancel);
 
   useEffect(() => {
+    onCancelRef.current = onCancel;
+  }, [onCancel]);
+
+  useEffect(() => {
+    const returnFocus =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onCancelRef.current();
+    };
+
     headingRef.current?.focus();
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      returnFocus?.focus();
+    };
   }, []);
 
   return (
@@ -19,9 +37,6 @@ export default function AdviceRefreshConfirm({ onConfirm, onCancel }: Props) {
       className="mt-4 rounded-card border border-terracotta/40 bg-blush/40 p-4 shadow-soft"
       role="region"
       aria-labelledby="advice-refresh-heading"
-      onKeyDown={(event) => {
-        if (event.key === "Escape") onCancel();
-      }}
     >
       <h3
         id="advice-refresh-heading"

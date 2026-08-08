@@ -97,6 +97,7 @@ export interface AdviceResponse {
 }
 
 export interface SavedAdvice {
+  profileFingerprint: string;
   timeline: Timeline;
   generatedAt: string; // ISO date-time
   advice: AdviceResponse;
@@ -126,6 +127,28 @@ export const PLOT_SIZE_LABELS: Record<PlotSize, string> = {
   medium: "Medium plot (4–20m²)",
   large: "Large plot / allotment (20m²+)",
 };
+
+export const UK_GARDEN_REGIONS = [
+  "East Midlands",
+  "East of England",
+  "England",
+  "London",
+  "North East",
+  "North East England",
+  "North West",
+  "North West England",
+  "Northern Ireland",
+  "Scotland",
+  "South East",
+  "South East England",
+  "South West",
+  "South West England",
+  "United Kingdom",
+  "Wales",
+  "West Midlands",
+  "Yorkshire and The Humber",
+  "Yorkshire and the Humber",
+] as const;
 
 export const ENVIRONMENT_OPTIONS = [
   { id: "open-ground", label: "Open ground" },

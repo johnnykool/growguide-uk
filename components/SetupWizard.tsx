@@ -298,7 +298,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
             <h1 className="font-serif text-3xl text-cream sm:text-4xl">
               {initial ? "Update your plot" : "Tell us about your plot"}
             </h1>
-            <p className="text-sm text-cream/85">
+            <p className="text-sm text-cream">
               {initial
                 ? "Change anything below, then save."
                 : "We'll tailor advice to your patch — one season at a time."}
@@ -319,19 +319,19 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
           <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
             <h2 {...headingProps(1)}>
               1. Where do you garden?{" "}
-              <span className="font-sans text-sm font-normal text-moss">
+              <span className="font-sans text-sm font-normal text-earth-ink">
                 (required)
               </span>
             </h2>
-            <p className="mb-2 text-sm text-moss">
+            <p className="mb-2 text-sm text-earth-ink">
               Your postcode lets us tailor advice to your local weather and
               region.
             </p>
-            <p id="postcode-help" className="mb-4 text-sm text-moss">
+            <p id="postcode-help" className="mb-4 text-sm text-earth-ink">
               Your postcode is used for local weather and stored on this device.
             </p>
             <label htmlFor="setup-postcode" className="mb-1 block text-sm font-semibold">
-              UK postcode <span className="font-normal text-moss">(required)</span>
+              UK postcode <span className="font-normal text-earth-ink">(required)</span>
             </label>
             <div className="flex flex-col gap-2 sm:flex-row">
               <input
@@ -358,7 +358,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                     ? "postcode-help postcode-feedback"
                     : "postcode-help postcode-feedback location-requirement"
                 }
-                className={`min-h-11 flex-1 rounded-btn bg-cream px-4 py-3 text-dark-earth placeholder:text-moss/60 ring-1 ring-light-sage ${focusRing}`}
+                className={`min-h-11 flex-1 rounded-btn bg-cream px-4 py-3 text-dark-earth placeholder:text-dark-earth ring-1 ring-light-sage ${focusRing}`}
               />
               <button
                 type="button"
@@ -418,11 +418,11 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
           <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
             <h2 {...headingProps(2)}>
               2. What would you like to grow?{" "}
-              <span className="font-sans text-sm font-normal text-moss">
+              <span className="font-sans text-sm font-normal text-earth-ink">
                 (required)
               </span>
             </h2>
-            <p className="mb-4 text-sm text-moss">
+            <p className="mb-4 text-sm text-earth-ink">
               Select at least one crop you grow now or would like to grow.
               {vegetables.length > 0 && (
                 <span className="ml-1 font-semibold text-dark-earth">
@@ -484,14 +484,14 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
           <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
             <h2 {...headingProps(3)}>
               3. Your plot{" "}
-              <span className="font-sans text-sm font-normal text-moss">
+              <span className="font-sans text-sm font-normal text-earth-ink">
                 (optional)
               </span>
             </h2>
-            <p className="mb-1 text-sm text-moss">
+            <p className="mb-1 text-sm text-earth-ink">
               Size and growing environment help us keep advice realistic.
             </p>
-            <p className="mb-4 text-sm text-moss">
+            <p className="mb-4 text-sm text-earth-ink">
               Optional — you can change this later.
             </p>
             <label className="mb-1 block text-sm font-semibold" htmlFor="plot-size">
@@ -511,7 +511,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
             </select>
             <p className="mb-2 text-sm font-semibold">
               Growing environment{" "}
-              <span className="font-normal text-moss">(select all that apply)</span>
+              <span className="font-normal text-earth-ink">(select all that apply)</span>
             </p>
             <div className="flex flex-wrap gap-2">
               {ENVIRONMENT_OPTIONS.map((item) => {
@@ -556,15 +556,15 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
           <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
             <h2 {...headingProps(4)}>
               4. Your tool shed{" "}
-              <span className="font-sans text-sm font-normal text-moss">
+              <span className="font-sans text-sm font-normal text-earth-ink">
                 (optional)
               </span>
             </h2>
-            <p className="mb-1 text-sm text-moss">
+            <p className="mb-1 text-sm text-earth-ink">
               Tick what you already own — we&apos;ll only suggest jobs you can
               actually do.
             </p>
-            <p className="mb-4 text-sm text-moss">
+            <p className="mb-4 text-sm text-earth-ink">
               Optional — skip this if you are still building your tool shed.
             </p>
             <EquipmentSelector

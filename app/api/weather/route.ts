@@ -20,9 +20,20 @@ export async function POST(request: Request) {
   let lat: number, lng: number;
   try {
     const body = await request.json();
-    lat = Number(body.lat);
-    lng = Number(body.lng);
-    if (!isFinite(lat) || !isFinite(lng)) throw new Error("bad coords");
+    lat = body.lat;
+    lng = body.lng;
+    if (
+      typeof lat !== "number" ||
+      !Number.isFinite(lat) ||
+      lat < -90 ||
+      lat > 90 ||
+      typeof lng !== "number" ||
+      !Number.isFinite(lng) ||
+      lng < -180 ||
+      lng > 180
+    ) {
+      throw new Error("bad coords");
+    }
   } catch {
     return NextResponse.json(
       { error: "Please provide a valid location." },

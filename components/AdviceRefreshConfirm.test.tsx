@@ -1,4 +1,5 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { useState } from "react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import AdviceRefreshConfirm from "./AdviceRefreshConfirm";
@@ -41,14 +42,45 @@ describe("AdviceRefreshConfirm", () => {
     expect(onCancel).toHaveBeenCalledOnce();
   });
 
-  it("keeps saved tasks when Escape is pressed", async () => {
-    const user = userEvent.setup();
+  it("keeps saved tasks from a document-level Escape press", () => {
     const onCancel = vi.fn();
 
     render(<AdviceRefreshConfirm onConfirm={vi.fn()} onCancel={onCancel} />);
+    const outsideControl = document.createElement("button");
+    document.body.append(outsideControl);
+    outsideControl.focus();
 
-    await user.keyboard("{Escape}");
+    fireEvent.keyDown(document, { key: "Escape" });
 
     expect(onCancel).toHaveBeenCalledOnce();
+    outsideControl.remove();
+  });
+
+  it("restores focus to the fresh-advice trigger when closed", async () => {
+    const user = userEvent.setup();
+
+    function Harness() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>
+            Get Fresh Advice
+          </button>
+          {open && (
+            <AdviceRefreshConfirm
+              onConfirm={() => setOpen(false)}
+              onCancel={() => setOpen(false)}
+            />
+          )}
+        </>
+      );
+    }
+
+    render(<Harness />);
+    const trigger = screen.getByRole("button", { name: "Get Fresh Advice" });
+    await user.click(trigger);
+    await user.click(screen.getByRole("button", { name: "Keep saved tasks" }));
+
+    expect(trigger).toHaveFocus();
   });
 });

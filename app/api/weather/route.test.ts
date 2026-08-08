@@ -43,6 +43,23 @@ describe("POST /api/weather", () => {
     });
   });
 
+  it.each([
+    ["numeric strings", { lat: "51.5", lng: -0.1 }],
+    ["latitude above 90", { lat: 90.1, lng: -0.1 }],
+    ["latitude below -90", { lat: -90.1, lng: -0.1 }],
+    ["longitude above 180", { lat: 51.5, lng: 180.1 }],
+    ["longitude below -180", { lat: 51.5, lng: -180.1 }],
+  ])("rejects %s without contacting the weather service", async (_name, body) => {
+    vi.stubEnv("OPENWEATHERMAP_API_KEY", "test-key");
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const response = await POST(weatherRequest(body));
+
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("keeps an upstream rejection as a safe gateway error", async () => {
     vi.stubEnv("OPENWEATHERMAP_API_KEY", "test-key");
     vi.stubGlobal(

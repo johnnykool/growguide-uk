@@ -8,7 +8,11 @@ import {
   UserProfile,
   WeatherData,
 } from "@/lib/types";
-import { loadSavedAdvice, saveAdvice } from "@/lib/storage";
+import {
+  getAdviceProfileFingerprint,
+  loadSavedAdvice,
+  saveAdvice,
+} from "@/lib/storage";
 import { HERO_HARVEST, VEG_PHOTOS } from "@/lib/images";
 import { formatCropCount } from "@/lib/format";
 import WeatherBanner from "./WeatherBanner";
@@ -50,24 +54,46 @@ export default function Dashboard({ profile, onEdit }: Props) {
   const [confirmAdviceRefresh, setConfirmAdviceRefresh] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
   const loadingTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const adviceMounted = useRef(false);
+  const adviceRequestId = useRef(0);
+  const adviceAbortController = useRef<AbortController | null>(null);
+  const profileFingerprint = getAdviceProfileFingerprint(profile);
 
   // Restore the last advice session so returning users see their task list
   // without another AI call.
   useEffect(() => {
-    const saved = loadSavedAdvice();
+    adviceMounted.current = true;
+    setAdvice(null);
+    setGeneratedAt(undefined);
+    setCompleted({});
+    setAdviceLoading(false);
+    setAdviceError(null);
+    setConfirmAdviceRefresh(false);
+    const saved = loadSavedAdvice(profileFingerprint);
     if (saved) {
       setAdvice(saved.advice);
       setTimeline(saved.timeline);
       setGeneratedAt(saved.generatedAt);
       setCompleted(saved.completed ?? {});
     }
-  }, []);
+    return () => {
+      adviceMounted.current = false;
+      adviceRequestId.current += 1;
+      adviceAbortController.current?.abort();
+      adviceAbortController.current = null;
+      if (loadingTimer.current) {
+        clearInterval(loadingTimer.current);
+        loadingTimer.current = null;
+      }
+    };
+  }, [profileFingerprint]);
 
   const fetchWeather = useCallback(async () => {
     if (!weatherMounted.current) return;
     const requestId = ++weatherRequestId.current;
     setWeatherLoading(true);
     setWeatherError(null);
+    setWeather(null);
     try {
       const res = await fetch("/api/weather", {
         method: "POST",
@@ -115,24 +141,32 @@ export default function Dashboard({ profile, onEdit }: Props) {
   }, [fetchWeather]);
 
   const fetchAdvice = useCallback(async () => {
+    if (!adviceMounted.current) return;
+    adviceAbortController.current?.abort();
+    const controller = new AbortController();
+    adviceAbortController.current = controller;
+    const requestId = ++adviceRequestId.current;
+    const isCurrentRequest = () =>
+      adviceMounted.current && requestId === adviceRequestId.current;
+
     setAdviceLoading(true);
     setAdviceError(null);
     let i = 0;
     setLoadingMessage(LOADING_MESSAGES[0]);
-    loadingTimer.current = setInterval(() => {
+    const timer = setInterval(() => {
+      if (!isCurrentRequest()) return;
       i = (i + 1) % LOADING_MESSAGES.length;
       setLoadingMessage(LOADING_MESSAGES[i]);
     }, 2500);
+    loadingTimer.current = timer;
 
     try {
       const res = await fetch("/api/advice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
-          postcode: profile.postcode,
           region: profile.region,
-          lat: profile.lat,
-          lng: profile.lng,
           vegetables: profile.vegetables,
           plotSize: profile.plotSize,
           environment: profile.environment,
@@ -142,6 +176,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
         }),
       });
       const data = await res.json().catch(() => null);
+      if (!isCurrentRequest()) return;
       if (!res.ok || !data) {
         setAdviceError(
           res.status === 504
@@ -155,36 +190,51 @@ export default function Dashboard({ profile, onEdit }: Props) {
         setAdvice(data);
         setGeneratedAt(now);
         setCompleted({});
-        saveAdvice({ timeline, generatedAt: now, advice: data, completed: {} });
+        saveAdvice(
+          {
+            profileFingerprint,
+            timeline,
+            generatedAt: now,
+            advice: data,
+            completed: {},
+          },
+          profile,
+        );
       }
-    } catch {
-      setAdviceError(
-        "Couldn't reach the advice service. Check your connection and try again."
-      );
+    } catch (error) {
+      if (
+        isCurrentRequest() &&
+        !(error instanceof DOMException && error.name === "AbortError")
+      ) {
+        setAdviceError(
+          "Couldn't reach the advice service. Check your connection and try again."
+        );
+      }
     } finally {
-      if (loadingTimer.current) clearInterval(loadingTimer.current);
-      setAdviceLoading(false);
+      clearInterval(timer);
+      if (loadingTimer.current === timer) loadingTimer.current = null;
+      if (isCurrentRequest()) {
+        adviceAbortController.current = null;
+        setAdviceLoading(false);
+      }
     }
-  }, [profile, timeline, weather]);
+  }, [profile, profileFingerprint, timeline, weather]);
 
   const toggleTask = useCallback(
     (key: string) => {
       setCompleted((prev) => {
         const next = { ...prev, [key]: !prev[key] };
         if (advice && generatedAt) {
-          saveAdvice({ timeline, generatedAt, advice, completed: next });
+          saveAdvice(
+            { profileFingerprint, timeline, generatedAt, advice, completed: next },
+            profile,
+          );
         }
         return next;
       });
     },
-    [advice, generatedAt, timeline]
+    [advice, generatedAt, profile, profileFingerprint, timeline]
   );
-
-  useEffect(() => {
-    return () => {
-      if (loadingTimer.current) clearInterval(loadingTimer.current);
-    };
-  }, []);
 
   const collagePhotos = profile.vegetables
     .filter((id) => VEG_PHOTOS[id])
@@ -211,7 +261,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
                 <h1 className="font-serif text-3xl text-cream sm:text-4xl">
                   Your growing dashboard
                 </h1>
-                <p className="text-sm font-medium text-cream/85">
+                <p className="text-sm font-medium text-cream">
                   📍 {profile.postcode} · {profile.region} ·{" "}
                   {formatCropCount(profile.vegetables.length)}
                 </p>
@@ -272,7 +322,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
                     : "🌱 Get Growing Advice"}
               </button>
               {advice && !adviceLoading && (
-                <p className="mt-2 text-sm text-moss">
+                <p className="mt-2 text-sm text-earth-ink">
                   Your saved tasks are below — tick them off as you go. Fresh
                   advice replaces the list.
                 </p>

@@ -29,13 +29,13 @@ export default function PlotSummary({
     >
       <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wide text-moss">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-earth-ink">
             Month
           </dt>
           <dd className="mt-1 font-semibold text-dark-earth">{monthLabel}</dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wide text-moss">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-earth-ink">
             Your crops
           </dt>
           <dd className="mt-1 font-semibold text-dark-earth">
@@ -43,7 +43,7 @@ export default function PlotSummary({
           </dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wide text-moss">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-earth-ink">
             In season
           </dt>
           <dd className="mt-1 font-semibold text-dark-earth">
@@ -51,7 +51,7 @@ export default function PlotSummary({
           </dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wide text-moss">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-earth-ink">
             Plot
           </dt>
           <dd className="mt-1 font-semibold text-dark-earth">

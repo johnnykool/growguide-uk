@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { loadSavedAdvice, saveAdvice } from "@/lib/storage";
@@ -33,6 +33,8 @@ const profile: UserProfile = {
 };
 
 const savedAdvice: SavedAdvice = {
+  profileFingerprint:
+    "v1|BS15AH|51.4545|-2.5879|south west england|tomato|small|raised-beds|trowel",
   timeline: "7-days",
   generatedAt: "2026-08-07T12:00:00.000Z",
   advice: {
@@ -112,7 +114,7 @@ function installFetch(adviceResult: FetchResult) {
 }
 
 async function renderSavedDashboard(adviceResult = response(replacementAdvice)) {
-  saveAdvice(savedAdvice);
+  saveAdvice(savedAdvice, profile);
   const fetchMock = installFetch(adviceResult);
 
   render(<Dashboard profile={profile} onEdit={vi.fn()} />);
@@ -133,7 +135,7 @@ function expectSavedAdviceUnchanged() {
   expect(
     screen.getByRole("checkbox", { name: 'Mark "Water deeply" as not done' }),
   ).toBeChecked();
-  expect(loadSavedAdvice()).toEqual(savedAdvice);
+  expect(loadSavedAdvice(profile)).toEqual(savedAdvice);
 }
 
 describe("Dashboard advice replacement", () => {
@@ -157,6 +159,21 @@ describe("Dashboard advice replacement", () => {
       }),
     ).toBeVisible();
     expect(adviceRequestCount(fetchMock)).toBe(0);
+  });
+
+  it("does not restore advice saved for a different garden profile", async () => {
+    saveAdvice(savedAdvice, profile);
+    installFetch(response(replacementAdvice));
+
+    render(
+      <Dashboard
+        profile={{ ...profile, vegetables: ["tomato", "courgette"] }}
+        onEdit={vi.fn()}
+      />,
+    );
+
+    expect(await screen.findByRole("button", { name: "🌱 Get Growing Advice" })).toBeVisible();
+    expect(screen.queryByText(savedAdvice.advice.summary)).not.toBeInTheDocument();
   });
 
   it("keeps restored advice and storage unchanged when replacement is cancelled", async () => {
@@ -245,5 +262,69 @@ describe("Dashboard advice replacement", () => {
     expect(await screen.findByText(`🥀 ${expected}`)).toBeVisible();
     expect(adviceRequestCount(fetchMock)).toBe(1);
     expectSavedAdviceUnchanged();
+  });
+
+  it("aborts and discards an advice response that completes after unmount", async () => {
+    const user = userEvent.setup();
+    let resolveAdvice!: (value: FetchResult) => void;
+    const pendingAdvice = new Promise<FetchResult>((resolve) => {
+      resolveAdvice = resolve;
+    });
+    const fetchMock = vi.fn().mockImplementation((input: unknown) => {
+      if (routeOf(input) === "/api/weather") {
+        return Promise.resolve(response(weather));
+      }
+      return pendingAdvice;
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const view = render(<Dashboard profile={profile} onEdit={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: "🌱 Get Growing Advice" }));
+    await waitFor(() => expect(adviceRequestCount(fetchMock)).toBe(1));
+    const adviceCall = fetchMock.mock.calls.find(
+      ([input]) => routeOf(input) === "/api/advice",
+    );
+    const signal = adviceCall?.[1]?.signal as AbortSignal | undefined;
+
+    view.unmount();
+    expect(signal?.aborted).toBe(true);
+
+    await act(async () => {
+      resolveAdvice(response(replacementAdvice));
+      await pendingAdvice;
+    });
+    expect(loadSavedAdvice(profile)).toBeNull();
+  });
+
+  it("discards an obsolete advice response after the profile changes", async () => {
+    const user = userEvent.setup();
+    let resolveAdvice!: (value: FetchResult) => void;
+    const pendingAdvice = new Promise<FetchResult>((resolve) => {
+      resolveAdvice = resolve;
+    });
+    const fetchMock = vi.fn().mockImplementation((input: unknown) => {
+      if (routeOf(input) === "/api/weather") {
+        return Promise.resolve(response(weather));
+      }
+      return pendingAdvice;
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const view = render(<Dashboard profile={profile} onEdit={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: "🌱 Get Growing Advice" }));
+    await waitFor(() => expect(adviceRequestCount(fetchMock)).toBe(1));
+
+    const nextProfile = { ...profile, postcode: "EH1 1YZ", lat: 55.9533, lng: -3.1883 };
+    view.rerender(<Dashboard profile={nextProfile} onEdit={vi.fn()} />);
+
+    await act(async () => {
+      resolveAdvice(response(replacementAdvice));
+      await pendingAdvice;
+    });
+    expect(loadSavedAdvice(profile)).toBeNull();
+    expect(loadSavedAdvice(nextProfile)).toBeNull();
+    expect(
+      screen.getByRole("button", { name: "🌱 Get Growing Advice" }),
+    ).toBeEnabled();
   });
 });
