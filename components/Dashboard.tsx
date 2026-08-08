@@ -16,6 +16,7 @@ import AdviceResults from "./AdviceResults";
 import SeasonalCalendar from "./SeasonalCalendar";
 import WeatherMap from "./WeatherMap";
 import PlotSummary from "./PlotSummary";
+import AdviceRefreshConfirm from "./AdviceRefreshConfirm";
 
 interface Props {
   profile: UserProfile;
@@ -42,6 +43,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState<string | null>(null);
+  const [confirmAdviceRefresh, setConfirmAdviceRefresh] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
   const loadingTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -244,7 +246,13 @@ export default function Dashboard({ profile, onEdit }: Props) {
               <TimelineFilter value={timeline} onChange={setTimeline} />
               <button
                 type="button"
-                onClick={fetchAdvice}
+                onClick={() => {
+                  if (advice) {
+                    setConfirmAdviceRefresh(true);
+                  } else {
+                    void fetchAdvice();
+                  }
+                }}
                 disabled={adviceLoading}
                 className={`mt-4 w-full rounded-btn px-8 py-4 text-lg font-semibold text-cream shadow-soft transition-colors sm:w-auto ${
                   adviceLoading
@@ -263,6 +271,15 @@ export default function Dashboard({ profile, onEdit }: Props) {
                   Your saved tasks are below — tick them off as you go. Fresh
                   advice replaces the list.
                 </p>
+              )}
+              {confirmAdviceRefresh && !adviceLoading && (
+                <AdviceRefreshConfirm
+                  onConfirm={() => {
+                    setConfirmAdviceRefresh(false);
+                    void fetchAdvice();
+                  }}
+                  onCancel={() => setConfirmAdviceRefresh(false)}
+                />
               )}
             </section>
 
