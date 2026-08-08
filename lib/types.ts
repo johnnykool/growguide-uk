@@ -29,6 +29,24 @@ export interface UserProfile {
   lastUpdated: string;
 }
 
+export interface SetupDraftV1 {
+  version: 1;
+  activeStep: 1 | 2 | 3 | 4;
+  postcode: string;
+  lookup: {
+    lat: number;
+    lng: number;
+    region: string;
+    postcode: string;
+  } | null;
+  vegetables: string[];
+  plotSize: PlotSize;
+  environment: string[];
+  equipment: string[];
+  showAllCrops: boolean;
+  showAllEquipment: boolean;
+}
+
 export interface DailySummary {
   date: string; // ISO date
   dayName: string; // e.g. "Tue"
