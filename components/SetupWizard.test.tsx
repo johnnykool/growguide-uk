@@ -250,6 +250,27 @@ describe("SetupWizard", () => {
     } satisfies UserProfile);
   });
 
+  it("labels both non-blocking stages as optional", async () => {
+    const user = userEvent.setup();
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    await validateLocation(user);
+    await user.click(screen.getByRole("button", { name: /Continue to crops/i }));
+    await user.click(screen.getByRole("button", { name: /Browse all crops/i }));
+    await user.click(screen.getByRole("button", { name: /Tomato/i }));
+    await user.click(screen.getByRole("button", { name: /Continue to plot/i }));
+
+    expect(
+      screen.getByRole("heading", { name: /Your plot.*optional/i }),
+    ).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: /Continue to tools/i }));
+
+    expect(
+      screen.getByRole("heading", { name: /Your tool shed.*optional/i }),
+    ).toBeVisible();
+  });
+
   it("removes every forward route after an edited postcode becomes invalid", async () => {
     const user = userEvent.setup();
     render(<SetupWizard initial={null} onSave={vi.fn()} />);

@@ -7,6 +7,20 @@ interface Props {
 }
 
 const MONTH_INITIALS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 export default function SeasonalCalendar({ vegetableIds }: Props) {
   const currentMonth = new Date().getMonth() + 1; // 1-12
@@ -44,20 +58,29 @@ export default function SeasonalCalendar({ vegetableIds }: Props) {
                 {MONTH_INITIALS.map((initial, i) => {
                   const month = i + 1;
                   const isCurrent = month === currentMonth;
-                  let colour = "bg-warm-stone";
-                  if (active.has(month)) colour = "bg-moss";
-                  else if (harvest.has(month)) colour = "bg-light-sage";
+                  const state = active.has(month)
+                    ? "sow or plant"
+                    : harvest.has(month)
+                      ? "harvest"
+                      : "dormant";
+                  const colour =
+                    state === "sow or plant"
+                      ? "bg-moss"
+                      : state === "harvest"
+                        ? "bg-light-sage"
+                        : "bg-warm-stone";
                   return (
                     <div
                       key={month}
-                      title={`${veg.name} — month ${month}`}
+                      aria-label={`${veg.name}, ${MONTH_NAMES[i]}: ${state}`}
                       className={`relative h-5 rounded-sm ${colour} ${
                         isCurrent ? "ring-2 ring-terracotta" : ""
                       }`}
                     >
                       <span
+                        aria-hidden="true"
                         className={`absolute inset-0 flex items-center justify-center text-[9px] font-semibold ${
-                          active.has(month) ? "text-cream" : "text-dark-earth/60"
+                          state === "sow or plant" ? "text-cream" : "text-dark-earth/60"
                         }`}
                       >
                         {initial}

@@ -137,6 +137,14 @@ function expectSavedAdviceUnchanged() {
 }
 
 describe("Dashboard advice replacement", () => {
+  it("uses singular crop grammar in the garden summary", () => {
+    installFetch(response(replacementAdvice));
+
+    render(<Dashboard profile={profile} onEdit={vi.fn()} />);
+
+    expect(screen.getByText(/South West England · 1 crop$/)).toBeVisible();
+  });
+
   it("opens confirmation for restored advice without requesting fresh advice", async () => {
     const user = userEvent.setup();
     const fetchMock = await renderSavedDashboard();

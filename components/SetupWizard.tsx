@@ -270,7 +270,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
           sizes="100vw"
           className="object-cover object-[center_60%]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-dark-earth/70 via-dark-earth/10 to-transparent" />
+        <div className="absolute inset-0 bg-dark-earth/50" />
         <div className="absolute inset-0">
           <div className="mx-auto flex h-full max-w-3xl flex-col justify-end px-4 pb-5">
             <h1 className="font-serif text-3xl text-cream sm:text-4xl">
@@ -456,7 +456,12 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
 
         {activeStep === 3 && (
           <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
-            <h2 {...headingProps(3)}>3. Your plot</h2>
+            <h2 {...headingProps(3)}>
+              3. Your plot{" "}
+              <span className="font-sans text-sm font-normal text-moss">
+                (optional)
+              </span>
+            </h2>
             <p className="mb-1 text-sm text-moss">
               Size and growing environment help us keep advice realistic.
             </p>
@@ -523,7 +528,12 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
 
         {activeStep === 4 && (
           <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
-            <h2 {...headingProps(4)}>4. Your tool shed</h2>
+            <h2 {...headingProps(4)}>
+              4. Your tool shed{" "}
+              <span className="font-sans text-sm font-normal text-moss">
+                (optional)
+              </span>
+            </h2>
             <p className="mb-1 text-sm text-moss">
               Tick what you already own — we&apos;ll only suggest jobs you can
               actually do.
