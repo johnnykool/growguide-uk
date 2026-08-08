@@ -2,6 +2,8 @@
 
 **Live at [aitools.crystalpocket.com](https://aitools.crystalpocket.com)**
 
+GrowGuide UK helps gardeners decide exactly what to do in their garden today. It combines local weather forecasts, RHS growing guidance, and AI reasoning to generate personalised daily gardening tasks tailored to each user's postcode, crops, and plot.
+
 A full-stack web app that gives UK gardeners AI-generated, weather-aware growing advice tailored to their exact plot — postcode, crops, plot size, and the tools in their shed.
 
 Tell it where you garden and what you grow, and it combines your local 5-day forecast with an RHS-based growing database to produce a prioritised task list: what to sow, plant, protect and harvest right now — including warnings like "frost Thursday night, fleece your seedlings."

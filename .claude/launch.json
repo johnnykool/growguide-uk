@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "growguide-dev",
-      "runtimeExecutable": "/Users/johnworley/.local/node/node-v22.17.0-darwin-x64/bin/node",
-      "runtimeArgs": ["node_modules/next/dist/bin/next", "dev", "-p", "3000"],
+      "name": "cable-selector",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "/Users/johnworley/Desktop/claude/cable-selector"],
       "port": 3000
     }
   ]
