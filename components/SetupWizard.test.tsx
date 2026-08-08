@@ -158,6 +158,12 @@ describe("SetupWizard", () => {
     expect(
       screen.queryByText("Check your postcode to continue."),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: /UK postcode.*required/i }),
+    ).toHaveAttribute(
+      "aria-describedby",
+      "postcode-help postcode-feedback",
+    );
     await user.click(
       screen.getByRole("button", { name: /Continue to crops/i }),
     );
@@ -203,6 +209,9 @@ describe("SetupWizard", () => {
     expect(
       screen.queryByText("Select at least one crop to continue."),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("group", { name: "Crop selection" }),
+    ).not.toHaveAttribute("aria-describedby");
   });
 
   it("allows optional plot and tool stages and saves the existing profile shape", async () => {

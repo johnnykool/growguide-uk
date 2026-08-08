@@ -216,4 +216,34 @@ describe("Dashboard advice replacement", () => {
     expect(adviceRequestCount(fetchMock)).toBe(1);
     expectSavedAdviceUnchanged();
   });
+
+  it.each([
+    {
+      name: "uses specific timeout guidance for a 504 response",
+      status: 504,
+      apiError: "The upstream request timed out.",
+      expected:
+        "The advice took too long to generate — try a shorter timeline or fewer vegetables, then try again.",
+    },
+    {
+      name: "retains safe API copy for a representative 4xx response",
+      status: 400,
+      apiError: "Choose at least one crop and try again.",
+      expected: "Choose at least one crop and try again.",
+    },
+  ])("$name", async ({ status, apiError, expected }) => {
+    const user = userEvent.setup();
+    const fetchMock = await renderSavedDashboard(
+      response({ error: apiError }, status),
+    );
+
+    await user.click(screen.getByRole("button", { name: "🌱 Get Fresh Advice" }));
+    await user.click(
+      screen.getByRole("button", { name: "Replace my task list" }),
+    );
+
+    expect(await screen.findByText(`🥀 ${expected}`)).toBeVisible();
+    expect(adviceRequestCount(fetchMock)).toBe(1);
+    expectSavedAdviceUnchanged();
+  });
 });
