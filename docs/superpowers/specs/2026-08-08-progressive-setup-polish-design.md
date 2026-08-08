@@ -96,7 +96,7 @@ Screens below Tailwind's `sm` breakpoint use a labeled native select for all six
 
 ## Header and Footer
 
-The sticky header keeps the GrowGuide identity and removes the CrystalPocket outbound link. The footer becomes a compact product note without generic social-platform links. It retains the GrowGuide name, concise attribution, weather source, photography credit, and CrystalPocket ownership link.
+The sticky header keeps the GrowGuide identity and removes the former outbound ownership link. The footer becomes a compact independent GrowGuide product note without generic social-platform links. It retains the GrowGuide name, concise attribution, weather source, and photography credit.
 
 This change keeps operational attention on setup and gardening tasks without removing provenance.
 

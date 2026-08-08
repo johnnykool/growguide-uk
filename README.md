@@ -1,7 +1,5 @@
 # GrowGuide UK 🌱
 
-**Live at [aitools.crystalpocket.com](https://aitools.crystalpocket.com)**
-
 GrowGuide UK helps gardeners decide exactly what to do in their garden today. It combines local weather forecasts, RHS growing guidance, and AI reasoning to generate personalised daily gardening tasks tailored to each user's postcode, crops, and plot.
 
 A full-stack web app that gives UK gardeners AI-generated, weather-aware growing advice tailored to their exact plot — postcode, crops, plot size, and the tools in their shed.
@@ -79,4 +77,4 @@ lib/                          types, localStorage persistence, image maps
 
 Growing data based on [RHS](https://www.rhs.org.uk/) guidance · Photos from [Unsplash](https://unsplash.com) and [Pexels](https://pexels.com) · Weather by [OpenWeatherMap](https://openweathermap.org) · Geocoding by [postcodes.io](https://postcodes.io) · Map tiles © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
 
-Built by John Worley using AI-assisted development ([Claude Code](https://claude.com/claude-code)) — part of [crystalpocket.com](https://crystalpocket.com).
+Built by John Worley using AI-assisted development ([Claude Code](https://claude.com/claude-code)).

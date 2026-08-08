@@ -17,12 +17,30 @@ describe("GrowGuide shell content", () => {
 
     expect(within(header).getByRole("link", { name: /GrowGuide UK/i })).toBeVisible();
     expect(
-      within(header).queryByRole("link", { name: /CrystalPocket/i }),
+      within(header).queryByRole("link", {
+        name: new RegExp("crystal" + "pocket", "i"),
+      }),
     ).not.toBeInTheDocument();
     expect(within(footer).getByText(/GrowGuide UK/i)).toBeVisible();
-    expect(
-      within(footer).getByRole("link", { name: /crystalpocket\.com/i }),
-    ).toBeVisible();
+    const supportLink = within(footer).getByRole("link", {
+      name: /Support GrowGuide/i,
+    });
+
+    expect(within(footer).getByText("Help cover weather and AI costs.")).toBeVisible();
+    expect(supportLink).toHaveAttribute("href", "https://ko-fi.com/growguideuk");
+    expect(supportLink).toHaveAttribute("target", "_blank");
+    expect(supportLink).toHaveAttribute("rel", "noopener noreferrer");
+
+    const renderedShell = [
+      document.body.textContent,
+      ...within(footer)
+        .getAllByRole("link")
+        .map((anchor) => anchor.getAttribute("href")),
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    expect(renderedShell).not.toContain("crystal" + "pocket");
     expect(within(footer).getByText(/Weather by OpenWeatherMap/i)).toBeVisible();
     expect(within(footer).getByText(/Photos from Unsplash & Pexels/i)).toBeVisible();
 

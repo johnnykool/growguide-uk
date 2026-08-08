@@ -531,7 +531,7 @@ git commit -m "feat: protect saved advice and repair mobile timelines"
 
 - [ ] **Step 1: Write failing shell and calendar tests**
 
-Assert the header has no CrystalPocket link. Assert the footer has no Facebook, Instagram, X, YouTube, or LinkedIn links, but retains GrowGuide, CrystalPocket, weather attribution, and photography credit.
+Assert the header has no former outbound ownership link. Assert the footer has no Facebook, Instagram, X, YouTube, or LinkedIn links, and retains independent GrowGuide provenance, weather attribution, and photography credit.
 
 For a known crop/month fixture, assert accessible names:
 

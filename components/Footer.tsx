@@ -6,20 +6,22 @@ export default function Footer() {
           <p>
             © {new Date().getFullYear()} {" "}
             <span className="font-serif text-sm text-cream">GrowGuide UK</span>
-            {" · Part of "}
-            <a
-              href="https://crystalpocket.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline decoration-sage underline-offset-2 transition-colors hover:text-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage"
-            >
-              crystalpocket.com
-            </a>
           </p>
           <p>
             Growing data based on RHS guidance · Photos from Unsplash &amp;
             Pexels · Weather by OpenWeatherMap
           </p>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <p>Help cover weather and AI costs.</p>
+            <a
+              href="https://ko-fi.com/growguideuk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-11 items-center rounded-btn border border-sage/70 px-3 py-2 font-semibold text-cream transition-colors hover:bg-cream/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage"
+            >
+              Support GrowGuide
+            </a>
+          </div>
         </div>
       </div>
     </footer>
