@@ -307,6 +307,7 @@ git commit -m "feat: guide seasonal crop and tool selection"
 - Modify: `components/SetupWizard.tsx`
 - Create: `components/SetupWizard.test.tsx`
 - Modify: `app/page.tsx`
+- Create: `app/page.test.tsx`
 
 **Interfaces:**
 - `SetupProgress` accepts `activeStep`, `completedSteps`, and `onEdit(step)`.
@@ -326,14 +327,16 @@ expect(screen.getByRole("button", { name: /Continue to crops/i })).toBeDisabled(
 expect(screen.getByText(/Check your postcode to continue/i)).toBeVisible();
 ```
 
-After valid lookup, Continue opens stage two and focuses its heading. Stage two blocks progression until one crop is selected. Stages three and four allow progression with defaults and no equipment. `Save my garden` calls `onSave` with the existing `UserProfile` shape and clears the draft. Restored draft values render after remount.
+After valid lookup, Continue opens stage two and focuses its heading. Stage two blocks progression until one crop is selected. Stages three and four allow progression with defaults and no equipment. `Save my garden` calls `onSave` with the existing `UserProfile` shape. Restored draft values render after remount.
+
+In `app/page.test.tsx`, mock `SetupWizard` with a button that calls its `onSave` prop using a valid profile. Save a setup draft before rendering `Home`, click the mock save button, then assert `loadProfile()` returns the profile and `loadSetupDraft()` returns null. This proves the draft clears only after the profile save path succeeds.
 
 Assert the loading state in `app/page.tsx` has `role="status"` and `aria-live="polite"`.
 
 - [ ] **Step 3: Run setup tests and verify RED**
 
 ```bash
-npm test -- components/SetupProgress.test.tsx components/SetupWizard.test.tsx
+npm test -- components/SetupProgress.test.tsx components/SetupWizard.test.tsx app/page.test.tsx
 ```
 
 Expected: FAIL because progressive controls and draft behaviour are absent.
@@ -362,7 +365,7 @@ Call `clearSetupDraft()` after `saveProfile(next)`. Preserve existing scroll-to-
 - [ ] **Step 7: Run focused and full tests**
 
 ```bash
-npm test -- components/SetupProgress.test.tsx components/SetupWizard.test.tsx
+npm test -- components/SetupProgress.test.tsx components/SetupWizard.test.tsx app/page.test.tsx
 npm test
 npx tsc --noEmit
 ```
@@ -372,7 +375,7 @@ Expected: PASS.
 - [ ] **Step 8: Commit**
 
 ```bash
-git add components/SetupProgress.tsx components/SetupProgress.test.tsx components/SetupWizard.tsx components/SetupWizard.test.tsx app/page.tsx
+git add components/SetupProgress.tsx components/SetupProgress.test.tsx components/SetupWizard.tsx components/SetupWizard.test.tsx app/page.tsx app/page.test.tsx
 git commit -m "feat: replace setup catalogue with guided steps"
 ```
 
@@ -396,7 +399,7 @@ git commit -m "feat: replace setup catalogue with guided steps"
 
 - [ ] **Step 1: Write failing API and banner tests**
 
-With the weather API key absent, assert the route returns status 503 and safe JSON:
+With the weather API key absent, assert the route preserves status 500 and returns safe JSON:
 
 ```ts
 const payload = await response.json();
