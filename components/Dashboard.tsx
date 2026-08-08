@@ -199,7 +199,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-dark-earth/55" />
+        <div className="absolute inset-0 bg-gradient-to-t from-dark-earth/80 via-dark-earth/30 to-transparent" />
         <div className="absolute inset-0">
           <div className="mx-auto flex h-full max-w-6xl flex-col justify-end px-4 pb-5">
             <div className="flex flex-wrap items-end justify-between gap-3">

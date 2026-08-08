@@ -37,5 +37,11 @@ describe("GrowGuide shell content", () => {
         within(footer).queryByRole("link", { name: socialNetwork }),
       ).not.toBeInTheDocument();
     }
+
+    for (const anchor of within(footer).getAllByRole("link")) {
+      expect(anchor.getAttribute("href")).not.toMatch(
+        /(?:facebook|instagram|x|twitter|youtube|linkedin)\.com/i,
+      );
+    }
   });
 });

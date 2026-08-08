@@ -72,6 +72,7 @@ export default function SeasonalCalendar({ vegetableIds }: Props) {
                   return (
                     <div
                       key={month}
+                      role="img"
                       aria-label={`${veg.name}, ${MONTH_NAMES[i]}: ${state}`}
                       className={`relative h-5 rounded-sm ${colour} ${
                         isCurrent ? "ring-2 ring-terracotta" : ""

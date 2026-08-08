@@ -270,7 +270,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
           sizes="100vw"
           className="object-cover object-[center_60%]"
         />
-        <div className="absolute inset-0 bg-dark-earth/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-dark-earth/70 via-dark-earth/10 to-transparent" />
         <div className="absolute inset-0">
           <div className="mx-auto flex h-full max-w-3xl flex-col justify-end px-4 pb-5">
             <h1 className="font-serif text-3xl text-cream sm:text-4xl">
