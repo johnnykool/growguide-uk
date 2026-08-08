@@ -329,7 +329,11 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                 autoCapitalize="characters"
                 aria-required="true"
                 aria-invalid={lookupState === "invalid" || lookupState === "error"}
-                aria-describedby="postcode-help postcode-feedback location-requirement"
+                aria-describedby={
+                  lookup
+                    ? "postcode-help postcode-feedback"
+                    : "postcode-help postcode-feedback location-requirement"
+                }
                 className={`min-h-11 flex-1 rounded-btn bg-cream px-4 py-3 text-dark-earth placeholder:text-moss/60 ring-1 ring-light-sage ${focusRing}`}
               />
               <button
@@ -364,12 +368,11 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                 </p>
               )}
             </div>
-            <p
-              id="location-requirement"
-              className={`mt-2 text-sm ${lookup ? "text-moss" : "text-terracotta"}`}
-            >
-              Check your postcode to continue.
-            </p>
+            {!lookup && (
+              <p id="location-requirement" className="mt-2 text-sm text-terracotta">
+                Check your postcode to continue.
+              </p>
+            )}
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end">
               <button
                 type="button"
@@ -409,7 +412,9 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
               aria-label="Crop selection"
               aria-required="true"
               aria-invalid={vegetables.length === 0}
-              aria-describedby="crop-requirement"
+              aria-describedby={
+                vegetables.length === 0 ? "crop-requirement" : undefined
+              }
               tabIndex={-1}
               className={focusRing}
             >
@@ -422,14 +427,11 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                 onSearchChange={setCropSearch}
               />
             </div>
-            <p
-              id="crop-requirement"
-              className={`mt-3 text-sm ${
-                vegetables.length > 0 ? "text-moss" : "text-terracotta"
-              }`}
-            >
-              Select at least one crop to continue.
-            </p>
+            {vegetables.length === 0 && (
+              <p id="crop-requirement" className="mt-3 text-sm text-terracotta">
+                Select at least one crop to continue.
+              </p>
+            )}
             <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
               <button
                 type="button"

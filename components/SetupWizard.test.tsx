@@ -155,6 +155,9 @@ describe("SetupWizard", () => {
     render(<SetupWizard initial={null} onSave={vi.fn()} />);
 
     await validateLocation(user);
+    expect(
+      screen.queryByText("Check your postcode to continue."),
+    ).not.toBeInTheDocument();
     await user.click(
       screen.getByRole("button", { name: /Continue to crops/i }),
     );
@@ -197,6 +200,9 @@ describe("SetupWizard", () => {
     );
     await user.click(screen.getByRole("button", { name: /Tomato/i }));
     expect(continueButton).toBeEnabled();
+    expect(
+      screen.queryByText("Select at least one crop to continue."),
+    ).not.toBeInTheDocument();
   });
 
   it("allows optional plot and tool stages and saves the existing profile shape", async () => {

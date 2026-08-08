@@ -31,6 +31,9 @@ const LOADING_MESSAGES = [
   "Asking the head gardener…",
 ];
 
+const ADVICE_UNAVAILABLE_MESSAGE =
+  "We can't generate growing advice right now. Please try again.";
+
 export default function Dashboard({ profile, onEdit }: Props) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
@@ -141,10 +144,11 @@ export default function Dashboard({ profile, onEdit }: Props) {
       const data = await res.json().catch(() => null);
       if (!res.ok || !data) {
         setAdviceError(
-          data?.error ??
-            (res.status === 504
-              ? "The advice took too long to generate — try a shorter timeline or fewer vegetables, then try again."
-              : "Something went wrong generating advice.")
+          res.status === 504
+            ? "The advice took too long to generate — try a shorter timeline or fewer vegetables, then try again."
+            : res.status >= 500
+              ? ADVICE_UNAVAILABLE_MESSAGE
+              : data?.error ?? "Something went wrong generating advice."
         );
       } else {
         const now = new Date().toISOString();

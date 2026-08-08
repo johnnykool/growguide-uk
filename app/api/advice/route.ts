@@ -161,7 +161,9 @@ function extractJson(text: string): AdviceResponse {
 export async function POST(request: Request) {
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
-      { error: "Advice service is not configured (missing ANTHROPIC_API_KEY)." },
+      {
+        error: "We can't generate growing advice right now. Please try again.",
+      },
       { status: 500 }
     );
   }

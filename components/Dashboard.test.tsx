@@ -188,10 +188,16 @@ describe("Dashboard advice replacement", () => {
     expect(adviceRequestCount(fetchMock)).toBe(1);
   });
 
-  it("preserves restored advice and storage after a failed confirmed refresh", async () => {
+  it("hides technical server detail while preserving saved advice after a failed refresh", async () => {
     const user = userEvent.setup();
     const fetchMock = await renderSavedDashboard(
-      response({ error: "Advice unavailable" }, 503),
+      response(
+        {
+          error:
+            "Advice service is not configured (missing ANTHROPIC_API_KEY).",
+        },
+        500,
+      ),
     );
 
     await user.click(screen.getByRole("button", { name: "🌱 Get Fresh Advice" }));
@@ -200,8 +206,13 @@ describe("Dashboard advice replacement", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("🥀 Advice unavailable")).toBeVisible();
+      expect(
+        screen.getByText(
+          "🥀 We can't generate growing advice right now. Please try again.",
+        ),
+      ).toBeVisible();
     });
+    expect(screen.queryByText(/ANTHROPIC_API_KEY/)).not.toBeInTheDocument();
     expect(adviceRequestCount(fetchMock)).toBe(1);
     expectSavedAdviceUnchanged();
   });
