@@ -15,6 +15,7 @@ import TimelineFilter from "./TimelineFilter";
 import AdviceResults from "./AdviceResults";
 import SeasonalCalendar from "./SeasonalCalendar";
 import WeatherMap from "./WeatherMap";
+import PlotSummary from "./PlotSummary";
 
 interface Props {
   profile: UserProfile;
@@ -32,6 +33,8 @@ export default function Dashboard({ profile, onEdit }: Props) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState<string | null>(null);
+  const weatherMounted = useRef(false);
+  const weatherRequestId = useRef(0);
 
   const [timeline, setTimeline] = useState<Timeline>("7-days");
   const [advice, setAdvice] = useState<AdviceResponse | null>(null);
@@ -54,35 +57,56 @@ export default function Dashboard({ profile, onEdit }: Props) {
     }
   }, []);
 
-  // Fetch weather immediately on dashboard load.
-  useEffect(() => {
-    let cancelled = false;
+  const fetchWeather = useCallback(async () => {
+    if (!weatherMounted.current) return;
+    const requestId = ++weatherRequestId.current;
     setWeatherLoading(true);
     setWeatherError(null);
-    fetch("/api/weather", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lat: profile.lat, lng: profile.lng }),
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        if (cancelled) return;
-        if (!res.ok) {
-          setWeatherError(data.error ?? "Weather unavailable.");
-        } else {
-          setWeather(data);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setWeatherError("Couldn't reach the weather service.");
-      })
-      .finally(() => {
-        if (!cancelled) setWeatherLoading(false);
+    try {
+      const res = await fetch("/api/weather", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lat: profile.lat, lng: profile.lng }),
       });
-    return () => {
-      cancelled = true;
-    };
+
+      const data = await res.json().catch(() => null);
+      if (
+        !weatherMounted.current ||
+        requestId !== weatherRequestId.current
+      ) {
+        return;
+      }
+      if (!res.ok || !data) {
+        setWeatherError("Weather is unavailable right now.");
+      } else {
+        setWeather(data);
+      }
+    } catch {
+      if (
+        weatherMounted.current &&
+        requestId === weatherRequestId.current
+      ) {
+        setWeatherError("Weather is unavailable right now.");
+      }
+    } finally {
+      if (
+        weatherMounted.current &&
+        requestId === weatherRequestId.current
+      ) {
+        setWeatherLoading(false);
+      }
+    }
   }, [profile.lat, profile.lng]);
+
+  // Fetch weather immediately on dashboard load.
+  useEffect(() => {
+    weatherMounted.current = true;
+    void fetchWeather();
+    return () => {
+      weatherMounted.current = false;
+      weatherRequestId.current += 1;
+    };
+  }, [fetchWeather]);
 
   const fetchAdvice = useCallback(async () => {
     setAdviceLoading(true);
@@ -199,10 +223,15 @@ export default function Dashboard({ profile, onEdit }: Props) {
 
       <div className="mx-auto max-w-6xl px-4 py-6">
         <div className="mb-6">
+          <PlotSummary profile={profile} />
+        </div>
+
+        <div className="mb-6">
           <WeatherBanner
             weather={weather}
             loading={weatherLoading}
             error={weatherError}
+            onRetry={fetchWeather}
           />
         </div>
 
