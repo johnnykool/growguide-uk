@@ -6,6 +6,15 @@ import EquipmentSelector from "./EquipmentSelector";
 afterEach(cleanup);
 
 describe("EquipmentSelector", () => {
+  it("keeps every tool available for the legacy two-prop call site", () => {
+    render(<EquipmentSelector selected={[]} onToggle={vi.fn()} />);
+
+    expect(screen.getAllByRole("checkbox")).toHaveLength(17);
+    expect(
+      screen.queryByRole("button", { name: /Show all tools/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it("starts with the six common tools", () => {
     render(
       <EquipmentSelector

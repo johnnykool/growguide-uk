@@ -24,10 +24,11 @@ const focusRing =
 export default function EquipmentSelector({
   selected,
   onToggle,
-  showAll = false,
-  onShowAllChange = () => {},
+  showAll,
+  onShowAllChange,
 }: Props) {
-  const equipment = showAll
+  const isControlled = showAll !== undefined && onShowAllChange !== undefined;
+  const equipment = !isControlled || showAll
     ? EQUIPMENT_OPTIONS
     : EQUIPMENT_OPTIONS.filter((item) => COMMON_EQUIPMENT_IDS.has(item.id));
 
@@ -56,7 +57,7 @@ export default function EquipmentSelector({
           );
         })}
       </div>
-      {!showAll && (
+      {isControlled && !showAll && (
         <button
           type="button"
           onClick={() => onShowAllChange(true)}

@@ -68,16 +68,51 @@ export default function VegetableGrid({
   selected,
   onToggle,
   month = new Date().getMonth() + 1,
-  showAll = false,
-  onShowAllChange = () => {},
-  search = "",
-  onSearchChange = () => {},
+  showAll,
+  onShowAllChange,
+  search,
+  onSearchChange,
 }: Props) {
+  const hasControlledDisclosure =
+    showAll !== undefined && onShowAllChange !== undefined;
+  const hasControlledSearch = search !== undefined && onSearchChange !== undefined;
+  const isControlled = hasControlledDisclosure && hasControlledSearch;
   const recommendations = getSeasonalRecommendations(VEGETABLES, month);
-  const normalisedSearch = search.trim().toLocaleLowerCase("en-GB");
+  const normalisedSearch = (search ?? "").trim().toLocaleLowerCase("en-GB");
   const matchingVegetables = VEGETABLES.filter((vegetable) =>
     vegetable.name.toLocaleLowerCase("en-GB").includes(normalisedSearch),
   );
+
+  if (!isControlled) {
+    return (
+      <div className="space-y-5">
+        {CATEGORY_ORDER.map((category) => {
+          const vegetables = VEGETABLES.filter(
+            (vegetable) => vegetable.category === category,
+          );
+          if (vegetables.length === 0) return null;
+
+          return (
+            <div key={category}>
+              <h4 className="mb-2 text-sm font-semibold uppercase tracking-wide text-moss">
+                {category}
+              </h4>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+                {vegetables.map((vegetable) => (
+                  <VegetableButton
+                    key={vegetable.id}
+                    vegetable={vegetable}
+                    selected={selected.includes(vegetable.id)}
+                    onToggle={onToggle}
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5">

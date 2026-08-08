@@ -23,6 +23,15 @@ function SearchableVegetableGrid() {
 }
 
 describe("VegetableGrid", () => {
+  it("keeps the full crop catalogue available for the legacy two-prop call site", () => {
+    render(<VegetableGrid selected={[]} onToggle={vi.fn()} />);
+
+    expect(screen.getAllByRole("button", { pressed: false })).toHaveLength(32);
+    expect(
+      screen.queryByRole("button", { name: /Browse all crops/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it("shows six seasonal crop recommendations before browsing the full catalogue", async () => {
     const user = userEvent.setup();
     const onShowAllChange = vi.fn();
