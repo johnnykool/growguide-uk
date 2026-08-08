@@ -1,4 +1,12 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { saveSetupDraft } from "@/lib/storage";
@@ -68,6 +76,33 @@ const restoredDraft: SetupDraftV1 = {
   showAllCrops: true,
   showAllEquipment: true,
 };
+
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((next) => {
+    resolve = next;
+  });
+  return { promise, resolve };
+}
+
+function postcodeResponse(postcode: string, region: string, ok = true) {
+  return {
+    ok,
+    status: ok ? 200 : 404,
+    json: vi.fn().mockResolvedValue(
+      ok
+        ? {
+            ...postcodeResult,
+            result: {
+              ...postcodeResult.result,
+              postcode,
+              region,
+            },
+          }
+        : { status: 404, error: "Postcode not found" },
+    ),
+  };
+}
 
 beforeEach(() => {
   window.localStorage.clear();
@@ -179,6 +214,87 @@ describe("SetupWizard", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("does not let an older postcode success replace the latest location", async () => {
+    const older = deferred<ReturnType<typeof postcodeResponse>>();
+    const newer = deferred<ReturnType<typeof postcodeResponse>>();
+    const fetchMock = vi
+      .fn()
+      .mockImplementationOnce(() => older.promise)
+      .mockImplementationOnce(() => newer.promise);
+    vi.stubGlobal("fetch", fetchMock);
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    const postcodeInput = screen.getByRole("textbox", { name: /postcode/i });
+    fireEvent.change(postcodeInput, { target: { value: "M1 1AE" } });
+    fireEvent.keyDown(postcodeInput, { key: "Enter" });
+    fireEvent.change(postcodeInput, { target: { value: "SW1A 1AA" } });
+    fireEvent.keyDown(postcodeInput, { key: "Enter" });
+
+    await act(async () => {
+      newer.resolve(postcodeResponse("SW1A 1AA", "London"));
+    });
+    await waitFor(() => expect(screen.getByText("SW1A 1AA")).toBeVisible());
+    expect(document.getElementById("postcode-feedback")).toHaveTextContent(
+      "London",
+    );
+
+    await act(async () => {
+      older.resolve(postcodeResponse("M1 1AE", "North West"));
+    });
+
+    expect(postcodeInput).toHaveValue("SW1A 1AA");
+    expect(screen.getByText("SW1A 1AA")).toBeVisible();
+    expect(document.getElementById("postcode-feedback")).toHaveTextContent(
+      "London",
+    );
+    expect(document.getElementById("postcode-feedback")).not.toHaveTextContent(
+      "North West",
+    );
+  });
+
+  it("does not let an older postcode failure erase the latest success", async () => {
+    const older = deferred<ReturnType<typeof postcodeResponse>>();
+    const newer = deferred<ReturnType<typeof postcodeResponse>>();
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockImplementationOnce(() => older.promise)
+        .mockImplementationOnce(() => newer.promise),
+    );
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    const postcodeInput = screen.getByRole("textbox", { name: /postcode/i });
+    fireEvent.change(postcodeInput, { target: { value: "M1 1AE" } });
+    fireEvent.keyDown(postcodeInput, { key: "Enter" });
+    fireEvent.change(postcodeInput, { target: { value: "SW1A 1AA" } });
+    fireEvent.keyDown(postcodeInput, { key: "Enter" });
+
+    await act(async () => {
+      newer.resolve(postcodeResponse("SW1A 1AA", "London"));
+    });
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: /Continue to crops/i }),
+      ).toBeEnabled(),
+    );
+
+    await act(async () => {
+      older.resolve(postcodeResponse("M1 1AE", "North West", false));
+    });
+
+    expect(screen.getByText("SW1A 1AA")).toBeVisible();
+    expect(document.getElementById("postcode-feedback")).toHaveTextContent(
+      "London",
+    );
+    expect(
+      screen.getByRole("button", { name: /Continue to crops/i }),
+    ).toBeEnabled();
+    expect(
+      screen.queryByText(/We couldn't find that postcode/i),
+    ).not.toBeInTheDocument();
+  });
+
   it("blocks the crop stage until at least one crop is selected", async () => {
     const user = userEvent.setup();
     render(<SetupWizard initial={null} onSave={vi.fn()} />);
@@ -206,12 +322,44 @@ describe("SetupWizard", () => {
     );
     await user.click(screen.getByRole("button", { name: /Tomato/i }));
     expect(continueButton).toBeEnabled();
+    expect(screen.getByText("1 crop selected.")).toBeVisible();
     expect(
       screen.queryByText("Select at least one crop to continue."),
     ).not.toBeInTheDocument();
     expect(
       screen.getByRole("group", { name: "Crop selection" }),
     ).not.toHaveAttribute("aria-describedby");
+  });
+
+  it("pluralises the setup crop selection count", async () => {
+    const user = userEvent.setup();
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    await validateLocation(user);
+    await user.click(screen.getByRole("button", { name: /Continue to crops/i }));
+    await user.click(screen.getByRole("button", { name: /Browse all crops/i }));
+    await user.click(screen.getByRole("button", { name: /Tomato/i }));
+    await user.click(screen.getByRole("button", { name: /Carrot/i }));
+
+    expect(screen.getByText("2 crops selected.")).toBeVisible();
+  });
+
+  it("summarises completed setup values in the stage list", async () => {
+    const user = userEvent.setup();
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    await validateLocation(user);
+    await user.click(screen.getByRole("button", { name: /Continue to crops/i }));
+    const stages = screen.getByRole("navigation", { name: /Setup stages/i });
+    expect(within(stages).getByText("SW1A 1AA · London")).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: /Browse all crops/i }));
+    await user.click(screen.getByRole("button", { name: /Tomato/i }));
+    await user.click(screen.getByRole("button", { name: /Continue to plot/i }));
+    expect(within(stages).getByText("1 crop selected")).toBeVisible();
+
+    await user.click(screen.getByRole("button", { name: /Continue to tools/i }));
+    expect(within(stages).getByText("Medium plot (4–20m²)")).toBeVisible();
   });
 
   it("allows optional plot and tool stages and saves the existing profile shape", async () => {

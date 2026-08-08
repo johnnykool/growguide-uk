@@ -1,6 +1,9 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const projectRoot = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
@@ -10,6 +13,6 @@ export default defineConfig({
     restoreMocks: true,
   },
   resolve: {
-    alias: { "@": path.resolve(import.meta.dirname, ".") },
+    alias: { "@": path.resolve(projectRoot, ".") },
   },
 });

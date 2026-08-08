@@ -5,6 +5,7 @@ type Step = 1 | 2 | 3 | 4;
 interface Props {
   activeStep: Step;
   completedSteps: number[];
+  summaries?: Partial<Record<Step, string>>;
   onEdit: (step: Step) => void;
 }
 
@@ -21,6 +22,7 @@ const focusRing =
 export default function SetupProgress({
   activeStep,
   completedSteps,
+  summaries = {},
   onEdit,
 }: Props) {
   return (
@@ -54,7 +56,9 @@ export default function SetupProgress({
               <span>
                 <span className="block font-semibold">{step.label}</span>
                 {isComplete && (
-                  <span className="block text-xs text-moss">Complete</span>
+                  <span className="block text-xs text-moss">
+                    {summaries[step.number] ?? "Complete"}
+                  </span>
                 )}
               </span>
               {isComplete && !isActive && (

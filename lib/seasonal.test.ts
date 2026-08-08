@@ -74,4 +74,31 @@ describe("getSeasonalRecommendations", () => {
     expect(recommendations).toHaveLength(6);
     expect(new Set(recommendations.map((item) => item.vegetable.id)).size).toBe(6);
   });
+
+  it("ranks mixed crops stably, limits six, and excludes medium next-month crops", () => {
+    const mixed = [
+      vegetable("harvest-a", { harvest: [8] }),
+      vegetable("outdoor-a", { sowOutdoors: [8] }),
+      vegetable("next-easy-a", { sowOutdoors: [9] }),
+      vegetable("transplant-a", { transplant: [8] }),
+      vegetable("indoor-a", { sowIndoors: [8] }),
+      vegetable("outdoor-b", { sowOutdoors: [8] }),
+      {
+        ...vegetable("next-medium", { sowOutdoors: [9] }),
+        difficulty: "Medium" as const,
+      },
+      vegetable("next-easy-b", { harvest: [9] }),
+    ];
+
+    expect(
+      getSeasonalRecommendations(mixed, 8).map(({ vegetable }) => vegetable.id),
+    ).toEqual([
+      "outdoor-a",
+      "outdoor-b",
+      "transplant-a",
+      "indoor-a",
+      "harvest-a",
+      "next-easy-a",
+    ]);
+  });
 });

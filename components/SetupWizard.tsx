@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { formatCropCount } from "@/lib/format";
 import { HERO_SOIL } from "@/lib/images";
 import { loadSetupDraft, saveSetupDraft } from "@/lib/storage";
 import {
@@ -108,12 +109,30 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
   const cropSelection = useRef<HTMLDivElement | null>(null);
   const hadCropSelection = useRef(vegetables.length > 0);
   const pendingFocus = useRef<"heading" | "requirement" | null>(null);
+  const postcodeRequestId = useRef(0);
 
   const reachableCompletedSteps = completedSteps.filter((step) => {
     if (!lookup) return false;
     if (step === 1) return true;
     return vegetables.length > 0;
   });
+
+  const summaries: Partial<Record<Step, string>> = {
+    1: lookup ? `${lookup.postcode} · ${lookup.region}` : undefined,
+    2: `${formatCropCount(vegetables.length)} selected`,
+    3: PLOT_SIZE_LABELS[plotSize],
+    4:
+      equipment.length === 0
+        ? "No tools selected"
+        : `${equipment.length} ${equipment.length === 1 ? "tool" : "tools"} selected`,
+  };
+
+  useEffect(
+    () => () => {
+      postcodeRequestId.current += 1;
+    },
+    [],
+  );
 
   useEffect(() => {
     saveSetupDraft({
@@ -162,6 +181,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
   }, [activeStep, vegetables.length]);
 
   async function lookupPostcode(value: string) {
+    const requestId = ++postcodeRequestId.current;
     const trimmed = value.trim();
     if (!UK_POSTCODE_RE.test(trimmed)) {
       setLookup(null);
@@ -175,6 +195,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
         `https://api.postcodes.io/postcodes/${encodeURIComponent(trimmed)}`,
       );
       const data = await res.json();
+      if (requestId !== postcodeRequestId.current) return;
       if (!res.ok || !data.result) {
         setLookup(null);
         setLookupState("error");
@@ -191,6 +212,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
       setPostcode(result.postcode);
       setLookupState("idle");
     } catch {
+      if (requestId !== postcodeRequestId.current) return;
       setLookup(null);
       setLookupState("error");
       postcodeInput.current?.focus();
@@ -289,6 +311,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
         <SetupProgress
           activeStep={activeStep}
           completedSteps={reachableCompletedSteps}
+          summaries={summaries}
           onEdit={openStep}
         />
 
@@ -317,6 +340,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                 type="text"
                 value={postcode}
                 onChange={(event) => {
+                  postcodeRequestId.current += 1;
                   setPostcode(event.target.value);
                   setLookup(null);
                   setLookupState("idle");
@@ -402,7 +426,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
               Select at least one crop you grow now or would like to grow.
               {vegetables.length > 0 && (
                 <span className="ml-1 font-semibold text-dark-earth">
-                  {vegetables.length} selected.
+                  {formatCropCount(vegetables.length)} selected.
                 </span>
               )}
             </p>
