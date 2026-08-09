@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#20312C"/>
+  <g fill="none" stroke="#7DB8E6" stroke-width="3" stroke-linecap="round" opacity=".55">
+    <path d="M558 156C674 156 670 276 788 276"/>
+    <path d="M558 236C678 236 702 390 852 390"/>
+    <path d="M558 316C660 316 690 498 936 498"/>
+  </g>
+  <g fill="none" stroke="#7DB8E6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" transform="translate(84 108) scale(4.8)">
+    <path d="M14 8v17c0 15 10 27 25 27h11V37H38"/>
+    <path d="M30 8v13c0 10 7 18 17 18h7V26H43"/>
+  </g>
+  <g fill="#7DB8E6">
+    <circle cx="788" cy="276" r="6"/>
+    <circle cx="852" cy="390" r="6"/>
+    <circle cx="936" cy="498" r="6"/>
+  </g>
+  <g fill="#F4F0E5" font-family="Arial, sans-serif">
+    <text x="84" y="474" font-size="64" font-weight="700">GrowGuide UK</text>
+    <text x="84" y="526" font-size="27">Weather, translated into action.</text>
+  </g>
+  <g fill="#F4F0E5" font-family="Arial, sans-serif" font-size="25" font-weight="700">
+    <text x="812" y="284">Water</text>
+    <text x="876" y="398">Plant</text>
+    <text x="960" y="506">Protect</text>
+  </g>
+</svg>

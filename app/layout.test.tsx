@@ -25,6 +25,15 @@ describe("root metadata", () => {
       siteName: "GrowGuide UK",
     });
     expect(metadata.twitter).toMatchObject({ card: "summary_large_image" });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        url: "/brand/growguide-social.png",
+        width: 1200,
+        height: 630,
+        alt: "Weather paths flow into GrowGuide UK actions",
+      },
+    ]);
+    expect(metadata.twitter?.images).toEqual(["/brand/growguide-social.png"]);
     const prohibitedAnalyticsTokens = [
       "google-" + "analytics",
       "google" + "tagmanager",

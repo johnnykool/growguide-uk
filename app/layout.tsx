@@ -32,10 +32,10 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: [
       {
-        url: "/images/growguide-kofi-logo.png",
-        width: 1254,
-        height: 1254,
-        alt: "GrowGuide UK seedling logo",
+        url: "/brand/growguide-social.png",
+        width: 1200,
+        height: 630,
+        alt: "Weather paths flow into GrowGuide UK actions",
       },
     ],
   },
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ["/images/growguide-kofi-logo.png"],
+    images: ["/brand/growguide-social.png"],
   },
 };
 

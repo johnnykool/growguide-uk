@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandMark from "./BrandMark";
 
 export default function Footer() {
   return (
@@ -7,7 +8,10 @@ export default function Footer() {
         <div className="flex flex-col gap-2 text-xs text-cream sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {" "}
-            <span className="font-serif text-sm text-cream">GrowGuide UK</span>
+            <a href="/" className="inline-flex items-center gap-1.5 align-middle">
+              <BrandMark className="h-4 w-4 text-sage" />
+              <span className="font-serif text-sm text-cream">GrowGuide UK</span>
+            </a>
           </p>
           <p>
             Growing data based on RHS guidance · Photos from Unsplash &amp;

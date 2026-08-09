@@ -15,7 +15,9 @@ describe("GrowGuide shell content", () => {
     const header = screen.getByRole("banner");
     const footer = screen.getByRole("contentinfo");
 
-    expect(within(header).getByRole("link", { name: /GrowGuide UK/i })).toBeVisible();
+    const homeLink = within(header).getByRole("link", { name: "GrowGuide UK" });
+    expect(homeLink).toBeVisible();
+    expect(within(homeLink).queryByRole("img")).not.toBeInTheDocument();
     expect(
       within(header).queryByRole("link", {
         name: new RegExp("crystal" + "pocket", "i"),

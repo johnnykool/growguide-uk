@@ -34,18 +34,20 @@ describe("PrivacyPage", () => {
       url: "https://growguideuk.co.uk/privacy",
       title: "Privacy | GrowGuide UK",
       description: "How GrowGuide UK handles analytics and gardening data.",
-      images: [
-        expect.objectContaining({
-          url: "/images/growguide-kofi-logo.png",
-          alt: "GrowGuide UK seedling logo",
-        }),
-      ],
     });
+    expect(metadata.openGraph?.images).toEqual([
+      {
+        url: "/brand/growguide-social.png",
+        width: 1200,
+        height: 630,
+        alt: "Weather paths flow into GrowGuide UK actions",
+      },
+    ]);
     expect(metadata.twitter).toMatchObject({
       card: "summary_large_image",
       title: "Privacy | GrowGuide UK",
       description: "How GrowGuide UK handles analytics and gardening data.",
-      images: ["/images/growguide-kofi-logo.png"],
     });
+    expect(metadata.twitter?.images).toEqual(["/brand/growguide-social.png"]);
   });
 });
