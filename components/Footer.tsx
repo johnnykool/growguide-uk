@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="mt-12 bg-dark-earth text-cream">
@@ -21,6 +23,12 @@ export default function Footer() {
             >
               Support GrowGuide
             </a>
+            <Link
+              href="/privacy"
+              className="inline-flex min-h-11 items-center py-3 font-semibold text-cream underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage"
+            >
+              Privacy
+            </Link>
           </div>
         </div>
       </div>

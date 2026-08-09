@@ -30,6 +30,10 @@ describe("GrowGuide shell content", () => {
     expect(supportLink).toHaveAttribute("href", "https://ko-fi.com/growguideuk");
     expect(supportLink).toHaveAttribute("target", "_blank");
     expect(supportLink).toHaveAttribute("rel", "noopener noreferrer");
+    expect(within(footer).getByRole("link", { name: "Privacy" })).toHaveAttribute(
+      "href",
+      "/privacy",
+    );
 
     const renderedShell = [
       document.body.textContent,
