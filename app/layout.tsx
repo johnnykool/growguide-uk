@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteAnalytics from "@/components/SiteAnalytics";
+import SiteStructuredData from "@/components/SiteStructuredData";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -17,9 +19,32 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: "GrowGuide UK",
-  description:
-    "A vegetable planner and growing guide for UK gardeners — weather-aware advice for your plot.",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: [
+      {
+        url: "/images/growguide-kofi-logo.png",
+        width: 1254,
+        height: 1254,
+        alt: "GrowGuide UK seedling logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: ["/images/growguide-kofi-logo.png"],
+  },
 };
 
 export default function RootLayout({
@@ -32,6 +57,7 @@ export default function RootLayout({
       <body
         className={`${dmSans.variable} ${dmSerif.variable} flex min-h-screen flex-col font-sans`}
       >
+        <SiteStructuredData />
         <Header />
         <div className="flex-1">{children}</div>
         <Footer />
