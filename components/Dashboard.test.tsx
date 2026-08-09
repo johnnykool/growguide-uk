@@ -139,6 +139,19 @@ function expectSavedAdviceUnchanged() {
   expect(loadSavedAdvice(profile)).toEqual(savedAdvice);
 }
 
+describe("Dashboard weather", () => {
+  it("labels the local forecast with the garden postcode", async () => {
+    installFetch(response(replacementAdvice));
+
+    render(<Dashboard profile={profile} onEdit={vi.fn()} />);
+
+    const forecast = await screen.findByRole("region", {
+      name: "Local forecast",
+    });
+    expect(forecast).toHaveTextContent("BS1 5AH");
+  });
+});
+
 describe("Dashboard advice replacement", () => {
   it("uses singular crop grammar in the garden summary", () => {
     installFetch(response(replacementAdvice));

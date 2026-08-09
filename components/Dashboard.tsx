@@ -296,6 +296,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
             loading={weatherLoading}
             error={weatherError}
             onRetry={fetchWeather}
+            locationLabel={profile.postcode}
           />
         </div>
 

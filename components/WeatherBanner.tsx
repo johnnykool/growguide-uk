@@ -7,22 +7,74 @@ interface Props {
   loading: boolean;
   error: string | null;
   onRetry: () => void;
+  locationLabel: string;
 }
 
-// Map OpenWeatherMap icon codes to emoji so we stay inside the palette.
-function weatherEmoji(icon: string): string {
-  const map: Record<string, string> = {
-    "01": "☀️",
-    "02": "🌤️",
-    "03": "☁️",
-    "04": "☁️",
-    "09": "🌧️",
-    "10": "🌦️",
-    "11": "⛈️",
-    "13": "🌨️",
-    "50": "🌫️",
+function WeatherSymbol({ icon, label }: { icon: string; label: string }) {
+  const code = icon.slice(0, 2);
+  const common = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+    strokeWidth: 1.7,
   };
-  return map[icon.slice(0, 2)] ?? "🌤️";
+
+  if (code === "01") {
+    return (
+      <svg
+        role="img"
+        aria-label={label}
+        className="h-full w-full"
+        viewBox="0 0 32 32"
+        {...common}
+      >
+        <circle cx="16" cy="16" r="5" />
+        <path d="M16 4v4M16 24v4M4 16h4M24 16h4M7.5 7.5l2.8 2.8M21.7 21.7l2.8 2.8M24.5 7.5l-2.8 2.8M10.3 21.7l-2.8 2.8" />
+      </svg>
+    );
+  }
+
+  if (["09", "10", "11"].includes(code)) {
+    return (
+      <svg
+        role="img"
+        aria-label={label}
+        className="h-full w-full"
+        viewBox="0 0 32 32"
+        {...common}
+      >
+        <path d="M8.5 20.5a5 5 0 0 1 .8-9.9A7 7 0 0 1 22.8 12a4.5 4.5 0 0 1 .7 8.5H8.5Z" />
+        <path d="m11 24-1 3M17 24l-1 3M23 24l-1 3" />
+      </svg>
+    );
+  }
+
+  if (code === "13") {
+    return (
+      <svg
+        role="img"
+        aria-label={label}
+        className="h-full w-full"
+        viewBox="0 0 32 32"
+        {...common}
+      >
+        <path d="M16 6v20M7.3 11l17.4 10M7.3 21l17.4-10M16 6l-2 2M16 6l2 2M16 26l-2-2M16 26l2-2" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      role="img"
+      aria-label={label}
+      className="h-full w-full"
+      viewBox="0 0 32 32"
+      {...common}
+    >
+      <path d="M7.5 22a5.5 5.5 0 0 1 1-10.9A8 8 0 0 1 24 13a4.5 4.5 0 0 1 .5 9H7.5Z" />
+    </svg>
+  );
 }
 
 export default function WeatherBanner({
@@ -30,6 +82,7 @@ export default function WeatherBanner({
   loading,
   error,
   onRetry,
+  locationLabel,
 }: Props) {
   if (loading) {
     return (
@@ -62,67 +115,105 @@ export default function WeatherBanner({
   }
 
   const { current, daily, warnings } = weather;
-  const warningMessages: string[] = [];
-  if (warnings.frostSoon)
-    warningMessages.push(
-      "Frost expected in the next 48 hours — protect tender plants and seedlings."
-    );
-  if (warnings.rainSoon)
-    warningMessages.push(
-      "Rain expected in the next 48 hours — hold off watering and plan indoor jobs."
-    );
+  const hasWeatherWarning = warnings.rainSoon || warnings.frostSoon;
 
   return (
-    <div className="space-y-3">
-      {warningMessages.length > 0 && (
-        <div className="bg-terracotta text-cream rounded-card shadow-soft px-5 py-4">
-          {warningMessages.map((msg) => (
-            <p key={msg} className="font-medium">
-              ⚠️ {msg}
+    <section
+      aria-label="Local forecast"
+      className="forecast-ribbon overflow-hidden rounded-[0.4rem] bg-[#20312C] px-5 py-5 text-[#E7E8E4] shadow-soft"
+    >
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
+        <div className="flex min-w-[11rem] items-center gap-3 lg:border-r lg:border-[#E7E8E4]/20 lg:pr-6">
+          <span className="h-10 w-10 shrink-0 text-[#7DB8E6]">
+            <WeatherSymbol
+              icon={current.icon}
+              label={`${current.description} weather`}
+            />
+          </span>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#A6B49C]">
+              {locationLabel}
             </p>
+            <p className="mt-1 text-3xl font-semibold leading-none">
+              {current.temp}°C
+            </p>
+            <p className="mt-1 text-sm capitalize text-[#E7E8E4]/75">
+              {current.description}
+            </p>
+          </div>
+        </div>
+
+        <ul
+          aria-label="Seven-day forecast"
+          className="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1"
+        >
+          {daily.map((day) => (
+            <li
+              key={day.date}
+              aria-label={`${day.dayName}: high ${day.high}°, low ${day.low}°, ${day.rainProbability}% rain`}
+              className="flex min-w-[5.5rem] flex-1 flex-col items-center border-l border-[#E7E8E4]/15 px-3 py-1 first:border-l-0"
+            >
+              <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[#A6B49C]">
+                {day.dayName}
+              </span>
+              <span className="my-1 h-7 w-7 text-[#7DB8E6]">
+                <WeatherSymbol icon={day.icon} label={day.conditions} />
+              </span>
+              <span className="text-sm font-semibold">
+                {day.high}° <span className="text-[#A6B49C]">{day.low}°</span>
+              </span>
+              <span className="text-xs text-[#7DB8E6]">
+                {day.rainProbability}% rain
+              </span>
+            </li>
           ))}
+        </ul>
+      </div>
+
+      {hasWeatherWarning && (
+        <div className="relative mt-3 pt-8">
+          <svg
+            aria-hidden="true"
+            className="forecast-trajectory absolute inset-x-0 top-0 h-8 w-full text-[#7DB8E6]"
+            viewBox="0 0 320 32"
+            preserveAspectRatio="none"
+          >
+            <g className="forecast-trajectory__draw">
+              <path
+                d="M0 3 C92 3 189 7 316 29"
+                fill="none"
+                stroke="currentColor"
+                strokeDasharray="5 7"
+                strokeLinecap="round"
+                strokeWidth="2"
+              />
+              <circle cx="316" cy="29" r="3" fill="currentColor" />
+            </g>
+          </svg>
+          <p className="border-l-2 border-[#E0645B] pl-3 text-sm font-semibold text-[#E7E8E4]">
+            Rain may change your next tasks
+          </p>
         </div>
       )}
-      <div className="bg-sage/60 rounded-card shadow-soft p-5">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-4xl" aria-hidden>
-              {weatherEmoji(current.icon)}
-            </span>
-            <div>
-              <p className="text-3xl font-semibold leading-none">
-                {current.temp}°C
-              </p>
-              <p className="text-sm text-dark-earth/80 capitalize">
-                {current.description}
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-            {daily.map((day) => (
-              <div
-                key={day.date}
-                className="flex flex-col items-center rounded-btn bg-cream/70 px-3 py-2 min-w-[4.5rem]"
-              >
-                <span className="text-xs font-semibold text-moss">
-                  {day.dayName}
-                </span>
-                <span className="text-lg" aria-hidden>
-                  {weatherEmoji(day.icon)}
-                </span>
-                <span className="text-sm font-medium">
-                  {day.high}° <span className="text-moss">{day.low}°</span>
-                </span>
-                {day.rainProbability >= 30 && (
-                  <span className="text-xs text-moss">
-                    💧{day.rainProbability}%
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
+
+      <style>{`
+        .forecast-trajectory__draw {
+          animation: forecast-trajectory-draw 900ms ease-out both;
+          transform-box: fill-box;
+          transform-origin: left center;
+        }
+
+        @keyframes forecast-trajectory-draw {
+          from { transform: scaleX(0); }
+          to { transform: scaleX(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .forecast-trajectory__draw {
+            animation: none;
+          }
+        }
+      `}</style>
+    </section>
   );
 }
