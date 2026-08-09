@@ -59,40 +59,39 @@ export default function AdviceResults({
     : null;
 
   return (
-    <div className="space-y-5">
-      {/* Summary card */}
-      <div className="rounded-card bg-sage/70 p-5 shadow-soft">
-        <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
-          <h3 className="font-serif text-xl">This period&apos;s priorities</h3>
-          <span className="text-sm font-medium text-dark-earth/70">
+    <div className="space-y-6">
+      <div className="border-y border-garden-ground/25 py-5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h3 className="text-xl font-semibold text-garden-ground">
+            This period&apos;s priorities
+          </h3>
+          <span className="text-sm font-medium text-garden-ground/65">
             {generatedLabel && <>Generated {generatedLabel} · </>}
             {doneCount}/{advice.tasks.length} done
           </span>
         </div>
-        <p className="leading-relaxed text-dark-earth/90">{advice.summary}</p>
+        <p className="mt-2 leading-relaxed text-garden-ground/85">
+          {advice.summary}
+        </p>
         {advice.weatherWarnings.length > 0 && (
-          <ul className="mt-3 space-y-1.5">
+          <ul className="mt-4 space-y-2 border-l-2 border-ember pl-4">
             {advice.weatherWarnings.map((w) => (
-              <li
-                key={w}
-                className="rounded-btn bg-terracotta/90 px-3 py-2 text-sm font-medium text-cream"
-              >
-                ⚠️ {w}
+              <li key={w} className="text-sm font-medium text-ember-ink">
+                {w}
               </li>
             ))}
           </ul>
         )}
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 border-b border-garden-ground/20 pb-4">
         <button
           type="button"
           onClick={() => setFilter("all")}
-          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+          className={`min-h-11 border-b-2 px-1 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral ${
             filter === "all"
-              ? "bg-blush text-dark-earth"
-              : "bg-warm-stone/60 hover:bg-light-sage/60"
+              ? "border-rain-ink text-rain-ink"
+              : "border-transparent text-garden-ground/70 hover:text-garden-ground"
           }`}
         >
           All ({advice.tasks.length})
@@ -100,13 +99,14 @@ export default function AdviceResults({
         <button
           type="button"
           onClick={() => setFilter("high")}
-          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+          className={`min-h-11 border-b-2 px-1 py-2 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral ${
             filter === "high"
-              ? "bg-blush text-dark-earth"
-              : "bg-warm-stone/60 hover:bg-light-sage/60"
+              ? "border-ember-ink text-ember-ink"
+              : "border-transparent text-garden-ground/70 hover:text-garden-ground"
           }`}
         >
-          High priority ({advice.tasks.filter((t) => t.priority === "high").length})
+          High priority (
+          {advice.tasks.filter((t) => t.priority === "high").length})
         </button>
         <select
           value={filter === "category" ? category : ""}
@@ -118,8 +118,11 @@ export default function AdviceResults({
               setFilter("all");
             }
           }}
-          className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium outline-none ring-1 ring-light-sage ${
-            filter === "category" ? "bg-blush text-dark-earth" : "bg-warm-stone/60"
+          aria-label="Filter tasks by category"
+          className={`min-h-11 cursor-pointer border px-3 py-2 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral ${
+            filter === "category"
+              ? "border-rain-ink bg-pale-mineral text-rain-ink"
+              : "border-garden-ground/35 bg-pale-mineral text-garden-ground"
           }`}
         >
           <option value="">By category…</option>
@@ -131,16 +134,15 @@ export default function AdviceResults({
         </select>
       </div>
 
-      {/* Task cards grouped by vegetable */}
       {grouped.length === 0 ? (
-        <p className="text-moss">No tasks match this filter.</p>
+        <p className="text-garden-ground/65">No tasks match this filter.</p>
       ) : (
         grouped.map(([vegetable, tasks]) => (
           <section key={vegetable}>
-            <h3 className="mb-2 font-serif text-lg text-dark-earth">
+            <h3 className="mb-2 text-sm font-semibold uppercase tracking-[0.14em] text-garden-ground/70">
               {vegetable}
             </h3>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="divide-y divide-garden-ground/20 border-y border-garden-ground/20">
               {tasks.map((task) => {
                 const key = taskKey(task.vegetable, task.title);
                 return (

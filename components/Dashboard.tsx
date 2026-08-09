@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AdviceResponse,
@@ -13,7 +12,6 @@ import {
   loadSavedAdvice,
   saveAdvice,
 } from "@/lib/storage";
-import { HERO_HARVEST, VEG_PHOTOS } from "@/lib/images";
 import { formatCropCount } from "@/lib/format";
 import WeatherBanner from "./WeatherBanner";
 import TimelineFilter from "./TimelineFilter";
@@ -243,54 +241,34 @@ export default function Dashboard({ profile, onEdit }: Props) {
     [advice, completed, generatedAt, profile, profileFingerprint, timeline]
   );
 
-  const collagePhotos = profile.vegetables
-    .filter((id) => VEG_PHOTOS[id])
-    .slice(0, 3)
-    .map((id) => ({ id, src: VEG_PHOTOS[id] }));
-
   return (
-    <main>
-      {/* Photo hero */}
-      <section className="relative h-56 sm:h-72">
-        <Image
-          src={HERO_HARVEST}
-          alt="A trug of freshly harvested vegetables"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-dark-earth/80 via-dark-earth/30 to-transparent" />
-        <div className="absolute inset-0">
-          <div className="mx-auto flex h-full max-w-6xl flex-col justify-end px-4 pb-5">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <h1 className="font-serif text-3xl text-cream sm:text-4xl">
-                  Your growing dashboard
-                </h1>
-                <p className="text-sm font-medium text-cream">
-                  📍 {profile.postcode} · {profile.region} ·{" "}
-                  {formatCropCount(profile.vegetables.length)}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={onEdit}
-                className="rounded-btn bg-cream/90 px-4 py-2 text-sm font-semibold text-dark-earth shadow-soft transition-colors hover:bg-cream"
-              >
-                ✏️ Edit My Setup
-              </button>
+    <main className="bg-pale-mineral text-garden-ground">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+        <section className="border-b border-garden-ground/25 pb-6">
+          <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rain-ink">
+                Your growing dashboard
+              </p>
+              <h1 className="mt-2 max-w-3xl text-3xl font-semibold leading-tight text-garden-ground sm:text-5xl">
+                Weather, translated into action.
+              </h1>
+              <p className="mt-3 text-sm font-medium text-garden-ground/75">
+                {profile.postcode} · {profile.region} ·{" "}
+                {formatCropCount(profile.vegetables.length)}
+              </p>
             </div>
+            <button
+              type="button"
+              onClick={onEdit}
+              className="min-h-11 self-start border border-garden-ground/40 bg-pale-mineral px-4 py-2 text-sm font-semibold text-garden-ground transition-colors hover:bg-garden-ground hover:text-pale-mineral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral sm:self-auto"
+            >
+              Edit setup
+            </button>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <div className="mx-auto max-w-6xl px-4 py-6">
-        <div className="mb-6">
-          <PlotSummary profile={profile} />
-        </div>
-
-        <div className="mb-6">
+        <div className="mt-6">
           <WeatherBanner
             weather={weather}
             loading={weatherLoading}
@@ -300,13 +278,33 @@ export default function Dashboard({ profile, onEdit }: Props) {
           />
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-          <div className="min-w-0 space-y-5">
-            <section>
-              <h2 className="mb-3 font-serif text-2xl">
-                What should I be doing?
+        <div className="dashboard-workspace mt-8 grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(20rem,2fr)] lg:items-start">
+          <div className="order-2 min-w-0 space-y-6 lg:order-1">
+            <PlotSummary profile={profile} />
+            <WeatherMap
+              lat={profile.lat}
+              lng={profile.lng}
+              postcode={profile.postcode}
+            />
+          </div>
+
+          <section
+            aria-label="What needs doing"
+            className="order-1 min-w-0 border-t-4 border-rain-ink bg-pale-mineral pt-5 lg:order-2 lg:border-l lg:border-t-0 lg:border-l-garden-ground/25 lg:pl-8 lg:pt-0"
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rain-ink">
+                Priorities
+              </p>
+              <h2 className="mt-1 text-2xl font-semibold text-garden-ground">
+                What needs doing
               </h2>
-              <TimelineFilter value={timeline} onChange={setTimeline} />
+              <p className="mt-2 text-sm text-garden-ground/70">
+                Choose a timeframe for practical, weather-aware tasks.
+              </p>
+              <div className="mt-5">
+                <TimelineFilter value={timeline} onChange={setTimeline} />
+              </div>
               {adviceLoading ? (
                 <p
                   ref={adviceLoadingStatus}
@@ -314,7 +312,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
                   aria-label="Generating growing advice"
                   aria-live="polite"
                   tabIndex={-1}
-                  className="mt-4 w-full cursor-wait rounded-btn bg-dark-earth px-8 py-4 text-lg font-semibold text-cream shadow-soft focus:outline-none focus:ring-2 focus:ring-dark-earth focus:ring-offset-2 focus:ring-offset-cream sm:w-fit"
+                  className="mt-5 w-full cursor-wait bg-garden-ground px-6 py-3 text-base font-semibold text-pale-mineral focus:outline-none focus:ring-2 focus:ring-garden-ground focus:ring-offset-2 focus:ring-offset-pale-mineral sm:w-fit"
                 >
                   {loadingMessage}
                 </p>
@@ -328,9 +326,9 @@ export default function Dashboard({ profile, onEdit }: Props) {
                       void fetchAdvice();
                     }
                   }}
-                  className="mt-4 w-full rounded-btn bg-dark-earth px-8 py-4 text-lg font-semibold text-cream shadow-soft transition-colors hover:bg-earth-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:w-auto"
+                  className="mt-5 min-h-11 w-full bg-rain-ink px-6 py-3 text-base font-semibold text-pale-mineral transition-colors hover:bg-garden-ground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral sm:w-auto"
                 >
-                  {advice ? "Get Fresh Advice" : "Get Growing Advice"}
+                  {advice ? "Get fresh advice" : "Get growing advice"}
                 </button>
               )}
               {advice && !adviceLoading && (
@@ -338,12 +336,12 @@ export default function Dashboard({ profile, onEdit }: Props) {
                   <p
                     role="alert"
                     aria-label="Advice wasn't saved in this browser."
-                    className="mt-2 text-sm font-semibold text-earth-ink"
+                    className="mt-3 text-sm font-semibold text-ember-ink"
                   >
                     Advice wasn&apos;t saved in this browser.
                   </p>
                 ) : (
-                  <p className="mt-2 text-sm text-earth-ink">
+                  <p className="mt-3 text-sm text-garden-ground/70">
                     Your saved tasks are below — tick them off as you go. Fresh
                     advice replaces the list.
                   </p>
@@ -358,15 +356,15 @@ export default function Dashboard({ profile, onEdit }: Props) {
                   onCancel={() => setConfirmAdviceRefresh(false)}
                 />
               )}
-            </section>
+            </div>
 
             {adviceError && (
-              <div className="rounded-card bg-terracotta/90 p-5 text-cream shadow-soft">
+              <div className="mt-5 border-l-4 border-ember bg-pale-mineral p-5 text-ember-ink ring-1 ring-ember-ink/30">
                 <p className="mb-3 font-medium">🥀 {adviceError}</p>
                 <button
                   type="button"
                   onClick={fetchAdvice}
-                  className="rounded-btn bg-cream px-4 py-2 text-sm font-semibold text-dark-earth transition-colors hover:bg-blush"
+                  className="min-h-11 border border-ember-ink px-4 py-2 text-sm font-semibold text-ember-ink transition-colors hover:bg-ember hover:text-pale-mineral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral"
                 >
                   Try again
                 </button>
@@ -374,53 +372,27 @@ export default function Dashboard({ profile, onEdit }: Props) {
             )}
 
             {advice && !adviceLoading && (
-              <AdviceResults
-                advice={advice}
-                generatedAt={generatedAt}
-                completed={completed}
-                onToggleTask={toggleTask}
-              />
+              <div className="mt-6">
+                <AdviceResults
+                  advice={advice}
+                  generatedAt={generatedAt}
+                  completed={completed}
+                  onToggleTask={toggleTask}
+                />
+              </div>
             )}
 
             {!advice && !adviceLoading && !adviceError && (
-              <div className="overflow-hidden rounded-card bg-warm-stone/50 shadow-soft">
-                {collagePhotos.length > 0 && (
-                  <div className="grid grid-cols-3 gap-0.5">
-                    {collagePhotos.map((p) => (
-                      <div key={p.id} className="relative h-28 sm:h-36">
-                        <Image
-                          src={p.src}
-                          alt=""
-                          fill
-                          sizes="(max-width: 640px) 33vw, 220px"
-                          className="object-cover"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-                <div className="p-6 text-center">
-                  <p className="text-dark-earth/80">
-                    Pick a timeline and press{" "}
-                    <span className="font-semibold">Get Growing Advice</span>{" "}
-                    for a weather-aware task list tailored to your plot. Your
-                    tasks are saved so you can tick them off over the days
-                    ahead.
-                  </p>
-                </div>
-              </div>
+              <p className="mt-6 border-t border-garden-ground/20 pt-4 text-sm leading-relaxed text-garden-ground/70">
+                Your task list is saved on this device so you can tick off work
+                as you go.
+              </p>
             )}
-          </div>
+          </section>
+        </div>
 
-          {/* Sidebar (stacks below on mobile) */}
-          <aside className="order-last min-w-0 space-y-6 lg:order-none">
-            <WeatherMap
-              lat={profile.lat}
-              lng={profile.lng}
-              postcode={profile.postcode}
-            />
-            <SeasonalCalendar vegetableIds={profile.vegetables} />
-          </aside>
+        <div className="mt-10 border-t border-garden-ground/25 pt-5">
+          <SeasonalCalendar vegetableIds={profile.vegetables} />
         </div>
       </div>
     </main>

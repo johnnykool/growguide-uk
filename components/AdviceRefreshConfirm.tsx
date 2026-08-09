@@ -34,7 +34,7 @@ export default function AdviceRefreshConfirm({ onConfirm, onCancel }: Props) {
 
   return (
     <div
-      className="mt-4 rounded-card border border-dark-earth bg-blush/40 p-4 shadow-soft"
+      className="mt-4 border border-garden-ground bg-pale-mineral p-4"
       role="region"
       aria-labelledby="advice-refresh-heading"
     >
@@ -42,7 +42,7 @@ export default function AdviceRefreshConfirm({ onConfirm, onCancel }: Props) {
         id="advice-refresh-heading"
         ref={headingRef}
         tabIndex={-1}
-        className="rounded-sm font-serif text-xl text-dark-earth focus:outline-none focus:ring-2 focus:ring-dark-earth focus:ring-offset-2 focus:ring-offset-cream"
+        className="text-xl font-semibold text-garden-ground focus:outline-none focus:ring-2 focus:ring-garden-ground focus:ring-offset-2 focus:ring-offset-pale-mineral"
       >
         Fresh advice will replace your current task list.
       </h3>
@@ -50,14 +50,14 @@ export default function AdviceRefreshConfirm({ onConfirm, onCancel }: Props) {
         <button
           type="button"
           onClick={onConfirm}
-          className="rounded-btn bg-dark-earth px-4 py-2 text-sm font-semibold text-cream transition-colors hover:bg-earth-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+          className="min-h-11 bg-rain-ink px-4 py-2 text-sm font-semibold text-pale-mineral transition-colors hover:bg-garden-ground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral"
         >
           Replace my task list
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-btn bg-cream px-4 py-2 text-sm font-semibold text-dark-earth transition-colors hover:bg-warm-stone focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+          className="min-h-11 border border-garden-ground/40 bg-pale-mineral px-4 py-2 text-sm font-semibold text-garden-ground transition-colors hover:bg-garden-ground hover:text-pale-mineral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral"
         >
           Keep saved tasks
         </button>
