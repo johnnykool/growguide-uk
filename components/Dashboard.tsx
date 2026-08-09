@@ -329,7 +329,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
                   }}
                   className="mt-4 w-full rounded-btn bg-dark-earth px-8 py-4 text-lg font-semibold text-cream shadow-soft transition-colors hover:bg-earth-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:w-auto"
                 >
-                  {advice ? "🌱 Get Fresh Advice" : "🌱 Get Growing Advice"}
+                  {advice ? "Get Fresh Advice" : "Get Growing Advice"}
                 </button>
               )}
               {advice && !adviceLoading && (

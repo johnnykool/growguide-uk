@@ -59,9 +59,14 @@ export default function TaskCard({ task, done, onToggle }: Props) {
                 />
               </span>
             ) : (
-              <span className="text-2xl" aria-hidden>
-                {veg?.emoji ?? "🌱"}
-              </span>
+              <svg
+                viewBox="0 0 48 48"
+                className="h-12 w-12 shrink-0 fill-none stroke-moss stroke-[3]"
+                aria-hidden
+              >
+                <rect x="7" y="9" width="34" height="30" rx="4" />
+                <path d="M14 18h20M14 25h20M14 32h12" strokeLinecap="round" />
+              </svg>
             )}
             <div>
               <p className="text-sm font-medium text-moss">{task.vegetable}</p>

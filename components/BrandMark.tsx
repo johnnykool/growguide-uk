@@ -1,10 +1,13 @@
+import { useId } from "react";
+
 interface BrandMarkProps {
   className?: string;
   title?: string;
 }
 
 export default function BrandMark({ className, title }: BrandMarkProps) {
-  const titleId = title ? "rainline-gg-title" : undefined;
+  const id = useId();
+  const titleId = title ? `rainline-gg-title-${id}` : undefined;
 
   return (
     <svg

@@ -152,7 +152,7 @@ describe("Dashboard advice replacement", () => {
     const user = userEvent.setup();
     const fetchMock = await renderSavedDashboard();
 
-    await user.click(screen.getByRole("button", { name: "🌱 Get Fresh Advice" }));
+    await user.click(screen.getByRole("button", { name: "Get Fresh Advice" }));
 
     expect(
       screen.getByRole("heading", {
@@ -173,7 +173,7 @@ describe("Dashboard advice replacement", () => {
       />,
     );
 
-    expect(await screen.findByRole("button", { name: "🌱 Get Growing Advice" })).toBeVisible();
+    expect(await screen.findByRole("button", { name: "Get Growing Advice" })).toBeVisible();
     expect(screen.queryByText(savedAdvice.advice.summary)).not.toBeInTheDocument();
   });
 
@@ -181,7 +181,7 @@ describe("Dashboard advice replacement", () => {
     const user = userEvent.setup();
     const fetchMock = await renderSavedDashboard();
 
-    await user.click(screen.getByRole("button", { name: "🌱 Get Fresh Advice" }));
+    await user.click(screen.getByRole("button", { name: "Get Fresh Advice" }));
     await user.click(screen.getByRole("button", { name: "Keep saved tasks" }));
 
     expect(
@@ -197,7 +197,7 @@ describe("Dashboard advice replacement", () => {
     const user = userEvent.setup();
     const fetchMock = await renderSavedDashboard();
 
-    await user.click(screen.getByRole("button", { name: "🌱 Get Fresh Advice" }));
+    await user.click(screen.getByRole("button", { name: "Get Fresh Advice" }));
     await user.click(
       screen.getByRole("button", { name: "Replace my task list" }),
     );
@@ -224,7 +224,7 @@ describe("Dashboard advice replacement", () => {
 
     render(<Dashboard profile={profile} onEdit={vi.fn()} />);
     await screen.findByText(savedAdvice.advice.summary);
-    await user.click(screen.getByRole("button", { name: "🌱 Get Fresh Advice" }));
+    await user.click(screen.getByRole("button", { name: "Get Fresh Advice" }));
     await user.click(
       screen.getByRole("button", { name: "Replace my task list" }),
     );
@@ -249,7 +249,7 @@ describe("Dashboard advice replacement", () => {
     });
 
     render(<Dashboard profile={profile} onEdit={vi.fn()} />);
-    await user.click(screen.getByRole("button", { name: "🌱 Get Growing Advice" }));
+    await user.click(screen.getByRole("button", { name: "Get Growing Advice" }));
 
     expect(await screen.findByText(replacementAdvice.summary)).toBeVisible();
     expect(
@@ -273,7 +273,7 @@ describe("Dashboard advice replacement", () => {
       ),
     );
 
-    await user.click(screen.getByRole("button", { name: "🌱 Get Fresh Advice" }));
+    await user.click(screen.getByRole("button", { name: "Get Fresh Advice" }));
     await user.click(
       screen.getByRole("button", { name: "Replace my task list" }),
     );
@@ -310,7 +310,7 @@ describe("Dashboard advice replacement", () => {
       response({ error: apiError }, status),
     );
 
-    await user.click(screen.getByRole("button", { name: "🌱 Get Fresh Advice" }));
+    await user.click(screen.getByRole("button", { name: "Get Fresh Advice" }));
     await user.click(
       screen.getByRole("button", { name: "Replace my task list" }),
     );
@@ -335,7 +335,7 @@ describe("Dashboard advice replacement", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const view = render(<Dashboard profile={profile} onEdit={vi.fn()} />);
-    await user.click(screen.getByRole("button", { name: "🌱 Get Growing Advice" }));
+    await user.click(screen.getByRole("button", { name: "Get Growing Advice" }));
     await waitFor(() => expect(adviceRequestCount(fetchMock)).toBe(1));
     const adviceCall = fetchMock.mock.calls.find(
       ([input]) => routeOf(input) === "/api/advice",
@@ -367,7 +367,7 @@ describe("Dashboard advice replacement", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const view = render(<Dashboard profile={profile} onEdit={vi.fn()} />);
-    await user.click(screen.getByRole("button", { name: "🌱 Get Growing Advice" }));
+    await user.click(screen.getByRole("button", { name: "Get Growing Advice" }));
     await waitFor(() => expect(adviceRequestCount(fetchMock)).toBe(1));
 
     const nextProfile = { ...profile, postcode: "EH1 1YZ", lat: 55.9533, lng: -3.1883 };
@@ -380,7 +380,7 @@ describe("Dashboard advice replacement", () => {
     expect(loadSavedAdvice(profile)).toBeNull();
     expect(loadSavedAdvice(nextProfile)).toBeNull();
     expect(
-      screen.getByRole("button", { name: "🌱 Get Growing Advice" }),
+      screen.getByRole("button", { name: "Get Growing Advice" }),
     ).toBeEnabled();
   });
 });

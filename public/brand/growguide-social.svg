@@ -14,11 +14,11 @@
     <circle cx="852" cy="390" r="6"/>
     <circle cx="936" cy="498" r="6"/>
   </g>
-  <g fill="#F4F0E5" font-family="Arial, sans-serif">
+  <g fill="#E7E8E4" font-family="Arial, sans-serif">
     <text x="84" y="474" font-size="64" font-weight="700">GrowGuide UK</text>
     <text x="84" y="526" font-size="27">Weather, translated into action.</text>
   </g>
-  <g fill="#F4F0E5" font-family="Arial, sans-serif" font-size="25" font-weight="700">
+  <g fill="#E7E8E4" font-family="Arial, sans-serif" font-size="25" font-weight="700">
     <text x="812" y="284">Water</text>
     <text x="876" y="398">Plant</text>
     <text x="960" y="506">Protect</text>
