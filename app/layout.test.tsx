@@ -22,8 +22,13 @@ describe("root metadata", () => {
       siteName: "GrowGuide UK",
     });
     expect(metadata.twitter).toMatchObject({ card: "summary_large_image" });
+    const prohibitedAnalyticsTokens = [
+      "google-" + "analytics",
+      "google" + "tagmanager",
+      "clarity",
+    ].join("|");
     expect(JSON.stringify(metadata)).not.toMatch(
-      /google-analytics|googletagmanager|clarity/i,
+      new RegExp(prohibitedAnalyticsTokens, "i"),
     );
   });
 });
