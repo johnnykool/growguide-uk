@@ -102,12 +102,14 @@ export function loadProfile(): UserProfile | null {
   }
 }
 
-export function saveProfile(profile: UserProfile): void {
-  if (typeof window === "undefined") return;
+export function saveProfile(profile: UserProfile): boolean {
+  if (typeof window === "undefined") return false;
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+    return true;
   } catch {
     // Storage can be unavailable in private or restricted browser contexts.
+    return false;
   }
 }
 
@@ -185,16 +187,18 @@ export function loadSavedAdvice(
   }
 }
 
-export function saveAdvice(saved: SavedAdvice, profile?: UserProfile): void {
-  if (typeof window === "undefined") return;
+export function saveAdvice(saved: SavedAdvice, profile?: UserProfile): boolean {
+  if (typeof window === "undefined") return false;
   const scoped = profile
     ? { ...saved, profileFingerprint: getAdviceProfileFingerprint(profile) }
     : saved;
-  if (!scoped.profileFingerprint) return;
+  if (!scoped.profileFingerprint) return false;
   try {
     window.localStorage.setItem(ADVICE_KEY, JSON.stringify(scoped));
+    return true;
   } catch {
     // Advice remains available in memory when persistent storage is unavailable.
+    return false;
   }
 }
 

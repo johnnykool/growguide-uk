@@ -17,7 +17,7 @@ const STEPS: { number: Step; label: string }[] = [
 ];
 
 const focusRing =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
 
 export default function SetupProgress({
   activeStep,
@@ -35,7 +35,7 @@ export default function SetupProgress({
           aria-label="Setup progress"
           value={activeStep}
           max={4}
-          className="h-2 w-full accent-moss"
+          className="h-2 w-full accent-dark-earth"
         />
       </div>
       <ol className="grid gap-2 sm:grid-cols-2">
@@ -49,14 +49,14 @@ export default function SetupProgress({
               aria-current={isActive ? "step" : undefined}
               className={`flex min-h-11 items-center justify-between gap-3 rounded-btn px-3 py-2 text-sm ${
                 isActive
-                  ? "bg-light-sage/70 text-dark-earth ring-1 ring-moss/40"
-                  : "bg-warm-stone/50 text-moss"
+                  ? "bg-light-sage/70 text-earth-ink ring-2 ring-dark-earth"
+                  : "bg-warm-stone/50 text-earth-ink"
               }`}
             >
               <span>
                 <span className="block font-semibold">{step.label}</span>
                 {isComplete && (
-                  <span className="block text-xs text-moss">
+                  <span className="block text-xs text-earth-ink">
                     {summaries[step.number] ?? "Complete"}
                   </span>
                 )}
@@ -66,7 +66,7 @@ export default function SetupProgress({
                   type="button"
                   onClick={() => onEdit(step.number)}
                   aria-label={`Edit ${step.label.toLocaleLowerCase("en-GB")}`}
-                  className={`min-h-11 rounded-btn px-3 py-2 font-semibold text-dark-earth underline decoration-light-sage underline-offset-4 hover:decoration-moss ${focusRing}`}
+                  className={`min-h-11 rounded-btn px-3 py-2 font-semibold text-earth-ink underline decoration-earth-ink underline-offset-4 hover:decoration-dark-earth ${focusRing}`}
                 >
                   Edit
                 </button>

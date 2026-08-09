@@ -11,13 +11,41 @@ describe("PrivacyPage", () => {
     ).toBeVisible();
     expect(screen.getByText(/stay in this browser/i)).toBeVisible();
     expect(
-      screen.getByText(/exact postcode and coordinates are not included/i),
+      screen.getByText(/exact postcode.*api\.postcodes\.io/i),
     ).toBeVisible();
-    expect(screen.getByText(/do not use advertising trackers/i)).toBeVisible();
+    expect(
+      screen.getByText(/coordinates.*OpenWeatherMap/i),
+    ).toBeVisible();
+    expect(
+      screen.getByText(/Anthropic receives bounded region, garden, and derived-weather context/i),
+    ).toBeVisible();
+    expect(
+      screen.getByText(/does not receive your exact postcode or coordinates/i),
+    ).toBeVisible();
+    expect(
+      screen.getByText(/creates no user accounts, sells no data, and runs no advertising trackers/i),
+    ).toBeVisible();
     expect(screen.queryByText(/accept cookies/i)).not.toBeInTheDocument();
   });
 
-  it("has canonical privacy metadata", () => {
+  it("has privacy-specific canonical and social metadata", () => {
     expect(metadata.alternates).toEqual({ canonical: "/privacy" });
+    expect(metadata.openGraph).toMatchObject({
+      url: "https://growguideuk.co.uk/privacy",
+      title: "Privacy | GrowGuide UK",
+      description: "How GrowGuide UK handles analytics and gardening data.",
+      images: [
+        expect.objectContaining({
+          url: "/images/growguide-kofi-logo.png",
+          alt: "GrowGuide UK seedling logo",
+        }),
+      ],
+    });
+    expect(metadata.twitter).toMatchObject({
+      card: "summary_large_image",
+      title: "Privacy | GrowGuide UK",
+      description: "How GrowGuide UK handles analytics and gardening data.",
+      images: ["/images/growguide-kofi-logo.png"],
+    });
   });
 });

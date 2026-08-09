@@ -1,10 +1,35 @@
 import type { Metadata } from "next";
-import { SITE_NAME } from "@/lib/site";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
+
+const PRIVACY_TITLE = `Privacy | ${SITE_NAME}`;
+const PRIVACY_DESCRIPTION = `How ${SITE_NAME} handles analytics and gardening data.`;
 
 export const metadata: Metadata = {
-  title: `Privacy | ${SITE_NAME}`,
-  description: `How ${SITE_NAME} handles analytics and gardening data.`,
+  title: PRIVACY_TITLE,
+  description: PRIVACY_DESCRIPTION,
   alternates: { canonical: "/privacy" },
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    url: `${SITE_URL}/privacy`,
+    siteName: SITE_NAME,
+    title: PRIVACY_TITLE,
+    description: PRIVACY_DESCRIPTION,
+    images: [
+      {
+        url: "/images/growguide-kofi-logo.png",
+        width: 1254,
+        height: 1254,
+        alt: "GrowGuide UK seedling logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: PRIVACY_TITLE,
+    description: PRIVACY_DESCRIPTION,
+    images: ["/images/growguide-kofi-logo.png"],
+  },
 };
 
 export default function PrivacyPage() {
@@ -31,19 +56,24 @@ export default function PrivacyPage() {
             Saved on your device
           </h2>
           <p className="mt-2 text-earth-ink">
-            Your setup, garden profile, saved advice, and completed tasks stay in
-            this browser.
+            Your setup, garden profile, saved advice, and completed tasks stay
+            in this browser.
           </p>
         </section>
 
         <section aria-labelledby="advice-data">
           <h2 id="advice-data" className="font-serif text-2xl text-dark-earth">
-            Weather and growing advice
+            Location, weather, and growing advice
           </h2>
           <p className="mt-2 text-earth-ink">
-            Weather lookup uses your location. When you ask for growing advice,
-            bounded region, garden, and weather details are sent to Anthropic;
-            your exact postcode and coordinates are not included.
+            Postcode validation sends the exact postcode you enter to
+            api.postcodes.io to obtain a region and coordinates. Weather lookup
+            sends those coordinates to OpenWeatherMap.
+          </p>
+          <p className="mt-2 text-earth-ink">
+            Anthropic receives bounded region, garden, and derived-weather
+            context when you ask for growing advice. It does not receive your
+            exact postcode or coordinates.
           </p>
         </section>
 
@@ -52,8 +82,9 @@ export default function PrivacyPage() {
             Your choice
           </h2>
           <p className="mt-2 text-earth-ink">
-            You can block analytics without losing GrowGuide features. We do not
-            use advertising trackers or sell your data.
+            You can block analytics without losing GrowGuide features.
+            GrowGuide creates no user accounts, sells no data, and runs no
+            advertising trackers.
           </p>
         </section>
       </div>

@@ -5,6 +5,7 @@ import {
   loadSavedAdvice,
   loadSetupDraft,
   saveAdvice,
+  saveProfile,
   saveSetupDraft,
 } from "./storage";
 
@@ -144,5 +145,17 @@ describe("saved advice storage", () => {
     expect(
       loadSavedAdvice({ ...profile, vegetables: ["tomato", "courgette"] }),
     ).toBeNull();
+  });
+
+  it("reports whether profile and advice writes reached browser storage", () => {
+    expect(saveProfile(profile)).toBe(true);
+    expect(saveAdvice(scopedAdvice, profile)).toBe(true);
+
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Quota exceeded", "QuotaExceededError");
+    });
+
+    expect(saveProfile(profile)).toBe(false);
+    expect(saveAdvice(scopedAdvice, profile)).toBe(false);
   });
 });

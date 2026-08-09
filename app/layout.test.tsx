@@ -1,3 +1,4 @@
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/font/google", () => ({
@@ -6,10 +7,12 @@ vi.mock("next/font/google", () => ({
 }));
 vi.mock("@/components/Header", () => ({ default: () => null }));
 vi.mock("@/components/Footer", () => ({ default: () => null }));
-vi.mock("@/components/SiteAnalytics", () => ({ default: () => null }));
+vi.mock("@/components/SiteAnalytics", () => ({
+  default: () => <span data-site-analytics="mounted" />,
+}));
 vi.mock("@/components/SiteStructuredData", () => ({ default: () => null }));
 
-import { metadata } from "./layout";
+import RootLayout, { metadata } from "./layout";
 
 describe("root metadata", () => {
   it("publishes one canonical search and sharing identity", () => {
@@ -30,5 +33,15 @@ describe("root metadata", () => {
     expect(JSON.stringify(metadata)).not.toMatch(
       new RegExp(prohibitedAnalyticsTokens, "i"),
     );
+  });
+
+  it("mounts site analytics exactly once in the default layout", () => {
+    const markup = renderToStaticMarkup(
+      <RootLayout>
+        <main>Garden planner</main>
+      </RootLayout>,
+    );
+
+    expect(markup.match(/data-site-analytics="mounted"/g)).toHaveLength(1);
   });
 });

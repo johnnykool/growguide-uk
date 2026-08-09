@@ -57,9 +57,11 @@ vi.mock("@/components/SetupWizard", () => ({
   default: ({
     onSave,
     onCancel,
+    saveError,
   }: {
     onSave: (next: UserProfile) => void;
     onCancel?: () => void;
+    saveError?: string | null;
   }) => (
     <div>
       <button type="button" onClick={() => onSave(profile)}>
@@ -73,6 +75,7 @@ vi.mock("@/components/SetupWizard", () => ({
           Cancel edit
         </button>
       )}
+      {saveError && <p role="alert">{saveError}</p>}
     </div>
   ),
 }));
@@ -94,7 +97,10 @@ beforeEach(() => {
   effectControl.enabled = true;
 });
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 describe("Home", () => {
   it("announces the loading state politely", () => {
@@ -116,6 +122,28 @@ describe("Home", () => {
       expect(loadProfile()).toEqual(profile);
       expect(loadSetupDraft()).toBeNull();
     });
+  });
+
+  it("keeps setup and its draft visible when the profile cannot be stored", async () => {
+    const user = userEvent.setup();
+    saveSetupDraft(draft);
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Quota exceeded", "QuotaExceededError");
+    });
+
+    render(<Home />);
+    await user.click(
+      await screen.findByRole("button", { name: /Complete setup/i }),
+    );
+
+    expect(screen.getByRole("button", { name: /Complete setup/i })).toBeVisible();
+    expect(screen.queryByText("Garden dashboard")).not.toBeInTheDocument();
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
+    expect(
+      screen.getByText(/check browser storage and try again/i),
+    ).toBeVisible();
+    expect(loadProfile()).toBeNull();
+    expect(loadSetupDraft()).toEqual(draft);
   });
 
   it("clears only the edit draft when a saved-profile edit is cancelled", async () => {

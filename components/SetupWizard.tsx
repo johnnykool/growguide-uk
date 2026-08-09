@@ -19,6 +19,7 @@ interface Props {
   initial: UserProfile | null;
   onSave: (profile: UserProfile) => void;
   onCancel?: () => void;
+  saveError?: string | null;
 }
 
 type Step = 1 | 2 | 3 | 4;
@@ -33,7 +34,7 @@ interface LookupResult {
 const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
 const focusRing =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
 
 function normaliseActiveStep(
   requestedStep: Step,
@@ -45,7 +46,12 @@ function normaliseActiveStep(
   return requestedStep;
 }
 
-export default function SetupWizard({ initial, onSave, onCancel }: Props) {
+export default function SetupWizard({
+  initial,
+  onSave,
+  onCancel,
+  saveError,
+}: Props) {
   const [restoredDraft] = useState(() =>
     initial ? null : loadSetupDraft(),
   );
@@ -278,7 +284,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
       headings.current[step] = node;
     },
     tabIndex: -1,
-    className: `mb-1 font-serif text-2xl ${focusRing}`,
+    className: `mb-1 font-serif text-2xl text-dark-earth ${focusRing}`,
   });
 
   return (
@@ -316,7 +322,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
         />
 
         {activeStep === 1 && (
-          <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
+          <section className="rounded-card bg-warm-stone/50 p-5 text-earth-ink shadow-soft sm:p-6">
             <h2 {...headingProps(1)}>
               1. Where do you garden?{" "}
               <span className="font-sans text-sm font-normal text-earth-ink">
@@ -358,13 +364,13 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                     ? "postcode-help postcode-feedback"
                     : "postcode-help postcode-feedback location-requirement"
                 }
-                className={`min-h-11 flex-1 rounded-btn bg-cream px-4 py-3 text-dark-earth placeholder:text-dark-earth ring-1 ring-light-sage ${focusRing}`}
+                className={`min-h-11 flex-1 rounded-btn bg-cream px-4 py-3 text-dark-earth placeholder:text-dark-earth ring-1 ring-dark-earth ${focusRing}`}
               />
               <button
                 type="button"
                 onClick={() => lookupPostcode(postcode)}
                 disabled={lookupState === "loading"}
-                className={`min-h-11 rounded-btn bg-moss px-5 py-3 font-medium text-cream transition-colors hover:bg-dark-earth disabled:cursor-wait disabled:opacity-70 ${focusRing}`}
+                className={`min-h-11 rounded-btn bg-dark-earth px-5 py-3 font-medium text-cream transition-colors hover:bg-earth-ink disabled:cursor-wait disabled:opacity-70 ${focusRing}`}
               >
                 {lookupState === "loading" ? "Checking…" : "Check postcode"}
               </button>
@@ -375,25 +381,25 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
               aria-live="polite"
             >
               {lookupState === "invalid" && (
-                <p className="text-terracotta">
+                <p className="text-earth-ink">
                   That doesn&apos;t look like a UK postcode — try the format
                   &ldquo;PR1 1AA&rdquo;.
                 </p>
               )}
               {lookupState === "error" && (
-                <p className="text-terracotta">
+                <p className="text-earth-ink">
                   We couldn&apos;t find that postcode. Check it and try again.
                 </p>
               )}
               {lookup && (
-                <p className="text-dark-earth">
+                <p className="text-earth-ink">
                   📍 <span className="font-semibold">{lookup.postcode}</span> —{" "}
                   {lookup.region}
                 </p>
               )}
             </div>
             {!lookup && (
-              <p id="location-requirement" className="mt-2 text-sm text-terracotta">
+              <p id="location-requirement" className="mt-2 text-sm text-earth-ink">
                 Check your postcode to continue.
               </p>
             )}
@@ -404,7 +410,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                 disabled={!lookup}
                 className={`min-h-11 rounded-btn px-5 py-3 font-semibold text-cream transition-colors ${focusRing} ${
                   lookup
-                    ? "bg-dark-earth hover:bg-moss"
+                    ? "bg-dark-earth hover:bg-earth-ink"
                     : "cursor-not-allowed bg-moss/50"
                 }`}
               >
@@ -415,7 +421,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
         )}
 
         {activeStep === 2 && (
-          <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
+          <section className="rounded-card bg-warm-stone/50 p-5 text-earth-ink shadow-soft sm:p-6">
             <h2 {...headingProps(2)}>
               2. What would you like to grow?{" "}
               <span className="font-sans text-sm font-normal text-earth-ink">
@@ -425,7 +431,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
             <p className="mb-4 text-sm text-earth-ink">
               Select at least one crop you grow now or would like to grow.
               {vegetables.length > 0 && (
-                <span className="ml-1 font-semibold text-dark-earth">
+                <span className="ml-1 font-semibold text-earth-ink">
                   {formatCropCount(vegetables.length)} selected.
                 </span>
               )}
@@ -452,7 +458,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
               />
             </div>
             {vegetables.length === 0 && (
-              <p id="crop-requirement" className="mt-3 text-sm text-terracotta">
+              <p id="crop-requirement" className="mt-3 text-sm text-earth-ink">
                 Select at least one crop to continue.
               </p>
             )}
@@ -460,7 +466,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
               <button
                 type="button"
                 onClick={() => openStep(1)}
-                className={`min-h-11 rounded-btn px-5 py-3 font-medium text-dark-earth ring-1 ring-light-sage transition-colors hover:bg-light-sage/40 ${focusRing}`}
+                className={`min-h-11 rounded-btn px-5 py-3 font-medium text-earth-ink ring-1 ring-dark-earth transition-colors hover:bg-light-sage/40 ${focusRing}`}
               >
                 Back to location
               </button>
@@ -470,7 +476,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                 disabled={vegetables.length === 0}
                 className={`min-h-11 rounded-btn px-5 py-3 font-semibold text-cream transition-colors ${focusRing} ${
                   vegetables.length > 0
-                    ? "bg-dark-earth hover:bg-moss"
+                    ? "bg-dark-earth hover:bg-earth-ink"
                     : "cursor-not-allowed bg-moss/50"
                 }`}
               >
@@ -481,7 +487,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
         )}
 
         {activeStep === 3 && (
-          <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
+          <section className="rounded-card bg-warm-stone/50 p-5 text-earth-ink shadow-soft sm:p-6">
             <h2 {...headingProps(3)}>
               3. Your plot{" "}
               <span className="font-sans text-sm font-normal text-earth-ink">
@@ -501,7 +507,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
               id="plot-size"
               value={plotSize}
               onChange={(event) => setPlotSize(event.target.value as PlotSize)}
-              className={`mb-5 min-h-11 w-full rounded-btn bg-cream px-4 py-3 text-dark-earth ring-1 ring-light-sage ${focusRing}`}
+              className={`mb-5 min-h-11 w-full rounded-btn bg-cream px-4 py-3 text-dark-earth ring-1 ring-dark-earth ${focusRing}`}
             >
               {(Object.keys(PLOT_SIZE_LABELS) as PlotSize[]).map((size) => (
                 <option key={size} value={size}>
@@ -524,8 +530,8 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                     aria-pressed={isSelected}
                     className={`min-h-11 rounded-full px-4 py-2 text-sm font-medium transition-colors ${focusRing} ${
                       isSelected
-                        ? "bg-blush text-dark-earth ring-1 ring-terracotta/40"
-                        : "bg-cream text-dark-earth ring-1 ring-light-sage hover:bg-light-sage/50"
+                        ? "bg-blush text-earth-ink ring-2 ring-dark-earth"
+                        : "bg-cream text-dark-earth ring-1 ring-dark-earth hover:bg-light-sage/50"
                     }`}
                   >
                     {item.label}
@@ -537,14 +543,14 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
               <button
                 type="button"
                 onClick={() => openStep(2)}
-                className={`min-h-11 rounded-btn px-5 py-3 font-medium text-dark-earth ring-1 ring-light-sage transition-colors hover:bg-light-sage/40 ${focusRing}`}
+                className={`min-h-11 rounded-btn px-5 py-3 font-medium text-earth-ink ring-1 ring-dark-earth transition-colors hover:bg-light-sage/40 ${focusRing}`}
               >
                 Back to crops
               </button>
               <button
                 type="button"
                 onClick={() => completeAndOpen(4)}
-                className={`min-h-11 rounded-btn bg-dark-earth px-5 py-3 font-semibold text-cream transition-colors hover:bg-moss ${focusRing}`}
+                className={`min-h-11 rounded-btn bg-dark-earth px-5 py-3 font-semibold text-cream transition-colors hover:bg-earth-ink ${focusRing}`}
               >
                 Continue to tools
               </button>
@@ -553,7 +559,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
         )}
 
         {activeStep === 4 && (
-          <section className="rounded-card bg-warm-stone/50 p-5 shadow-soft sm:p-6">
+          <section className="rounded-card bg-warm-stone/50 p-5 text-earth-ink shadow-soft sm:p-6">
             <h2 {...headingProps(4)}>
               4. Your tool shed{" "}
               <span className="font-sans text-sm font-normal text-earth-ink">
@@ -573,11 +579,16 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
               showAll={showAllEquipment}
               onShowAllChange={setShowAllEquipment}
             />
+            {saveError && (
+              <p role="alert" className="mt-4 text-sm font-semibold text-earth-ink">
+                {saveError}
+              </p>
+            )}
             <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
               <button
                 type="button"
                 onClick={() => openStep(3)}
-                className={`min-h-11 rounded-btn px-5 py-3 font-medium text-dark-earth ring-1 ring-light-sage transition-colors hover:bg-light-sage/40 ${focusRing}`}
+                className={`min-h-11 rounded-btn px-5 py-3 font-medium text-earth-ink ring-1 ring-dark-earth transition-colors hover:bg-light-sage/40 ${focusRing}`}
               >
                 Back to plot
               </button>
@@ -586,7 +597,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                   <button
                     type="button"
                     onClick={handleSave}
-                    className={`min-h-11 rounded-btn px-5 py-3 font-medium text-dark-earth ring-1 ring-light-sage transition-colors hover:bg-light-sage/40 ${focusRing}`}
+                    className={`min-h-11 rounded-btn px-5 py-3 font-medium text-earth-ink ring-1 ring-dark-earth transition-colors hover:bg-light-sage/40 ${focusRing}`}
                   >
                     Skip tools and finish
                   </button>
@@ -594,7 +605,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
                 <button
                   type="button"
                   onClick={handleSave}
-                  className={`min-h-11 rounded-btn bg-dark-earth px-5 py-3 font-semibold text-cream transition-colors hover:bg-moss ${focusRing}`}
+                  className={`min-h-11 rounded-btn bg-dark-earth px-5 py-3 font-semibold text-cream transition-colors hover:bg-earth-ink ${focusRing}`}
                 >
                   Save my garden
                 </button>
@@ -607,7 +618,7 @@ export default function SetupWizard({ initial, onSave, onCancel }: Props) {
           <button
             type="button"
             onClick={onCancel}
-            className={`min-h-11 rounded-btn px-6 py-3 font-medium text-dark-earth ring-1 ring-light-sage transition-colors hover:bg-light-sage/40 ${focusRing}`}
+            className={`min-h-11 rounded-btn px-6 py-3 font-medium text-dark-earth ring-1 ring-dark-earth transition-colors hover:bg-light-sage/40 ${focusRing}`}
           >
             Cancel
           </button>

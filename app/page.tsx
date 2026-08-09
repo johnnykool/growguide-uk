@@ -10,6 +10,7 @@ export default function Home() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [editing, setEditing] = useState(false);
   const [ready, setReady] = useState(false);
+  const [profileSaveError, setProfileSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     setProfile(loadProfile());
@@ -17,7 +18,13 @@ export default function Home() {
   }, []);
 
   function handleSave(next: UserProfile) {
-    saveProfile(next);
+    if (!saveProfile(next)) {
+      setProfileSaveError(
+        "We couldn't save your garden in this browser. Check browser storage and try again.",
+      );
+      return;
+    }
+    setProfileSaveError(null);
     clearSetupDraft();
     setProfile(next);
     setEditing(false);
@@ -25,6 +32,7 @@ export default function Home() {
   }
 
   function handleCancel() {
+    setProfileSaveError(null);
     clearSetupDraft();
     setEditing(false);
   }
@@ -47,9 +55,18 @@ export default function Home() {
         initial={profile}
         onSave={handleSave}
         onCancel={profile ? handleCancel : undefined}
+        saveError={profileSaveError}
       />
     );
   }
 
-  return <Dashboard profile={profile} onEdit={() => setEditing(true)} />;
+  return (
+    <Dashboard
+      profile={profile}
+      onEdit={() => {
+        setProfileSaveError(null);
+        setEditing(true);
+      }}
+    />
+  );
 }

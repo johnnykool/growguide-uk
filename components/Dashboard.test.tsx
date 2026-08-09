@@ -18,6 +18,7 @@ afterEach(() => {
   cleanup();
   window.localStorage.clear();
   vi.unstubAllGlobals();
+  vi.restoreAllMocks();
 });
 
 const profile: UserProfile = {
@@ -203,6 +204,61 @@ describe("Dashboard advice replacement", () => {
 
     expect(await screen.findByText(replacementAdvice.summary)).toBeVisible();
     expect(adviceRequestCount(fetchMock)).toBe(1);
+  });
+
+  it("moves focus from confirmation to the polite loading status", async () => {
+    const user = userEvent.setup();
+    let resolveAdvice!: (value: FetchResult) => void;
+    const pendingAdvice = new Promise<FetchResult>((resolve) => {
+      resolveAdvice = resolve;
+    });
+    saveAdvice(savedAdvice, profile);
+    const fetchMock = vi.fn().mockImplementation((input: unknown) => {
+      if (routeOf(input) === "/api/weather") {
+        return Promise.resolve(response(weather));
+      }
+      if (routeOf(input) === "/api/advice") return pendingAdvice;
+      return Promise.reject(new Error(`Unexpected request: ${routeOf(input)}`));
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    render(<Dashboard profile={profile} onEdit={vi.fn()} />);
+    await screen.findByText(savedAdvice.advice.summary);
+    await user.click(screen.getByRole("button", { name: "🌱 Get Fresh Advice" }));
+    await user.click(
+      screen.getByRole("button", { name: "Replace my task list" }),
+    );
+
+    const status = await screen.findByRole("status", {
+      name: "Generating growing advice",
+    });
+    expect(status).toHaveFocus();
+    expect(status).toHaveAttribute("aria-live", "polite");
+
+    await act(async () => {
+      resolveAdvice(response(replacementAdvice));
+      await pendingAdvice;
+    });
+  });
+
+  it("keeps generated advice visible and warns when browser storage rejects it", async () => {
+    const user = userEvent.setup();
+    installFetch(response(replacementAdvice));
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Quota exceeded", "QuotaExceededError");
+    });
+
+    render(<Dashboard profile={profile} onEdit={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: "🌱 Get Growing Advice" }));
+
+    expect(await screen.findByText(replacementAdvice.summary)).toBeVisible();
+    expect(
+      screen.getByRole("alert", {
+        name: /advice wasn't saved in this browser/i,
+      }),
+    ).toBeVisible();
+    expect(screen.queryByText(/Your saved tasks are below/i)).not.toBeInTheDocument();
+    expect(loadSavedAdvice(profile)).toBeNull();
   });
 
   it("hides technical server detail while preserving saved advice after a failed refresh", async () => {

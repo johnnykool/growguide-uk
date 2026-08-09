@@ -51,8 +51,10 @@ export default function Dashboard({ profile, onEdit }: Props) {
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState<string | null>(null);
+  const [adviceStorageWarning, setAdviceStorageWarning] = useState(false);
   const [confirmAdviceRefresh, setConfirmAdviceRefresh] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
+  const adviceLoadingStatus = useRef<HTMLParagraphElement | null>(null);
   const loadingTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const adviceMounted = useRef(false);
   const adviceRequestId = useRef(0);
@@ -68,6 +70,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
     setCompleted({});
     setAdviceLoading(false);
     setAdviceError(null);
+    setAdviceStorageWarning(false);
     setConfirmAdviceRefresh(false);
     const saved = loadSavedAdvice(profileFingerprint);
     if (saved) {
@@ -87,6 +90,10 @@ export default function Dashboard({ profile, onEdit }: Props) {
       }
     };
   }, [profileFingerprint]);
+
+  useEffect(() => {
+    if (adviceLoading) adviceLoadingStatus.current?.focus();
+  }, [adviceLoading]);
 
   const fetchWeather = useCallback(async () => {
     if (!weatherMounted.current) return;
@@ -190,7 +197,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
         setAdvice(data);
         setGeneratedAt(now);
         setCompleted({});
-        saveAdvice(
+        const saved = saveAdvice(
           {
             profileFingerprint,
             timeline,
@@ -200,6 +207,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
           },
           profile,
         );
+        setAdviceStorageWarning(!saved);
       }
     } catch (error) {
       if (
@@ -222,18 +230,17 @@ export default function Dashboard({ profile, onEdit }: Props) {
 
   const toggleTask = useCallback(
     (key: string) => {
-      setCompleted((prev) => {
-        const next = { ...prev, [key]: !prev[key] };
-        if (advice && generatedAt) {
-          saveAdvice(
-            { profileFingerprint, timeline, generatedAt, advice, completed: next },
-            profile,
-          );
-        }
-        return next;
-      });
+      const next = { ...completed, [key]: !completed[key] };
+      setCompleted(next);
+      if (advice && generatedAt) {
+        const saved = saveAdvice(
+          { profileFingerprint, timeline, generatedAt, advice, completed: next },
+          profile,
+        );
+        setAdviceStorageWarning(!saved);
+      }
     },
-    [advice, generatedAt, profile, profileFingerprint, timeline]
+    [advice, completed, generatedAt, profile, profileFingerprint, timeline]
   );
 
   const collagePhotos = profile.vegetables
@@ -299,33 +306,47 @@ export default function Dashboard({ profile, onEdit }: Props) {
                 What should I be doing?
               </h2>
               <TimelineFilter value={timeline} onChange={setTimeline} />
-              <button
-                type="button"
-                onClick={() => {
-                  if (advice) {
-                    setConfirmAdviceRefresh(true);
-                  } else {
-                    void fetchAdvice();
-                  }
-                }}
-                disabled={adviceLoading}
-                className={`mt-4 w-full rounded-btn px-8 py-4 text-lg font-semibold text-cream shadow-soft transition-colors sm:w-auto ${
-                  adviceLoading
-                    ? "cursor-wait bg-moss/60"
-                    : "bg-moss hover:bg-dark-earth"
-                }`}
-              >
-                {adviceLoading
-                  ? loadingMessage
-                  : advice
-                    ? "🌱 Get Fresh Advice"
-                    : "🌱 Get Growing Advice"}
-              </button>
-              {advice && !adviceLoading && (
-                <p className="mt-2 text-sm text-earth-ink">
-                  Your saved tasks are below — tick them off as you go. Fresh
-                  advice replaces the list.
+              {adviceLoading ? (
+                <p
+                  ref={adviceLoadingStatus}
+                  role="status"
+                  aria-label="Generating growing advice"
+                  aria-live="polite"
+                  tabIndex={-1}
+                  className="mt-4 w-full cursor-wait rounded-btn bg-dark-earth px-8 py-4 text-lg font-semibold text-cream shadow-soft focus:outline-none focus:ring-2 focus:ring-dark-earth focus:ring-offset-2 focus:ring-offset-cream sm:w-fit"
+                >
+                  {loadingMessage}
                 </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (advice) {
+                      setConfirmAdviceRefresh(true);
+                    } else {
+                      void fetchAdvice();
+                    }
+                  }}
+                  className="mt-4 w-full rounded-btn bg-dark-earth px-8 py-4 text-lg font-semibold text-cream shadow-soft transition-colors hover:bg-earth-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:w-auto"
+                >
+                  {advice ? "🌱 Get Fresh Advice" : "🌱 Get Growing Advice"}
+                </button>
+              )}
+              {advice && !adviceLoading && (
+                adviceStorageWarning ? (
+                  <p
+                    role="alert"
+                    aria-label="Advice wasn't saved in this browser."
+                    className="mt-2 text-sm font-semibold text-earth-ink"
+                  >
+                    Advice wasn&apos;t saved in this browser.
+                  </p>
+                ) : (
+                  <p className="mt-2 text-sm text-earth-ink">
+                    Your saved tasks are below — tick them off as you go. Fresh
+                    advice replaces the list.
+                  </p>
+                )
               )}
               {confirmAdviceRefresh && !adviceLoading && (
                 <AdviceRefreshConfirm
