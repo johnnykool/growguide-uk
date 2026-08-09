@@ -6,7 +6,6 @@ interface Props {
   vegetableIds: string[];
 }
 
-const MONTH_INITIALS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 const MONTH_NAMES = [
   "January",
   "February",
@@ -26,74 +25,104 @@ export default function SeasonalCalendar({ vegetableIds }: Props) {
   const currentMonth = new Date().getMonth() + 1; // 1-12
 
   return (
-    <div className="bg-warm-stone/50 rounded-card shadow-soft p-5">
-      <h3 className="font-serif text-xl mb-1">Season at a glance</h3>
-      <p className="text-xs text-moss mb-4">
-        <span className="inline-block h-2.5 w-2.5 rounded-sm bg-moss align-middle mr-1" />
-        sow / plant
-        <span className="inline-block h-2.5 w-2.5 rounded-sm bg-light-sage align-middle ml-3 mr-1" />
-        harvest
-        <span className="inline-block h-2.5 w-2.5 rounded-sm bg-warm-stone align-middle ml-3 mr-1 ring-1 ring-moss/20" />
-        dormant
-      </p>
-      <div className="space-y-3">
-        {vegetableIds.map((id) => {
-          const veg = getVegetableById(id);
-          if (!veg) return null;
-          const active = new Set([
-            ...veg.sowIndoors,
-            ...veg.sowOutdoors,
-            ...veg.transplant,
-          ]);
-          const harvest = new Set(veg.harvest);
-          return (
-            <div key={id}>
-              <p className="text-sm font-medium mb-1">
-                <span aria-hidden className="mr-1">
-                  {veg.emoji}
-                </span>
-                {veg.name}
-              </p>
-              <div className="grid grid-cols-12 gap-0.5">
-                {MONTH_INITIALS.map((initial, i) => {
-                  const month = i + 1;
-                  const isCurrent = month === currentMonth;
-                  const state = active.has(month)
-                    ? "sow or plant"
-                    : harvest.has(month)
-                      ? "harvest"
-                      : "dormant";
-                  const colour =
-                    state === "sow or plant"
-                      ? "bg-moss"
-                      : state === "harvest"
-                        ? "bg-light-sage"
-                        : "bg-warm-stone";
-                  return (
-                    <div
-                      key={month}
-                      role="img"
-                      aria-label={`${veg.name}, ${MONTH_NAMES[i]}: ${state}`}
-                      className={`relative h-5 rounded-sm ${colour} ${
-                        isCurrent ? "ring-2 ring-terracotta" : ""
-                      }`}
-                    >
-                      <span
-                        aria-hidden="true"
-                        className={`absolute inset-0 flex items-center justify-center text-[9px] font-semibold ${
-                          state === "sow or plant" ? "text-cream" : "text-dark-earth/60"
-                        }`}
-                      >
-                        {initial}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
+    <section aria-label="This season" className="bg-cream py-5">
+      <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 px-1">
+        <h2 className="text-xl font-semibold text-dark-earth">This season</h2>
+        <p className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-earth-ink">
+          <span>
+            <span
+              aria-hidden="true"
+              className="mr-1 inline-block h-2.5 w-2.5 bg-moss align-middle"
+            />
+            sow / plant
+          </span>
+          <span>
+            <span
+              aria-hidden="true"
+              className="mr-1 inline-block h-2.5 w-2.5 bg-light-sage align-middle"
+            />
+            harvest
+          </span>
+          <span>
+            <span
+              aria-hidden="true"
+              className="mr-1 inline-block h-2.5 w-2.5 border border-dark-earth/30 bg-warm-stone align-middle"
+            />
+            dormant
+          </span>
+        </p>
       </div>
-    </div>
+
+      <div
+        role="region"
+        aria-label="Seasonal timeline"
+        tabIndex={0}
+        className="mt-4 overflow-x-auto border-y border-dark-earth/30 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
+      >
+        <div className="min-w-[72rem]">
+          <div className="grid grid-cols-[7rem_repeat(12,minmax(4.75rem,1fr))] items-end gap-px px-1 pb-2">
+            <span aria-hidden="true" />
+            {MONTH_NAMES.map((name) => (
+              <span
+                key={name}
+                className="whitespace-nowrap text-center text-[10px] font-semibold uppercase tracking-wide text-earth-ink"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+
+          <div className="space-y-2">
+            {vegetableIds.map((id) => {
+              const veg = getVegetableById(id);
+              if (!veg) return null;
+              const active = new Set([
+                ...veg.sowIndoors,
+                ...veg.sowOutdoors,
+                ...veg.transplant,
+              ]);
+              const harvest = new Set(veg.harvest);
+              return (
+                <div
+                  key={id}
+                  className="grid grid-cols-[7rem_repeat(12,minmax(4.75rem,1fr))] items-center gap-px px-1"
+                >
+                  <p className="pr-3 text-sm font-medium text-dark-earth">
+                    {veg.name}
+                  </p>
+                  {MONTH_NAMES.map((name, i) => {
+                    const month = i + 1;
+                    const isCurrent = month === currentMonth;
+                    const state = active.has(month)
+                      ? "sow or plant"
+                      : harvest.has(month)
+                        ? "harvest"
+                        : "dormant";
+                    const colour =
+                      state === "sow or plant"
+                        ? "bg-moss"
+                        : state === "harvest"
+                          ? "bg-light-sage"
+                          : "bg-warm-stone";
+                    return (
+                      <div
+                        key={month}
+                        role="img"
+                        aria-label={`${veg.name}, ${name}: ${state}`}
+                        className={`h-7 border border-dark-earth/10 ${colour} ${
+                          isCurrent
+                            ? "ring-2 ring-terracotta ring-offset-1 ring-offset-cream"
+                            : ""
+                        }`}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

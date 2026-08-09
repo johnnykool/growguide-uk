@@ -21,6 +21,14 @@ describe("PlotSummary", () => {
   it("summarises one selected crop and its current-month activity", () => {
     render(<PlotSummary profile={profile} month={8} />);
 
+    expect(
+      screen.getByRole("region", { name: "Your plot profile" }),
+    ).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Your plot" })).toBeVisible();
+    expect(screen.getByText("Tomato")).toBeVisible();
+    expect(screen.getByText("Raised beds")).toBeVisible();
+    expect(screen.getByText("1 tool")).toBeVisible();
+    expect(screen.getByText("Small raised bed (<4m²)")).toBeVisible();
     expect(screen.getByText("August")).toBeVisible();
     expect(screen.getByText("1 crop")).toBeVisible();
     expect(screen.getByText("1 active this month")).toBeVisible();

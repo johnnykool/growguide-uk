@@ -7,6 +7,16 @@ describe("SeasonalCalendar", () => {
     render(<SeasonalCalendar vegetableIds={["tomato"]} />);
 
     expect(
+      screen.getByRole("region", { name: "This season" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("heading", { name: "This season" }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("region", { name: "Seasonal timeline" }),
+    ).toHaveAttribute("tabindex", "0");
+    expect(screen.getByText("September")).toBeVisible();
+    expect(
       screen.getByRole("img", { name: "Tomato, August: harvest" }),
     ).toBeVisible();
     expect(
