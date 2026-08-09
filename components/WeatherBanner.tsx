@@ -6,6 +6,7 @@ interface Props {
   weather: WeatherData | null;
   loading: boolean;
   error: string | null;
+  onRetry: () => void;
 }
 
 // Map OpenWeatherMap icon codes to emoji so we stay inside the palette.
@@ -24,10 +25,19 @@ function weatherEmoji(icon: string): string {
   return map[icon.slice(0, 2)] ?? "🌤️";
 }
 
-export default function WeatherBanner({ weather, loading, error }: Props) {
+export default function WeatherBanner({
+  weather,
+  loading,
+  error,
+  onRetry,
+}: Props) {
   if (loading) {
     return (
-      <div className="bg-sage/60 rounded-card shadow-soft p-5 animate-pulse">
+      <div
+        role="status"
+        aria-live="polite"
+        className="bg-sage/60 rounded-card shadow-soft p-5 animate-pulse"
+      >
         <p className="text-dark-earth">Reading the sky over your plot…</p>
       </div>
     );
@@ -37,10 +47,16 @@ export default function WeatherBanner({ weather, loading, error }: Props) {
     return (
       <div className="bg-warm-stone/60 rounded-card shadow-soft p-5">
         <p className="text-dark-earth">
-          ☁️ Weather is unavailable right now
-          {error ? ` — ${error}` : "."}{" "}
-          You can still get growing advice below.
+          We can&apos;t load local weather right now. You can still get growing
+          advice.
         </p>
+        <button
+          type="button"
+          onClick={onRetry}
+          className="mt-3 rounded-btn bg-cream px-4 py-2 text-sm font-semibold text-dark-earth shadow-soft transition-colors hover:bg-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2 focus-visible:ring-offset-warm-stone"
+        >
+          Try weather again
+        </button>
       </div>
     );
   }

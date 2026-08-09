@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   const apiKey = process.env.OPENWEATHERMAP_API_KEY;
   if (!apiKey) {
     return NextResponse.json(
-      { error: "Weather service is not configured (missing OPENWEATHERMAP_API_KEY)." },
+      { error: "Weather is unavailable right now." },
       { status: 500 }
     );
   }
@@ -20,12 +20,23 @@ export async function POST(request: Request) {
   let lat: number, lng: number;
   try {
     const body = await request.json();
-    lat = Number(body.lat);
-    lng = Number(body.lng);
-    if (!isFinite(lat) || !isFinite(lng)) throw new Error("bad coords");
+    lat = body.lat;
+    lng = body.lng;
+    if (
+      typeof lat !== "number" ||
+      !Number.isFinite(lat) ||
+      lat < -90 ||
+      lat > 90 ||
+      typeof lng !== "number" ||
+      !Number.isFinite(lng) ||
+      lng < -180 ||
+      lng > 180
+    ) {
+      throw new Error("bad coords");
+    }
   } catch {
     return NextResponse.json(
-      { error: "Invalid request — lat and lng are required." },
+      { error: "Please provide a valid location." },
       { status: 400 }
     );
   }
@@ -34,16 +45,21 @@ export async function POST(request: Request) {
     const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&units=metric&appid=${apiKey}`;
     const res = await fetch(url, { next: { revalidate: 600 } });
     if (!res.ok) {
+      console.error("Weather upstream request failed", {
+        status: res.status,
+        statusText: res.statusText,
+      });
       return NextResponse.json(
-        { error: `Weather service returned an error (${res.status}).` },
+        { error: "Weather is unavailable right now." },
         { status: 502 }
       );
     }
     const data = await res.json();
     const list: ForecastEntry[] = data.list ?? [];
     if (list.length === 0) {
+      console.error("Weather upstream response contained no forecast entries");
       return NextResponse.json(
-        { error: "Weather service returned no forecast data." },
+        { error: "Weather is unavailable right now." },
         { status: 502 }
       );
     }
@@ -100,9 +116,10 @@ export async function POST(request: Request) {
       warnings: { rainSoon, frostSoon },
     };
     return NextResponse.json(payload);
-  } catch {
+  } catch (error) {
+    console.error("Weather request failed", error);
     return NextResponse.json(
-      { error: "Could not reach the weather service. Please try again." },
+      { error: "Weather is unavailable right now." },
       { status: 502 }
     );
   }

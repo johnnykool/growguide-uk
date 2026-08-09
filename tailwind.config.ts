@@ -14,6 +14,7 @@ const config: Config = {
       moss: "rgb(var(--moss-rgb) / <alpha-value>)",
       "light-sage": "rgb(var(--light-sage-rgb) / <alpha-value>)",
       "dark-earth": "rgb(var(--dark-earth-rgb) / <alpha-value>)",
+      "earth-ink": "rgb(var(--earth-ink-rgb) / <alpha-value>)",
       blush: "rgb(var(--blush-rgb) / <alpha-value>)",
       terracotta: "rgb(var(--terracotta-rgb) / <alpha-value>)",
       "warm-stone": "rgb(var(--warm-stone-rgb) / <alpha-value>)",

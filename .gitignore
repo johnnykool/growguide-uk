@@ -6,6 +6,7 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
+.worktrees/
 
 # Original photo downloads (optimized copies live in public/images)
 /images/

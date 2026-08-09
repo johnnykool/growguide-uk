@@ -8,13 +8,20 @@ import {
   UserProfile,
   WeatherData,
 } from "@/lib/types";
-import { loadSavedAdvice, saveAdvice } from "@/lib/storage";
+import {
+  getAdviceProfileFingerprint,
+  loadSavedAdvice,
+  saveAdvice,
+} from "@/lib/storage";
 import { HERO_HARVEST, VEG_PHOTOS } from "@/lib/images";
+import { formatCropCount } from "@/lib/format";
 import WeatherBanner from "./WeatherBanner";
 import TimelineFilter from "./TimelineFilter";
 import AdviceResults from "./AdviceResults";
 import SeasonalCalendar from "./SeasonalCalendar";
 import WeatherMap from "./WeatherMap";
+import PlotSummary from "./PlotSummary";
+import AdviceRefreshConfirm from "./AdviceRefreshConfirm";
 
 interface Props {
   profile: UserProfile;
@@ -28,10 +35,15 @@ const LOADING_MESSAGES = [
   "Asking the head gardener…",
 ];
 
+const ADVICE_UNAVAILABLE_MESSAGE =
+  "We can't generate growing advice right now. Please try again.";
+
 export default function Dashboard({ profile, onEdit }: Props) {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState<string | null>(null);
+  const weatherMounted = useRef(false);
+  const weatherRequestId = useRef(0);
 
   const [timeline, setTimeline] = useState<Timeline>("7-days");
   const [advice, setAdvice] = useState<AdviceResponse | null>(null);
@@ -39,70 +51,129 @@ export default function Dashboard({ profile, onEdit }: Props) {
   const [completed, setCompleted] = useState<Record<string, boolean>>({});
   const [adviceLoading, setAdviceLoading] = useState(false);
   const [adviceError, setAdviceError] = useState<string | null>(null);
+  const [adviceStorageWarning, setAdviceStorageWarning] = useState(false);
+  const [confirmAdviceRefresh, setConfirmAdviceRefresh] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState(LOADING_MESSAGES[0]);
+  const adviceLoadingStatus = useRef<HTMLParagraphElement | null>(null);
   const loadingTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const adviceMounted = useRef(false);
+  const adviceRequestId = useRef(0);
+  const adviceAbortController = useRef<AbortController | null>(null);
+  const profileFingerprint = getAdviceProfileFingerprint(profile);
 
   // Restore the last advice session so returning users see their task list
   // without another AI call.
   useEffect(() => {
-    const saved = loadSavedAdvice();
+    adviceMounted.current = true;
+    setAdvice(null);
+    setGeneratedAt(undefined);
+    setCompleted({});
+    setAdviceLoading(false);
+    setAdviceError(null);
+    setAdviceStorageWarning(false);
+    setConfirmAdviceRefresh(false);
+    const saved = loadSavedAdvice(profileFingerprint);
     if (saved) {
       setAdvice(saved.advice);
       setTimeline(saved.timeline);
       setGeneratedAt(saved.generatedAt);
       setCompleted(saved.completed ?? {});
     }
-  }, []);
+    return () => {
+      adviceMounted.current = false;
+      adviceRequestId.current += 1;
+      adviceAbortController.current?.abort();
+      adviceAbortController.current = null;
+      if (loadingTimer.current) {
+        clearInterval(loadingTimer.current);
+        loadingTimer.current = null;
+      }
+    };
+  }, [profileFingerprint]);
+
+  useEffect(() => {
+    if (adviceLoading) adviceLoadingStatus.current?.focus();
+  }, [adviceLoading]);
+
+  const fetchWeather = useCallback(async () => {
+    if (!weatherMounted.current) return;
+    const requestId = ++weatherRequestId.current;
+    setWeatherLoading(true);
+    setWeatherError(null);
+    setWeather(null);
+    try {
+      const res = await fetch("/api/weather", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lat: profile.lat, lng: profile.lng }),
+      });
+
+      const data = await res.json().catch(() => null);
+      if (
+        !weatherMounted.current ||
+        requestId !== weatherRequestId.current
+      ) {
+        return;
+      }
+      if (!res.ok || !data) {
+        setWeatherError("Weather is unavailable right now.");
+      } else {
+        setWeather(data);
+      }
+    } catch {
+      if (
+        weatherMounted.current &&
+        requestId === weatherRequestId.current
+      ) {
+        setWeatherError("Weather is unavailable right now.");
+      }
+    } finally {
+      if (
+        weatherMounted.current &&
+        requestId === weatherRequestId.current
+      ) {
+        setWeatherLoading(false);
+      }
+    }
+  }, [profile.lat, profile.lng]);
 
   // Fetch weather immediately on dashboard load.
   useEffect(() => {
-    let cancelled = false;
-    setWeatherLoading(true);
-    setWeatherError(null);
-    fetch("/api/weather", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lat: profile.lat, lng: profile.lng }),
-    })
-      .then(async (res) => {
-        const data = await res.json();
-        if (cancelled) return;
-        if (!res.ok) {
-          setWeatherError(data.error ?? "Weather unavailable.");
-        } else {
-          setWeather(data);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setWeatherError("Couldn't reach the weather service.");
-      })
-      .finally(() => {
-        if (!cancelled) setWeatherLoading(false);
-      });
+    weatherMounted.current = true;
+    void fetchWeather();
     return () => {
-      cancelled = true;
+      weatherMounted.current = false;
+      weatherRequestId.current += 1;
     };
-  }, [profile.lat, profile.lng]);
+  }, [fetchWeather]);
 
   const fetchAdvice = useCallback(async () => {
+    if (!adviceMounted.current) return;
+    adviceAbortController.current?.abort();
+    const controller = new AbortController();
+    adviceAbortController.current = controller;
+    const requestId = ++adviceRequestId.current;
+    const isCurrentRequest = () =>
+      adviceMounted.current && requestId === adviceRequestId.current;
+
     setAdviceLoading(true);
     setAdviceError(null);
     let i = 0;
     setLoadingMessage(LOADING_MESSAGES[0]);
-    loadingTimer.current = setInterval(() => {
+    const timer = setInterval(() => {
+      if (!isCurrentRequest()) return;
       i = (i + 1) % LOADING_MESSAGES.length;
       setLoadingMessage(LOADING_MESSAGES[i]);
     }, 2500);
+    loadingTimer.current = timer;
 
     try {
       const res = await fetch("/api/advice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
-          postcode: profile.postcode,
           region: profile.region,
-          lat: profile.lat,
-          lng: profile.lng,
           vegetables: profile.vegetables,
           plotSize: profile.plotSize,
           environment: profile.environment,
@@ -112,48 +183,65 @@ export default function Dashboard({ profile, onEdit }: Props) {
         }),
       });
       const data = await res.json().catch(() => null);
+      if (!isCurrentRequest()) return;
       if (!res.ok || !data) {
         setAdviceError(
-          data?.error ??
-            (res.status === 504
-              ? "The advice took too long to generate — try a shorter timeline or fewer vegetables, then try again."
-              : "Something went wrong generating advice.")
+          res.status === 504
+            ? "The advice took too long to generate — try a shorter timeline or fewer vegetables, then try again."
+            : res.status >= 500
+              ? ADVICE_UNAVAILABLE_MESSAGE
+              : data?.error ?? "Something went wrong generating advice."
         );
       } else {
         const now = new Date().toISOString();
         setAdvice(data);
         setGeneratedAt(now);
         setCompleted({});
-        saveAdvice({ timeline, generatedAt: now, advice: data, completed: {} });
+        const saved = saveAdvice(
+          {
+            profileFingerprint,
+            timeline,
+            generatedAt: now,
+            advice: data,
+            completed: {},
+          },
+          profile,
+        );
+        setAdviceStorageWarning(!saved);
       }
-    } catch {
-      setAdviceError(
-        "Couldn't reach the advice service. Check your connection and try again."
-      );
+    } catch (error) {
+      if (
+        isCurrentRequest() &&
+        !(error instanceof DOMException && error.name === "AbortError")
+      ) {
+        setAdviceError(
+          "Couldn't reach the advice service. Check your connection and try again."
+        );
+      }
     } finally {
-      if (loadingTimer.current) clearInterval(loadingTimer.current);
-      setAdviceLoading(false);
+      clearInterval(timer);
+      if (loadingTimer.current === timer) loadingTimer.current = null;
+      if (isCurrentRequest()) {
+        adviceAbortController.current = null;
+        setAdviceLoading(false);
+      }
     }
-  }, [profile, timeline, weather]);
+  }, [profile, profileFingerprint, timeline, weather]);
 
   const toggleTask = useCallback(
     (key: string) => {
-      setCompleted((prev) => {
-        const next = { ...prev, [key]: !prev[key] };
-        if (advice && generatedAt) {
-          saveAdvice({ timeline, generatedAt, advice, completed: next });
-        }
-        return next;
-      });
+      const next = { ...completed, [key]: !completed[key] };
+      setCompleted(next);
+      if (advice && generatedAt) {
+        const saved = saveAdvice(
+          { profileFingerprint, timeline, generatedAt, advice, completed: next },
+          profile,
+        );
+        setAdviceStorageWarning(!saved);
+      }
     },
-    [advice, generatedAt, timeline]
+    [advice, completed, generatedAt, profile, profileFingerprint, timeline]
   );
-
-  useEffect(() => {
-    return () => {
-      if (loadingTimer.current) clearInterval(loadingTimer.current);
-    };
-  }, []);
 
   const collagePhotos = profile.vegetables
     .filter((id) => VEG_PHOTOS[id])
@@ -180,9 +268,9 @@ export default function Dashboard({ profile, onEdit }: Props) {
                 <h1 className="font-serif text-3xl text-cream sm:text-4xl">
                   Your growing dashboard
                 </h1>
-                <p className="text-sm font-medium text-cream/85">
+                <p className="text-sm font-medium text-cream">
                   📍 {profile.postcode} · {profile.region} ·{" "}
-                  {profile.vegetables.length} crops
+                  {formatCropCount(profile.vegetables.length)}
                 </p>
               </div>
               <button
@@ -199,10 +287,15 @@ export default function Dashboard({ profile, onEdit }: Props) {
 
       <div className="mx-auto max-w-6xl px-4 py-6">
         <div className="mb-6">
+          <PlotSummary profile={profile} />
+        </div>
+
+        <div className="mb-6">
           <WeatherBanner
             weather={weather}
             loading={weatherLoading}
             error={weatherError}
+            onRetry={fetchWeather}
           />
         </div>
 
@@ -213,27 +306,56 @@ export default function Dashboard({ profile, onEdit }: Props) {
                 What should I be doing?
               </h2>
               <TimelineFilter value={timeline} onChange={setTimeline} />
-              <button
-                type="button"
-                onClick={fetchAdvice}
-                disabled={adviceLoading}
-                className={`mt-4 w-full rounded-btn px-8 py-4 text-lg font-semibold text-cream shadow-soft transition-colors sm:w-auto ${
-                  adviceLoading
-                    ? "cursor-wait bg-moss/60"
-                    : "bg-moss hover:bg-dark-earth"
-                }`}
-              >
-                {adviceLoading
-                  ? loadingMessage
-                  : advice
-                    ? "🌱 Get Fresh Advice"
-                    : "🌱 Get Growing Advice"}
-              </button>
-              {advice && !adviceLoading && (
-                <p className="mt-2 text-sm text-moss">
-                  Your saved tasks are below — tick them off as you go. Fresh
-                  advice replaces the list.
+              {adviceLoading ? (
+                <p
+                  ref={adviceLoadingStatus}
+                  role="status"
+                  aria-label="Generating growing advice"
+                  aria-live="polite"
+                  tabIndex={-1}
+                  className="mt-4 w-full cursor-wait rounded-btn bg-dark-earth px-8 py-4 text-lg font-semibold text-cream shadow-soft focus:outline-none focus:ring-2 focus:ring-dark-earth focus:ring-offset-2 focus:ring-offset-cream sm:w-fit"
+                >
+                  {loadingMessage}
                 </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (advice) {
+                      setConfirmAdviceRefresh(true);
+                    } else {
+                      void fetchAdvice();
+                    }
+                  }}
+                  className="mt-4 w-full rounded-btn bg-dark-earth px-8 py-4 text-lg font-semibold text-cream shadow-soft transition-colors hover:bg-earth-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream sm:w-auto"
+                >
+                  {advice ? "🌱 Get Fresh Advice" : "🌱 Get Growing Advice"}
+                </button>
+              )}
+              {advice && !adviceLoading && (
+                adviceStorageWarning ? (
+                  <p
+                    role="alert"
+                    aria-label="Advice wasn't saved in this browser."
+                    className="mt-2 text-sm font-semibold text-earth-ink"
+                  >
+                    Advice wasn&apos;t saved in this browser.
+                  </p>
+                ) : (
+                  <p className="mt-2 text-sm text-earth-ink">
+                    Your saved tasks are below — tick them off as you go. Fresh
+                    advice replaces the list.
+                  </p>
+                )
+              )}
+              {confirmAdviceRefresh && !adviceLoading && (
+                <AdviceRefreshConfirm
+                  onConfirm={() => {
+                    setConfirmAdviceRefresh(false);
+                    void fetchAdvice();
+                  }}
+                  onCancel={() => setConfirmAdviceRefresh(false)}
+                />
               )}
             </section>
 
