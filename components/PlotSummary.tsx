@@ -108,7 +108,7 @@ export default function PlotSummary({
               Conditions
             </dt>
             <dd className="mt-1 font-medium text-dark-earth">
-              {environmentLabels.join(", ")}
+              {environmentLabels.join(", ") || "Not specified"}
             </dd>
           </div>
           <div className="border-t border-dark-earth/20 py-2">

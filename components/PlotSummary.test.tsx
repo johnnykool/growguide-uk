@@ -46,4 +46,12 @@ describe("PlotSummary", () => {
     expect(screen.getByText("2 crops")).toBeVisible();
     expect(screen.getByText("2 active this month")).toBeVisible();
   });
+
+  it("labels empty growing conditions as not specified", () => {
+    render(
+      <PlotSummary profile={{ ...profile, environment: [] }} month={8} />,
+    );
+
+    expect(screen.getByText("Not specified")).toBeVisible();
+  });
 });
