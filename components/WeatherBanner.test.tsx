@@ -53,6 +53,59 @@ describe("WeatherBanner", () => {
         name: "Tue: high 17°, low 9°, 60% rain",
       }),
     ).toBeVisible();
+    expect(
+      screen.getByRole("list", { name: "2-day forecast" }),
+    ).toBeVisible();
+  });
+
+  it("names a five-entry forecast as a five-day forecast", () => {
+    const fiveDayWeather: WeatherData = {
+      ...weather,
+      daily: [
+        ...weather.daily,
+        {
+          date: "2026-08-13",
+          dayName: "Thu",
+          high: 19,
+          low: 10,
+          conditions: "cloudy",
+          icon: "04d",
+          rainProbability: 20,
+        },
+        {
+          date: "2026-08-14",
+          dayName: "Fri",
+          high: 18,
+          low: 10,
+          conditions: "light rain",
+          icon: "10d",
+          rainProbability: 50,
+        },
+        {
+          date: "2026-08-15",
+          dayName: "Sat",
+          high: 21,
+          low: 12,
+          conditions: "clear sky",
+          icon: "01d",
+          rainProbability: 5,
+        },
+      ],
+    };
+
+    render(
+      <WeatherBanner
+        weather={fiveDayWeather}
+        loading={false}
+        error={null}
+        onRetry={vi.fn()}
+        locationLabel="BS1 5AH"
+      />,
+    );
+
+    expect(
+      screen.getByRole("list", { name: "Five-day forecast" }),
+    ).toBeVisible();
   });
 
   it("announces loading through a polite status region", () => {

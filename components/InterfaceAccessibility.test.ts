@@ -10,12 +10,14 @@ const sources = {
   adviceConfirm: readComponent("AdviceRefreshConfirm.tsx"),
   adviceResults: readComponent("AdviceResults.tsx"),
   dashboard: readComponent("Dashboard.tsx"),
-  plotSummary: readComponent("PlotSummary.tsx"),
+  gardenPortrait: readComponent("GardenPortrait.tsx"),
   seasonalCalendar: readComponent("SeasonalCalendar.tsx"),
   taskCard: readComponent("TaskCard.tsx"),
   timeline: readComponent("TimelineFilter.tsx"),
   weatherBanner: readComponent("WeatherBanner.tsx"),
+  weatherWorksurface: readComponent("WeatherWorksurface.tsx"),
 };
+const css = readFileSync(resolve(process.cwd(), "app", "globals.css"), "utf8");
 
 describe("changed interface accessibility contracts", () => {
   it("uses dark, offset focus indicators throughout dashboard actions", () => {
@@ -52,7 +54,8 @@ describe("changed interface accessibility contracts", () => {
   it("uses only semantic Gravity Rain surfaces on the rebuilt dashboard", () => {
     const rebuiltSurfaceSources = [
       sources.weatherBanner,
-      sources.plotSummary,
+      sources.weatherWorksurface,
+      sources.gardenPortrait,
       sources.seasonalCalendar,
     ].join("\n");
 
@@ -60,5 +63,14 @@ describe("changed interface accessibility contracts", () => {
       /rounded-card|shadow-soft|bg-(cream|sage|warm-stone)|text-(dark-earth|earth-ink)|border-dark-earth|ring-(moss|terracotta)/,
     );
     expect(sources.dashboard).not.toMatch(/✿|🥀/);
+  });
+
+  it("keeps the weather-to-action sequence finite and preserves its final reduced-motion state", () => {
+    expect(css).toContain("animation: weather-source-arrive 300ms");
+    expect(css).toContain("animation: weather-path-draw 1050ms 250ms");
+    expect(css).toContain("animation: weather-target-land 650ms 1150ms");
+    expect(css).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.weather-story-path-reveal[\s\S]*animation: none/,
+    );
   });
 });

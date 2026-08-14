@@ -78,7 +78,7 @@ describe("root metadata", () => {
     expect(markup.match(/data-site-analytics="mounted"/g)).toHaveLength(1);
     expect(markup).toMatch(/<body class="font-figtree [^"]*font-sans"/);
     expect(markup).toContain('data-design-direction="gravity-rain"');
-    expect(markup).toContain("6b059f98");
+    expect(markup).toContain("f20db32c");
     expect(markup).toMatch(
       /<body[^>]*><template data-design-direction="gravity-rain">/,
     );

@@ -8,6 +8,7 @@ interface Props {
   error: string | null;
   onRetry: () => void;
   locationLabel: string;
+  linkedAction?: boolean;
 }
 
 function WeatherSymbol({ icon, label }: { icon: string; label: string }) {
@@ -83,6 +84,7 @@ export default function WeatherBanner({
   error,
   onRetry,
   locationLabel,
+  linkedAction = false,
 }: Props) {
   if (loading) {
     return (
@@ -115,11 +117,12 @@ export default function WeatherBanner({
   }
 
   const { current, daily } = weather;
+  const forecastLabel = `${daily.length === 5 ? "Five" : daily.length}-day forecast`;
 
   return (
     <section
       aria-label="Local forecast"
-      className="forecast-ribbon overflow-hidden border border-pale-mineral/20 bg-garden-ground px-5 py-5 text-pale-mineral"
+      className={`${linkedAction ? "weather-story-source " : ""}forecast-ribbon overflow-hidden border border-pale-mineral/20 bg-garden-ground px-5 py-5 text-pale-mineral`}
     >
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
         <div className="flex min-w-[11rem] items-center gap-3 lg:border-r lg:border-pale-mineral/20 lg:pr-6">
@@ -143,7 +146,7 @@ export default function WeatherBanner({
         </div>
 
         <ul
-          aria-label="Seven-day forecast"
+          aria-label={forecastLabel}
           className="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1"
         >
           {daily.map((day) => (

@@ -1,5 +1,3 @@
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -13,15 +11,6 @@ import {
 import Dashboard from "./Dashboard";
 import Header from "./Header";
 import { HeaderWeatherProvider } from "./HeaderWeatherContext";
-
-const dashboardSource = readFileSync(
-  resolve(process.cwd(), "components", "Dashboard.tsx"),
-  "utf8",
-);
-const globalStyles = readFileSync(
-  resolve(process.cwd(), "app", "globals.css"),
-  "utf8",
-);
 
 vi.mock("./WeatherMap", () => ({
   default: () => <section aria-label="Weather map reference" />,
@@ -178,7 +167,7 @@ describe("Dashboard weather", () => {
     ).toHaveLength(1);
   });
 
-  it("composes weather, plot context, and actions as the first workspace", () => {
+  it("composes weather, actions, and the live garden portrait as the first workspace", () => {
     installFetch(response(replacementAdvice));
 
     const view = render(<Dashboard profile={profile} onEdit={vi.fn()} />);
@@ -198,15 +187,25 @@ describe("Dashboard weather", () => {
     const gardenSummary = screen.getByText(/South West England · 1 crop$/);
     const editSetup = screen.getByRole("button", { name: "Edit setup" });
     expect(gardenSummary.parentElement).toContainElement(editSetup);
+    const worksurface = screen.getByRole("region", {
+      name: "Weather to action",
+    });
     const action = screen.getByRole("region", { name: "What needs doing" });
-    const plot = screen.getByRole("region", { name: "Your plot profile" });
+    const portrait = screen.getByRole("region", {
+      name: "Your garden portrait",
+    });
+    expect(worksurface).toBeVisible();
     expect(action).toBeVisible();
-    expect(plot).toBeVisible();
+    expect(portrait).toBeVisible();
     expect(
-      action.compareDocumentPosition(plot) & Node.DOCUMENT_POSITION_FOLLOWING,
+      action.compareDocumentPosition(portrait) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(action).toHaveClass("lg:order-2");
-    expect(plot.parentElement).toHaveClass("lg:order-1");
+    expect(action.parentElement).toHaveClass("lg:order-2");
+    expect(portrait).toHaveClass("lg:order-1");
+    expect(
+      screen.queryByRole("region", { name: "Your plot profile" }),
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Get growing advice" }),
     ).toBeVisible();
@@ -246,22 +245,14 @@ describe("Dashboard weather", () => {
     const cue = await screen.findByRole("note", {
       name: "Weather-linked action",
     });
-    expect(cue).toHaveAttribute("id", "weather-action-target");
+    expect(cue).toHaveAttribute("data-weather-target", "rain");
     expect(cue).toHaveTextContent(
       "Rain ahead — check the soil before watering.",
     );
-    const path = screen.getByTestId("weather-action-path");
+    const path = screen.getByTestId("weather-story-path");
     expect(path).toHaveAttribute("aria-hidden", "true");
-    expect(path).toHaveClass("hidden", "lg:block");
-    const reveal = screen.getByTestId("weather-action-path-reveal");
-    const visiblePath = screen.getByTestId("weather-action-path-visible");
-    expect(reveal).toHaveClass("rain-action-path-reveal");
-    expect(reveal).toHaveAttribute("pathLength", "1");
-    expect(reveal).toHaveAttribute("stroke-dasharray", "1");
-    expect(visiblePath).toHaveAttribute(
-      "mask",
-      "url(#weather-action-path-mask)",
-    );
+    expect(path).toHaveAttribute("data-motion", "once");
+    expect(path).toHaveAttribute("stroke-width", "3");
 
     const season = screen.getByRole("region", { name: "This season" });
     const map = screen.getByRole("region", {
@@ -270,27 +261,6 @@ describe("Dashboard weather", () => {
     expect(
       season.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-  });
-
-  it("derives the connector from the shared cue and progressively reveals it", () => {
-    expect(dashboardSource).toContain(
-      'import WeatherActionCue, { getWeatherActionCue } from "./WeatherActionCue";',
-    );
-    expect(dashboardSource).toContain(
-      "const weatherAction = getWeatherActionCue(weather);",
-    );
-    expect(dashboardSource).not.toMatch(
-      /weather\?\.warnings\.(?:frostSoon|rainSoon)/,
-    );
-    expect(globalStyles).toMatch(
-      /\.rain-action-path-reveal\s*{[^}]*animation:\s*rain-action-path-draw/,
-    );
-    expect(globalStyles).toMatch(
-      /@keyframes rain-action-path-draw\s*{\s*from\s*{\s*stroke-dashoffset:\s*1;/,
-    );
-    expect(globalStyles).toMatch(
-      /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.rain-action-path-reveal\s*{\s*animation:\s*none;/,
-    );
   });
 });
 

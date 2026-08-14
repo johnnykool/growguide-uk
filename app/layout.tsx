@@ -17,9 +17,9 @@ const figtree = Figtree({
 const DESIGN_DIRECTION_CONTRACT = `<!--
 THESIS: Local weather visibly bends advice toward the plants and tasks it changes; this refuses the category-default photo hero and sprout-card dashboard.
 OWN-WORLD: Garden ground, pale mineral, sky blue, ember coral, moss veil, black-flower anchors, rainline GG paths, matte panels, fine borders, and one workhorse sans.
-STORY: A UK grower sees their place and forecast, understands what needs doing now, then checks their plot and season without an account or extra data.
-FIRST VIEWPORT: Compact Rainline GG shell; dark forecast ribbon; 60/40 pale working canvas with factual plot profile left and short actions right; seasonal timeline below; advice action stays inside the actions panel.
-FORM: Rain to Action, third approved composition; seed 6b059f98.
+STORY: A UK grower sees their place and forecast, understands what needs doing now, then checks the live setup portrait and season without an account or extra data.
+FIRST VIEWPORT: Field-record composition; one location line and heading; dark forecast visibly joins the action station and live garden portrait; action stays first in the DOM while the portrait leads at wide sizes.
+FORM: Rain to Action, third approved composition; seed f20db32c.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->`;
 

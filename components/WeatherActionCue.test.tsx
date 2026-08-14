@@ -17,9 +17,16 @@ describe("WeatherActionCue", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("note", { name: "Weather-linked action" }),
-    ).toHaveTextContent("Rain ahead — check the soil before watering.");
+    const cue = screen.getByRole("note", { name: "Weather-linked action" });
+    expect(cue).toHaveTextContent(
+      "Rain ahead — check the soil before watering.",
+    );
+    expect(cue).toHaveAttribute("data-weather-target", "rain");
+    expect(cue).toHaveClass("weather-story-target");
+    expect(cue.querySelector("[data-black-flower='true']")).toHaveAttribute(
+      "width",
+      "32",
+    );
   });
 
   it("prioritises frost when both warnings are present", () => {

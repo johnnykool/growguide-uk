@@ -1,4 +1,5 @@
 import type { WeatherData } from "@/lib/types";
+import BlackFlowerMark from "./BlackFlowerMark";
 
 type WeatherActionCueKind = "rain" | "frost";
 
@@ -44,15 +45,15 @@ export default function WeatherActionCue({ weather, id }: Props) {
       id={id}
       role="note"
       aria-label="Weather-linked action"
-      className="border-t border-[#7DB8E6] pt-3 lg:border-l lg:border-t-0 lg:pl-3 lg:pt-0"
+      data-weather-target={cue.kind}
+      className="weather-story-target relative z-20 border-t border-sky-blue p-3 lg:border-l lg:border-t-0"
     >
-      <span
-        aria-hidden="true"
-        className={`mt-1 block h-2 w-2 rounded-full ${
-          cue.kind === "frost" ? "bg-[#E0645B]" : "bg-[#7DB8E6]"
-        }`}
-      />
-      <p className="mt-2 text-sm font-semibold text-[#20312C]">{cue.text}</p>
+      <div className="flex items-start gap-3">
+        <BlackFlowerMark className="h-8 w-8 shrink-0 text-black-flower" />
+        <p className="pt-1 text-sm font-semibold text-garden-ground">
+          {cue.text}
+        </p>
+      </div>
     </aside>
   );
 }
