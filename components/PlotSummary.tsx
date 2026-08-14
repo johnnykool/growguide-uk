@@ -6,6 +6,7 @@ import {
   PLOT_SIZE_LABELS,
   UserProfile,
 } from "@/lib/types";
+import BlackFlowerMark from "./BlackFlowerMark";
 
 interface Props {
   profile: UserProfile;
@@ -38,43 +39,41 @@ export default function PlotSummary({
   return (
     <section
       aria-label="Your plot profile"
-      className="border border-dark-earth/30 bg-cream px-5 py-5 sm:px-6"
+      className="border border-garden-ground/30 bg-pale-mineral px-5 py-5 sm:px-6"
     >
       <div className="flex items-center gap-2">
-        <span aria-hidden="true" className="text-sm leading-none text-[#0E0F10]">
-          ✿
-        </span>
-        <h2 className="text-xl font-semibold text-dark-earth">Your plot</h2>
+        <BlackFlowerMark className="h-5 w-5 shrink-0 text-black-flower" />
+        <h2 className="text-xl font-semibold text-garden-ground">Your plot</h2>
       </div>
 
-      <dl className="mt-5 grid gap-x-5 gap-y-4 border-y border-dark-earth/20 py-4 sm:grid-cols-2 lg:grid-cols-4">
+      <dl className="mt-5 grid gap-x-5 gap-y-4 border-y border-garden-ground/20 py-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wide text-earth-ink">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-garden-ground/70">
             Month
           </dt>
-          <dd className="mt-1 font-semibold text-dark-earth">{monthLabel}</dd>
+          <dd className="mt-1 font-semibold text-garden-ground">{monthLabel}</dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wide text-earth-ink">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-garden-ground/70">
             Your crops
           </dt>
-          <dd className="mt-1 font-semibold text-dark-earth">
+          <dd className="mt-1 font-semibold text-garden-ground">
             {formatCropCount(profile.vegetables.length)}
           </dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wide text-earth-ink">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-garden-ground/70">
             In season
           </dt>
-          <dd className="mt-1 font-semibold text-dark-earth">
+          <dd className="mt-1 font-semibold text-garden-ground">
             {activeCount} active this month
           </dd>
         </div>
         <div>
-          <dt className="text-xs font-semibold uppercase tracking-wide text-earth-ink">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-garden-ground/70">
             Plot
           </dt>
-          <dd className="mt-1 font-semibold text-dark-earth">
+          <dd className="mt-1 font-semibold text-garden-ground">
             {PLOT_SIZE_LABELS[profile.plotSize]}
           </dd>
         </div>
@@ -82,19 +81,19 @@ export default function PlotSummary({
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(12rem,1fr)]">
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-earth-ink">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-garden-ground/70">
             Selected crops
           </h3>
           <ul className="mt-2 grid gap-x-4 sm:grid-cols-2">
             {selectedVegetables.map((vegetable) => (
               <li
                 key={vegetable.id}
-                className="flex items-baseline justify-between gap-3 border-t border-dark-earth/20 py-2 text-sm"
+                className="flex items-baseline justify-between gap-3 border-t border-garden-ground/20 py-2 text-sm"
               >
-                <span className="text-xs uppercase tracking-wide text-earth-ink">
+                <span className="text-xs uppercase tracking-wide text-garden-ground/70">
                   Crop
                 </span>
-                <span className="font-medium text-dark-earth">
+                <span className="font-medium text-garden-ground">
                   {vegetable.name}
                 </span>
               </li>
@@ -103,19 +102,19 @@ export default function PlotSummary({
         </div>
 
         <dl className="grid grid-cols-2 gap-x-4 text-sm lg:grid-cols-1">
-          <div className="border-t border-dark-earth/20 py-2">
-            <dt className="text-xs uppercase tracking-wide text-earth-ink">
+          <div className="border-t border-garden-ground/20 py-2">
+            <dt className="text-xs uppercase tracking-wide text-garden-ground/70">
               Conditions
             </dt>
-            <dd className="mt-1 font-medium text-dark-earth">
+            <dd className="mt-1 font-medium text-garden-ground">
               {environmentLabels.join(", ") || "Not specified"}
             </dd>
           </div>
-          <div className="border-t border-dark-earth/20 py-2">
-            <dt className="text-xs uppercase tracking-wide text-earth-ink">
+          <div className="border-t border-garden-ground/20 py-2">
+            <dt className="text-xs uppercase tracking-wide text-garden-ground/70">
               Equipment
             </dt>
-            <dd className="mt-1 font-medium text-dark-earth">
+            <dd className="mt-1 font-medium text-garden-ground">
               {equipmentCount} {equipmentCount === 1 ? "tool" : "tools"}
             </dd>
           </div>

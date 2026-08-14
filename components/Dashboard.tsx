@@ -360,7 +360,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
 
             {adviceError && (
               <div className="mt-5 border-l-4 border-ember bg-pale-mineral p-5 text-ember-ink ring-1 ring-ember-ink/30">
-                <p className="mb-3 font-medium">🥀 {adviceError}</p>
+                <p className="mb-3 font-medium">{adviceError}</p>
                 <button
                   type="button"
                   onClick={fetchAdvice}

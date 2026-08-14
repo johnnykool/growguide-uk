@@ -89,24 +89,24 @@ export default function WeatherBanner({
       <div
         role="status"
         aria-live="polite"
-        className="bg-sage/60 rounded-card shadow-soft p-5 animate-pulse"
+        className="animate-pulse border border-garden-ground/25 bg-pale-mineral p-5"
       >
-        <p className="text-dark-earth">Reading the sky over your plot…</p>
+        <p className="text-garden-ground">Reading the sky over your plot…</p>
       </div>
     );
   }
 
   if (error || !weather) {
     return (
-      <div className="bg-warm-stone/60 rounded-card shadow-soft p-5">
-        <p className="text-dark-earth">
+      <div className="border border-ember/60 bg-pale-mineral p-5">
+        <p className="text-garden-ground">
           We can&apos;t load local weather right now. You can still get growing
           advice.
         </p>
         <button
           type="button"
           onClick={onRetry}
-          className="mt-3 rounded-btn bg-cream px-4 py-2 text-sm font-semibold text-dark-earth shadow-soft transition-colors hover:bg-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2 focus-visible:ring-offset-warm-stone"
+          className="mt-3 min-h-11 border border-garden-ground/40 bg-pale-mineral px-4 py-2 text-sm font-semibold text-garden-ground transition-colors hover:bg-moss-veil/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral"
         >
           Try weather again
         </button>
@@ -119,24 +119,24 @@ export default function WeatherBanner({
   return (
     <section
       aria-label="Local forecast"
-      className="forecast-ribbon overflow-hidden rounded-[0.4rem] bg-[#20312C] px-5 py-5 text-[#E7E8E4] shadow-soft"
+      className="forecast-ribbon overflow-hidden border border-pale-mineral/20 bg-garden-ground px-5 py-5 text-pale-mineral"
     >
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
-        <div className="flex min-w-[11rem] items-center gap-3 lg:border-r lg:border-[#E7E8E4]/20 lg:pr-6">
-          <span className="h-10 w-10 shrink-0 text-[#7DB8E6]">
+        <div className="flex min-w-[11rem] items-center gap-3 lg:border-r lg:border-pale-mineral/20 lg:pr-6">
+          <span className="h-10 w-10 shrink-0 text-sky-blue">
             <WeatherSymbol
               icon={current.icon}
               label={`${current.description} weather`}
             />
           </span>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#A6B49C]">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-moss-veil">
               {locationLabel}
             </p>
             <p className="mt-1 text-3xl font-semibold leading-none">
               {current.temp}°C
             </p>
-            <p className="mt-1 text-sm capitalize text-[#E7E8E4]/75">
+            <p className="mt-1 text-sm capitalize text-pale-mineral/75">
               {current.description}
             </p>
           </div>
@@ -150,18 +150,18 @@ export default function WeatherBanner({
             <li
               key={day.date}
               aria-label={`${day.dayName}: high ${day.high}°, low ${day.low}°, ${day.rainProbability}% rain`}
-              className="flex min-w-[5.5rem] flex-1 flex-col items-center border-l border-[#E7E8E4]/15 px-3 py-1 first:border-l-0"
+              className="flex min-w-[5.5rem] flex-1 flex-col items-center border-l border-pale-mineral/15 px-3 py-1 first:border-l-0"
             >
-              <span className="text-xs font-semibold uppercase tracking-[0.12em] text-[#A6B49C]">
+              <span className="text-xs font-semibold uppercase tracking-[0.12em] text-moss-veil">
                 {day.dayName}
               </span>
-              <span className="my-1 h-7 w-7 text-[#7DB8E6]">
+              <span className="my-1 h-7 w-7 text-sky-blue">
                 <WeatherSymbol icon={day.icon} label={day.conditions} />
               </span>
               <span className="text-sm font-semibold">
-                {day.high}° <span className="text-[#A6B49C]">{day.low}°</span>
+                {day.high}° <span className="text-moss-veil">{day.low}°</span>
               </span>
-              <span className="text-xs text-[#7DB8E6]">
+              <span className="text-xs text-sky-blue">
                 {day.rainProbability}% rain
               </span>
             </li>

@@ -19,7 +19,7 @@ const profile: UserProfile = {
 
 describe("PlotSummary", () => {
   it("summarises one selected crop and its current-month activity", () => {
-    render(<PlotSummary profile={profile} month={8} />);
+    const view = render(<PlotSummary profile={profile} month={8} />);
 
     expect(
       screen.getByRole("region", { name: "Your plot profile" }),
@@ -33,6 +33,10 @@ describe("PlotSummary", () => {
     expect(screen.getByText("1 crop")).toBeVisible();
     expect(screen.getByText("1 active this month")).toBeVisible();
     expect(screen.getByText(PLOT_SIZE_LABELS.small)).toBeVisible();
+    expect(view.container).not.toHaveTextContent("✿");
+    expect(
+      view.container.querySelector('[data-black-flower="true"]'),
+    ).toBeInTheDocument();
   });
 
   it("pluralises the selected crop count", () => {

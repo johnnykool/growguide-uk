@@ -10,8 +10,11 @@ const sources = {
   adviceConfirm: readComponent("AdviceRefreshConfirm.tsx"),
   adviceResults: readComponent("AdviceResults.tsx"),
   dashboard: readComponent("Dashboard.tsx"),
+  plotSummary: readComponent("PlotSummary.tsx"),
+  seasonalCalendar: readComponent("SeasonalCalendar.tsx"),
   taskCard: readComponent("TaskCard.tsx"),
   timeline: readComponent("TimelineFilter.tsx"),
+  weatherBanner: readComponent("WeatherBanner.tsx"),
 };
 
 describe("changed interface accessibility contracts", () => {
@@ -44,5 +47,18 @@ describe("changed interface accessibility contracts", () => {
     expect(sources.taskCard).toContain(
       "ring-1 ring-garden-ground/40",
     );
+  });
+
+  it("uses only semantic Gravity Rain surfaces on the rebuilt dashboard", () => {
+    const rebuiltSurfaceSources = [
+      sources.weatherBanner,
+      sources.plotSummary,
+      sources.seasonalCalendar,
+    ].join("\n");
+
+    expect(rebuiltSurfaceSources).not.toMatch(
+      /rounded-card|shadow-soft|bg-(cream|sage|warm-stone)|text-(dark-earth|earth-ink)|border-dark-earth|ring-(moss|terracotta)/,
+    );
+    expect(sources.dashboard).not.toMatch(/✿|🥀/);
   });
 });

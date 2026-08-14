@@ -69,6 +69,12 @@ describe("WeatherBanner", () => {
     const status = screen.getByRole("status");
     expect(status).toHaveAttribute("aria-live", "polite");
     expect(status).toHaveTextContent("Reading the sky over your plot…");
+    expect(status).toHaveClass(
+      "border",
+      "border-garden-ground/25",
+      "bg-pale-mineral",
+    );
+    expect(status).not.toHaveClass("rounded-card", "shadow-soft");
   });
 
   it("offers one retry without exposing the route error", async () => {
@@ -85,11 +91,15 @@ describe("WeatherBanner", () => {
       />,
     );
 
-    expect(
-      screen.getByText(
-        "We can't load local weather right now. You can still get growing advice.",
-      ),
-    ).toBeVisible();
+    const message = screen.getByText(
+      "We can't load local weather right now. You can still get growing advice.",
+    );
+    expect(message).toBeVisible();
+    expect(message.parentElement).toHaveClass(
+      "border",
+      "border-ember/60",
+      "bg-pale-mineral",
+    );
     expect(screen.queryByText(/503|upstream/i)).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Try weather again" }));
