@@ -20,7 +20,7 @@ import SeasonalCalendar from "./SeasonalCalendar";
 import WeatherMap from "./WeatherMap";
 import PlotSummary from "./PlotSummary";
 import AdviceRefreshConfirm from "./AdviceRefreshConfirm";
-import WeatherActionCue from "./WeatherActionCue";
+import WeatherActionCue, { getWeatherActionCue } from "./WeatherActionCue";
 
 interface Props {
   profile: UserProfile;
@@ -59,9 +59,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
   const adviceRequestId = useRef(0);
   const adviceAbortController = useRef<AbortController | null>(null);
   const profileFingerprint = getAdviceProfileFingerprint(profile);
-  const hasWeatherAction = Boolean(
-    weather?.warnings.frostSoon || weather?.warnings.rainSoon,
-  );
+  const weatherAction = getWeatherActionCue(weather);
 
   // Restore the last advice session so returning users see their task list
   // without another AI call.
@@ -276,7 +274,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
               onRetry={fetchWeather}
               locationLabel={profile.postcode}
             />
-            {hasWeatherAction && (
+            {weatherAction && (
               <svg
                 aria-hidden="true"
                 data-testid="weather-action-path"
@@ -285,7 +283,30 @@ export default function Dashboard({ profile, onEdit }: Props) {
                 viewBox="0 0 100 64"
                 preserveAspectRatio="none"
               >
+                <defs>
+                  <mask
+                    id="weather-action-path-mask"
+                    maskUnits="userSpaceOnUse"
+                    x="0"
+                    y="0"
+                    width="100"
+                    height="64"
+                  >
+                    <path
+                      data-testid="weather-action-path-reveal"
+                      className="rain-action-path-reveal"
+                      d="M99 1 C99 22 15 12 1 34"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="5"
+                      strokeDasharray="1"
+                      pathLength="1"
+                      strokeLinecap="round"
+                    />
+                  </mask>
+                </defs>
                 <path
+                  data-testid="weather-action-path-visible"
                   d="M99 1 C99 22 15 12 1 34"
                   fill="none"
                   stroke="currentColor"
@@ -293,16 +314,13 @@ export default function Dashboard({ profile, onEdit }: Props) {
                   strokeDasharray="3 3"
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
+                  mask="url(#weather-action-path-mask)"
                 />
               </svg>
             )}
           </div>
 
           <div className="dashboard-workspace mt-6 grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(20rem,2fr)] lg:items-start">
-            <div className="order-2 min-w-0 lg:order-1">
-              <PlotSummary profile={profile} />
-            </div>
-
             <section
               aria-label="What needs doing"
               className="order-1 min-w-0 border-t-4 border-rain-ink bg-pale-mineral pt-5 lg:order-2 lg:border-l lg:border-t-0 lg:border-l-garden-ground/25 lg:pl-6 lg:pt-0"
@@ -311,7 +329,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
                 id="weather-action-target"
                 weather={weather}
               />
-              <div className={hasWeatherAction ? "mt-5" : undefined}>
+              <div className={weatherAction ? "mt-5" : undefined}>
                 <h2 className="text-2xl font-semibold text-garden-ground">
                   What needs doing
                 </h2>
@@ -405,6 +423,10 @@ export default function Dashboard({ profile, onEdit }: Props) {
                 </p>
               )}
             </section>
+
+            <div className="order-2 min-w-0 lg:order-1">
+              <PlotSummary profile={profile} />
+            </div>
           </div>
 
           <div className="mt-8 border-t border-garden-ground/25 pt-4">
