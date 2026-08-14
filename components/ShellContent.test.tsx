@@ -1,9 +1,31 @@
-import { render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import Footer from "./Footer";
 import Header from "./Header";
 
+afterEach(cleanup);
+
 describe("GrowGuide shell content", () => {
+  it("keeps the rebranded footer's Ko-fi and privacy routes direct", () => {
+    render(<Footer />);
+
+    const footer = screen.getByRole("contentinfo");
+    expect(
+      within(footer).getByRole("link", { name: "Support GrowGuide" }),
+    ).toHaveAttribute("href", "https://ko-fi.com/growguideuk");
+    expect(within(footer).getByRole("link", { name: "Privacy" })).toHaveAttribute(
+      "href",
+      "/privacy",
+    );
+  });
+
+  it("uses a contrast-safe mark in the pale header", () => {
+    render(<Header />);
+
+    const homeLink = screen.getByRole("link", { name: "GrowGuide UK" });
+    expect(homeLink.querySelector("svg")).toHaveClass("text-rain-ink");
+  });
+
   it("keeps product provenance in the compact footer, not the header", () => {
     render(
       <>

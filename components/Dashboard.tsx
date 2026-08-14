@@ -247,7 +247,10 @@ export default function Dashboard({ profile, onEdit }: Props) {
         <section className="border-b border-garden-ground/25 pb-6">
           <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
             <div>
-              <h1 className="max-w-3xl text-3xl font-semibold leading-tight text-garden-ground sm:text-5xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rain-ink">
+                Your growing dashboard
+              </p>
+              <h1 className="mt-2 max-w-3xl text-3xl font-semibold leading-tight text-garden-ground sm:text-5xl">
                 Weather, translated into action.
               </h1>
               <p className="mt-3 text-sm font-medium text-garden-ground/75">
@@ -290,7 +293,10 @@ export default function Dashboard({ profile, onEdit }: Props) {
             className="order-1 min-w-0 border-t-4 border-rain-ink bg-pale-mineral pt-5 lg:order-2 lg:border-l lg:border-t-0 lg:border-l-garden-ground/25 lg:pl-8 lg:pt-0"
           >
             <div>
-              <h2 className="text-2xl font-semibold text-garden-ground">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-rain-ink">
+                Priorities
+              </p>
+              <h2 className="mt-1 text-2xl font-semibold text-garden-ground">
                 What needs doing
               </h2>
               <p className="mt-2 text-sm text-garden-ground/70">
@@ -353,18 +359,8 @@ export default function Dashboard({ profile, onEdit }: Props) {
             </div>
 
             {adviceError && (
-              <div className="mt-5 border border-ember/70 bg-pale-mineral p-5 text-ember-ink">
-                <p className="mb-3 flex items-start gap-2 font-medium">
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    className="mt-0.5 h-5 w-5 shrink-0 fill-none stroke-current stroke-2"
-                  >
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 7v6M12 17h.01" strokeLinecap="round" />
-                  </svg>
-                  <span>{adviceError}</span>
-                </p>
+              <div className="mt-5 border-l-4 border-ember bg-pale-mineral p-5 text-ember-ink ring-1 ring-ember-ink/30">
+                <p className="mb-3 font-medium">🥀 {adviceError}</p>
                 <button
                   type="button"
                   onClick={fetchAdvice}

@@ -41,18 +41,9 @@ export default function PlotSummary({
       className="border border-dark-earth/30 bg-cream px-5 py-5 sm:px-6"
     >
       <div className="flex items-center gap-2">
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 20 20"
-          className="h-4 w-4 shrink-0 fill-black-flower"
-        >
-          <circle cx="10" cy="4.5" r="3" />
-          <circle cx="15.2" cy="8.2" r="3" />
-          <circle cx="13.2" cy="14.3" r="3" />
-          <circle cx="6.8" cy="14.3" r="3" />
-          <circle cx="4.8" cy="8.2" r="3" />
-          <circle cx="10" cy="10" r="2.4" />
-        </svg>
+        <span aria-hidden="true" className="text-sm leading-none text-[#0E0F10]">
+          ✿
+        </span>
         <h2 className="text-xl font-semibold text-dark-earth">Your plot</h2>
       </div>
 

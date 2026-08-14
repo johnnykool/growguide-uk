@@ -74,7 +74,7 @@ export default function AdviceResults({
           {advice.summary}
         </p>
         {advice.weatherWarnings.length > 0 && (
-          <ul className="mt-4 space-y-2 border-l border-ember pl-4">
+          <ul className="mt-4 space-y-2 border-l-2 border-ember pl-4">
             {advice.weatherWarnings.map((w) => (
               <li key={w} className="text-sm font-medium text-ember-ink">
                 {w}

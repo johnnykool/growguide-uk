@@ -8,7 +8,7 @@ export default function Header() {
           href="/"
           className="inline-flex min-h-11 items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral"
         >
-          <BrandMark className="h-8 w-8 shrink-0 text-sky-blue" />
+          <BrandMark className="h-8 w-8 shrink-0 text-rain-ink" />
           <span className="text-xl font-semibold tracking-[-0.02em] text-garden-ground">
             GrowGuide <span className="text-rain-ink">UK</span>
           </span>
