@@ -11,7 +11,7 @@ import {
 import Dashboard from "./Dashboard";
 
 vi.mock("./WeatherMap", () => ({
-  default: () => null,
+  default: () => <section aria-label="Weather map reference" />,
 }));
 
 afterEach(() => {
@@ -143,14 +143,23 @@ describe("Dashboard weather", () => {
   it("composes weather, plot context, and actions as the first workspace", () => {
     installFetch(response(replacementAdvice));
 
-    render(<Dashboard profile={profile} onEdit={vi.fn()} />);
+    const view = render(<Dashboard profile={profile} onEdit={vi.fn()} />);
 
+    const heading = screen.getByRole("heading", {
+      level: 1,
+      name: "Weather, translated into action.",
+    });
+    expect(heading).toBeVisible();
+    expect(heading).toHaveClass("text-2xl", "sm:text-3xl");
     expect(
-      screen.getByRole("heading", {
-        level: 1,
-        name: "Weather, translated into action.",
-      }),
-    ).toBeVisible();
+      view.container.querySelector(".rain-action-composition"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Your growing dashboard")).not.toBeInTheDocument();
+    expect(screen.queryByText("Priorities")).not.toBeInTheDocument();
+
+    const gardenSummary = screen.getByText(/South West England · 1 crop$/);
+    const editSetup = screen.getByRole("button", { name: "Edit setup" });
+    expect(gardenSummary.parentElement).toContainElement(editSetup);
     expect(
       screen.getByRole("region", { name: "Your plot profile" }),
     ).toBeVisible();
@@ -171,6 +180,46 @@ describe("Dashboard weather", () => {
       name: "Local forecast",
     });
     expect(forecast).toHaveTextContent("BS1 5AH");
+  });
+
+  it("links forecast risk to a specific action and keeps season before the map", async () => {
+    const rainy = {
+      ...weather,
+      warnings: { rainSoon: true, frostSoon: false },
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation((input: unknown) => {
+        if (routeOf(input) === "/api/weather") {
+          return Promise.resolve(response(rainy));
+        }
+        if (routeOf(input) === "/api/advice") {
+          return Promise.resolve(response(replacementAdvice));
+        }
+        return Promise.reject(new Error("Unexpected request"));
+      }),
+    );
+
+    render(<Dashboard profile={profile} onEdit={vi.fn()} />);
+
+    const cue = await screen.findByRole("note", {
+      name: "Weather-linked action",
+    });
+    expect(cue).toHaveAttribute("id", "weather-action-target");
+    expect(cue).toHaveTextContent(
+      "Rain ahead — check the soil before watering.",
+    );
+    const path = screen.getByTestId("weather-action-path");
+    expect(path).toHaveAttribute("aria-hidden", "true");
+    expect(path).toHaveClass("hidden", "lg:block");
+
+    const season = screen.getByRole("region", { name: "This season" });
+    const map = screen.getByRole("region", {
+      name: "Weather map reference",
+    });
+    expect(
+      season.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
   });
 });
 

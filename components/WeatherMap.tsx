@@ -105,7 +105,11 @@ export default function WeatherMap({ lat, lng, postcode }: Props) {
           ))}
         </div>
       </div>
-      <div ref={containerRef} className="h-64 w-full" aria-label="Weather map" />
+      <div
+        ref={containerRef}
+        className="h-48 w-full sm:h-52"
+        aria-label="Weather map"
+      />
     </section>
   );
 }
