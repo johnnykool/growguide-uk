@@ -44,7 +44,7 @@ export default function Home() {
         aria-live="polite"
         className="min-h-screen flex items-center justify-center"
       >
-        <p className="text-moss animate-pulse">Opening the potting shed…</p>
+        <p className="text-garden-ground">Opening the potting shed…</p>
       </main>
     );
   }

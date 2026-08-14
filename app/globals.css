@@ -3,27 +3,46 @@
 @tailwind utilities;
 
 :root {
-  --cream: #F1EAD8;        /* page background */
-  --sage: #B5C7AD;         /* cards, secondary fills */
-  --moss: #8A8E75;         /* text accents, icons */
-  --light-sage: #BEC5A4;   /* hover states, borders, tags */
-  --dark-earth: #68604D;   /* primary text, headings */
-  --earth-ink: #5F5746;    /* accessible secondary text on tinted surfaces */
-  --blush: #E8D1C3;        /* warm highlights, selected states */
-  --terracotta: #B18B7E;   /* warnings, alerts, priority-high badges */
-  --warm-stone: #D5C7AD;   /* card backgrounds, dividers */
+  --garden-ground: #20312C;
+  --pale-mineral: #E7E8E4;
+  --sky-blue: #7DB8E6;
+  --rain-ink: #285F87;
+  --ember: #E0645B;
+  --ember-ink: #A83F3A;
+  --moss-veil: #A6B49C;
+  --black-flower: #0E0F10;
 
-  /* RGB channel variants of the palette above, so Tailwind opacity
-     modifiers (e.g. bg-sage/60) can compose an alpha channel. */
-  --cream-rgb: 241 234 216;
-  --sage-rgb: 181 199 173;
-  --moss-rgb: 138 142 117;
-  --light-sage-rgb: 190 197 164;
-  --dark-earth-rgb: 104 96 77;
-  --earth-ink-rgb: 95 87 70;
-  --blush-rgb: 232 209 195;
-  --terracotta-rgb: 177 139 126;
-  --warm-stone-rgb: 213 199 173;
+  --garden-ground-rgb: 32 49 44;
+  --pale-mineral-rgb: 231 232 228;
+  --sky-blue-rgb: 125 184 230;
+  --rain-ink-rgb: 40 95 135;
+  --ember-rgb: 224 100 91;
+  --ember-ink-rgb: 168 63 58;
+  --moss-veil-rgb: 166 180 156;
+  --black-flower-rgb: 14 15 16;
+
+  /* Temporary compatibility aliases for untouched surfaces. */
+  --cream: var(--pale-mineral);
+  --sage: var(--moss-veil);
+  --moss: var(--garden-ground);
+  --light-sage: var(--moss-veil);
+  --dark-earth: var(--garden-ground);
+  --earth-ink: var(--garden-ground);
+  --blush: var(--moss-veil);
+  --terracotta: var(--ember);
+  --warm-stone: var(--pale-mineral);
+  --cream-rgb: var(--pale-mineral-rgb);
+  --sage-rgb: var(--moss-veil-rgb);
+  --moss-rgb: var(--garden-ground-rgb);
+  --light-sage-rgb: var(--moss-veil-rgb);
+  --dark-earth-rgb: var(--garden-ground-rgb);
+  --earth-ink-rgb: var(--garden-ground-rgb);
+  --blush-rgb: var(--moss-veil-rgb);
+  --terracotta-rgb: var(--ember-rgb);
+  --warm-stone-rgb: var(--pale-mineral-rgb);
+
+  --border-matte: rgb(var(--garden-ground-rgb) / 0.28);
+  --shadow-matte: 0 8px 24px rgb(var(--garden-ground-rgb) / 0.08);
 }
 
 html {
@@ -31,12 +50,30 @@ html {
 }
 
 body {
-  background-color: var(--cream);
-  color: var(--dark-earth);
+  background-color: var(--pale-mineral);
+  color: var(--garden-ground);
+  font-family: var(--font-figtree), sans-serif;
   line-height: 1.6;
 }
 
 ::selection {
-  background-color: var(--blush);
-  color: var(--dark-earth);
+  background-color: var(--sky-blue);
+  color: var(--garden-ground);
+}
+
+.rain-path {
+  animation: rain-path-draw 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+
+@keyframes rain-path-draw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rain-path {
+    animation: none;
+  }
 }

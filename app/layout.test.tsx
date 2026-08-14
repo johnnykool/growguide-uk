@@ -2,8 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/font/google", () => ({
-  DM_Sans: () => ({ variable: "font-sans" }),
-  DM_Serif_Display: () => ({ variable: "font-serif" }),
+  Figtree: () => ({ variable: "font-figtree" }),
 }));
 vi.mock("@/components/Header", () => ({ default: () => null }));
 vi.mock("@/components/Footer", () => ({ default: () => null }));
@@ -52,5 +51,11 @@ describe("root metadata", () => {
     );
 
     expect(markup.match(/data-site-analytics="mounted"/g)).toHaveLength(1);
+    expect(markup).toMatch(/<body class="font-figtree [^"]*font-sans"/);
+    expect(markup).toContain('data-design-direction="gravity-rain"');
+    expect(markup).toContain("6b059f98");
+    expect(markup).toMatch(
+      /<body[^>]*><template data-design-direction="gravity-rain">/,
+    );
   });
 });

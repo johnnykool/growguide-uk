@@ -18,7 +18,7 @@ interface Props {
 }
 
 const focusRing =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral";
 
 function VegetableButton({
   vegetable,
@@ -36,10 +36,10 @@ function VegetableButton({
       type="button"
       onClick={() => onToggle(vegetable.id)}
       aria-pressed={selected}
-      className={`flex min-h-11 items-center gap-2 rounded-btn px-3 py-2 text-left text-sm transition-colors ${focusRing} ${
+      className={`flex min-h-11 items-center gap-2 border px-3 py-2 text-left text-sm transition-colors ${focusRing} ${
         selected
-          ? "bg-blush text-earth-ink shadow-soft ring-2 ring-dark-earth"
-          : "bg-warm-stone/60 text-earth-ink ring-1 ring-dark-earth hover:bg-light-sage/60"
+          ? "border-garden-ground bg-moss-veil/60 text-garden-ground"
+          : "border-garden-ground/35 bg-pale-mineral text-garden-ground hover:bg-moss-veil/25"
       }`}
     >
       {VEG_PHOTOS[vegetable.id] ? (
@@ -49,16 +49,19 @@ function VegetableButton({
           width={40}
           height={40}
           sizes="40px"
-          className="h-10 w-10 shrink-0 rounded-btn object-cover"
+          className="h-10 w-10 shrink-0 object-cover"
         />
       ) : (
-        <span className="text-xl" aria-hidden>
-          {vegetable.emoji}
+        <span
+          className="flex h-10 w-10 shrink-0 items-center justify-center border border-garden-ground/25 bg-moss-veil/30 text-sm font-semibold text-garden-ground"
+          aria-hidden="true"
+        >
+          {vegetable.name.slice(0, 1)}
         </span>
       )}
       <span>
         <span className="block font-medium">{vegetable.name}</span>
-        {marker && <span className="block text-xs text-earth-ink">{marker.label}</span>}
+        {marker && <span className="block text-xs text-rain-ink">{marker.label}</span>}
       </span>
     </button>
   );
@@ -94,7 +97,7 @@ export default function VegetableGrid({
 
           return (
             <div key={category}>
-              <h4 className="mb-2 text-sm font-semibold uppercase tracking-wide text-earth-ink">
+              <h4 className="mb-2 text-sm font-semibold uppercase tracking-wide text-garden-ground/75">
                 {category}
               </h4>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
@@ -117,7 +120,7 @@ export default function VegetableGrid({
   return (
     <div className="space-y-5">
       <div data-testid="seasonal-recommendations">
-        <p className="mb-2 text-sm font-semibold text-earth-ink">
+        <p className="mb-2 text-sm font-semibold text-garden-ground">
           Good to grow this month
         </p>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
@@ -137,14 +140,14 @@ export default function VegetableGrid({
         <button
           type="button"
           onClick={() => onShowAllChange(true)}
-          className={`min-h-11 rounded-btn px-4 py-2 text-sm font-medium text-earth-ink ring-1 ring-dark-earth transition-colors hover:bg-light-sage/40 ${focusRing}`}
+          className={`min-h-11 border border-garden-ground/40 px-4 py-2 text-sm font-medium text-garden-ground transition-colors hover:bg-moss-veil/25 ${focusRing}`}
         >
           Browse all crops
         </button>
       ) : (
         <div className="space-y-5">
           <div>
-            <label htmlFor="crop-search" className="mb-1 block text-sm font-semibold text-earth-ink">
+            <label htmlFor="crop-search" className="mb-1 block text-sm font-semibold text-garden-ground">
               Search crops
             </label>
             <input
@@ -153,17 +156,17 @@ export default function VegetableGrid({
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
               placeholder="e.g. tomato"
-              className={`min-h-11 w-full rounded-btn bg-cream px-3 py-2 text-dark-earth placeholder:text-earth-ink ring-1 ring-dark-earth ${focusRing}`}
+              className={`min-h-11 w-full border border-garden-ground/45 bg-pale-mineral px-3 py-2 text-garden-ground placeholder:text-garden-ground/60 ${focusRing}`}
             />
           </div>
 
           {matchingVegetables.length === 0 ? (
             <div className="space-y-2" aria-live="polite">
-              <p className="text-sm text-earth-ink">No crops match</p>
+              <p className="text-sm text-garden-ground">No crops match</p>
               <button
                 type="button"
                 onClick={() => onSearchChange("")}
-                className={`min-h-11 rounded-btn px-4 py-2 text-sm font-medium text-earth-ink ring-1 ring-dark-earth transition-colors hover:bg-light-sage/40 ${focusRing}`}
+                className={`min-h-11 border border-garden-ground/40 px-4 py-2 text-sm font-medium text-garden-ground transition-colors hover:bg-moss-veil/25 ${focusRing}`}
               >
                 Clear search
               </button>
@@ -177,7 +180,7 @@ export default function VegetableGrid({
 
               return (
                 <section key={category}>
-                  <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-earth-ink">
+                  <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-garden-ground/75">
                     {category}
                   </h3>
                   <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">

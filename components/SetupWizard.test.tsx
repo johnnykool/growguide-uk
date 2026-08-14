@@ -77,6 +77,18 @@ const restoredDraft: SetupDraftV1 = {
   showAllEquipment: true,
 };
 
+const existingProfile: UserProfile = {
+  postcode: "SW1A 1AA",
+  lat: 51.501,
+  lng: -0.141,
+  region: "London",
+  vegetables: ["tomato"],
+  plotSize: "large",
+  environment: ["greenhouse"],
+  equipment: ["trowel"],
+  lastUpdated: "2026-08-09",
+};
+
 function deferred<T>() {
   let resolve!: (value: T) => void;
   const promise = new Promise<T>((next) => {
@@ -152,6 +164,28 @@ async function completeThroughStageFour(
 }
 
 describe("SetupWizard", () => {
+  it("introduces the four-step garden setup", () => {
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Tell us about your garden",
+      }),
+    ).toBeVisible();
+    expect(
+      screen.getByText("Four short steps. Saved on this device."),
+    ).toBeVisible();
+  });
+
+  it("labels setup as an update for an existing garden", () => {
+    render(<SetupWizard initial={existingProfile} onSave={vi.fn()} />);
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Update your garden" }),
+    ).toBeVisible();
+  });
+
   it("keeps the location gate disabled until the postcode has been checked", () => {
     render(<SetupWizard initial={null} onSave={vi.fn()} />);
 

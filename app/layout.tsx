@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, DM_Serif_Display } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -7,16 +7,20 @@ import SiteAnalytics from "@/components/SiteAnalytics";
 import SiteStructuredData from "@/components/SiteStructuredData";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
-const dmSans = DM_Sans({
+const figtree = Figtree({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
+  variable: "--font-figtree",
+  display: "swap",
 });
 
-const dmSerif = DM_Serif_Display({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-dm-serif",
-});
+const DESIGN_DIRECTION_CONTRACT = `<!--
+THESIS: Local weather visibly bends advice toward the plants and tasks it changes; this refuses the category-default photo hero and sprout-card dashboard.
+OWN-WORLD: Garden ground, pale mineral, sky blue, ember coral, moss veil, black-flower anchors, rainline GG paths, matte panels, fine borders, and one workhorse sans.
+STORY: A UK grower sees their place and forecast, understands what needs doing now, then checks their plot and season without an account or extra data.
+FIRST VIEWPORT: Compact Rainline GG shell; dark forecast ribbon; 60/40 pale working canvas with factual plot profile left and short actions right; seasonal timeline below; advice action stays inside the actions panel.
+FORM: Rain to Action, third approved composition; seed 6b059f98.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -55,8 +59,12 @@ export default function RootLayout({
   return (
     <html lang="en-GB">
       <body
-        className={`${dmSans.variable} ${dmSerif.variable} flex min-h-screen flex-col font-sans`}
+        className={`${figtree.variable} flex min-h-screen flex-col font-sans`}
       >
+        <template
+          data-design-direction="gravity-rain"
+          dangerouslySetInnerHTML={{ __html: DESIGN_DIRECTION_CONTRACT }}
+        />
         <SiteStructuredData />
         <Header />
         <div className="flex-1">{children}</div>

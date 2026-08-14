@@ -85,7 +85,7 @@ export default function TaskCard({ task, done, onToggle }: Props) {
             {task.detail}
           </p>
           {task.weatherNote && (
-            <p className="mt-3 border-l-2 border-sky-blue pl-3 text-sm text-rain-ink">
+            <p className="mt-3 border-l border-sky-blue pl-3 text-sm text-rain-ink">
               {task.weatherNote}
             </p>
           )}

@@ -316,9 +316,10 @@ describe("Dashboard advice replacement", () => {
     await waitFor(() => {
       expect(
         screen.getByText(
-          "🥀 We can't generate growing advice right now. Please try again.",
+          "We can't generate growing advice right now. Please try again.",
         ),
       ).toBeVisible();
+      expect(screen.queryByText(/🥀/)).not.toBeInTheDocument();
     });
     expect(screen.queryByText(/ANTHROPIC_API_KEY/)).not.toBeInTheDocument();
     expect(adviceRequestCount(fetchMock)).toBe(1);
@@ -350,7 +351,8 @@ describe("Dashboard advice replacement", () => {
       screen.getByRole("button", { name: "Replace my task list" }),
     );
 
-    expect(await screen.findByText(`🥀 ${expected}`)).toBeVisible();
+    expect(await screen.findByText(expected)).toBeVisible();
+    expect(screen.queryByText(/🥀/)).not.toBeInTheDocument();
     expect(adviceRequestCount(fetchMock)).toBe(1);
     expectSavedAdviceUnchanged();
   });

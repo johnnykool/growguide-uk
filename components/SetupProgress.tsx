@@ -17,7 +17,7 @@ const STEPS: { number: Step; label: string }[] = [
 ];
 
 const focusRing =
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream";
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral";
 
 export default function SetupProgress({
   activeStep,
@@ -28,17 +28,17 @@ export default function SetupProgress({
   return (
     <nav aria-label="Setup stages" className="space-y-4">
       <div>
-        <p className="mb-2 text-sm font-semibold text-dark-earth">
+        <p className="mb-2 text-sm font-semibold text-garden-ground">
           Step {activeStep} of 4
         </p>
         <progress
           aria-label="Setup progress"
           value={activeStep}
           max={4}
-          className="h-2 w-full accent-dark-earth"
+          className="h-2 w-full accent-rain-ink"
         />
       </div>
-      <ol className="grid gap-2 sm:grid-cols-2">
+      <ol className="grid border-y border-garden-ground/25 sm:grid-cols-2">
         {STEPS.map((step) => {
           const isActive = step.number === activeStep;
           const isComplete = completedSteps.includes(step.number);
@@ -47,16 +47,16 @@ export default function SetupProgress({
             <li
               key={step.number}
               aria-current={isActive ? "step" : undefined}
-              className={`flex min-h-11 items-center justify-between gap-3 rounded-btn px-3 py-2 text-sm ${
+              className={`flex min-h-11 items-center justify-between gap-3 border-b border-garden-ground/20 px-3 py-2 text-sm last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 ${
                 isActive
-                  ? "bg-light-sage/70 text-earth-ink ring-2 ring-dark-earth"
-                  : "bg-warm-stone/50 text-earth-ink"
+                  ? "bg-moss-veil/45 text-garden-ground"
+                  : "text-garden-ground/75"
               }`}
             >
               <span>
                 <span className="block font-semibold">{step.label}</span>
                 {isComplete && (
-                  <span className="block text-xs text-earth-ink">
+                  <span className="block text-xs text-garden-ground/70">
                     {summaries[step.number] ?? "Complete"}
                   </span>
                 )}
@@ -66,7 +66,7 @@ export default function SetupProgress({
                   type="button"
                   onClick={() => onEdit(step.number)}
                   aria-label={`Edit ${step.label.toLocaleLowerCase("en-GB")}`}
-                  className={`min-h-11 rounded-btn px-3 py-2 font-semibold text-earth-ink underline decoration-earth-ink underline-offset-4 hover:decoration-dark-earth ${focusRing}`}
+                  className={`min-h-11 px-3 py-2 font-semibold text-rain-ink underline decoration-rain-ink underline-offset-4 hover:text-garden-ground ${focusRing}`}
                 >
                   Edit
                 </button>

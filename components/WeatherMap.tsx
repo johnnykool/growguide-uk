@@ -45,9 +45,9 @@ export default function WeatherMap({ lat, lng, postcode }: Props) {
 
       L.circleMarker([lat, lng], {
         radius: 8,
-        color: "#B18B7E",
+        color: "#285F87",
         weight: 3,
-        fillColor: "#E8D1C3",
+        fillColor: "#7DB8E6",
         fillOpacity: 0.9,
       })
         .addTo(map)
@@ -83,10 +83,10 @@ export default function WeatherMap({ lat, lng, postcode }: Props) {
   }, [overlay, ready]);
 
   return (
-    <div className="overflow-hidden rounded-card bg-warm-stone/50 shadow-soft">
-      <div className="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
-        <h3 className="font-serif text-lg">Weather over your plot</h3>
-        <div className="flex gap-1" role="radiogroup" aria-label="Map overlay">
+    <section className="overflow-hidden border border-garden-ground/30 bg-pale-mineral">
+      <div className="flex flex-col gap-3 border-b border-garden-ground/25 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <h3 className="text-lg font-semibold text-garden-ground">Weather over your plot</h3>
+        <div className="flex flex-wrap gap-1" role="radiogroup" aria-label="Map overlay">
           {OVERLAYS.map((o) => (
             <button
               key={o.id}
@@ -94,10 +94,10 @@ export default function WeatherMap({ lat, lng, postcode }: Props) {
               role="radio"
               aria-checked={overlay === o.id}
               onClick={() => setOverlay(o.id)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              className={`min-h-11 border px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral ${
                 overlay === o.id
-                  ? "bg-blush text-dark-earth"
-                  : "bg-cream/70 text-dark-earth hover:bg-light-sage/60"
+                  ? "border-rain-ink bg-rain-ink text-pale-mineral"
+                  : "border-garden-ground/35 bg-pale-mineral text-garden-ground hover:bg-moss-veil/25"
               }`}
             >
               {o.label}
@@ -106,6 +106,6 @@ export default function WeatherMap({ lat, lng, postcode }: Props) {
         </div>
       </div>
       <div ref={containerRef} className="h-64 w-full" aria-label="Weather map" />
-    </div>
+    </section>
   );
 }
