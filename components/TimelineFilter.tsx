@@ -1,6 +1,6 @@
 "use client";
 
-import { KeyboardEvent, useRef } from "react";
+import { KeyboardEvent, useRef, useState } from "react";
 import { TIMELINE_LABELS, Timeline } from "@/lib/types";
 
 interface Props {
@@ -14,12 +14,14 @@ const ALL_TIMELINES = [...COMMON_TIMELINES, ...EXTENDED_TIMELINES];
 
 export default function TimelineFilter({ value, onChange }: Props) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
+  const [isDisclosureOpen, setIsDisclosureOpen] = useState(false);
   const radioRefs = useRef<Partial<Record<Timeline, HTMLButtonElement | null>>>(
     {},
   );
   const extendedLabel = EXTENDED_TIMELINES.includes(value)
     ? TIMELINE_LABELS[value]
     : null;
+  const usesDisclosureProxy = Boolean(extendedLabel && !isDisclosureOpen);
 
   const buttonClass = (isSelected: boolean) =>
     `min-h-11 whitespace-nowrap border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral ${
@@ -29,7 +31,7 @@ export default function TimelineFilter({ value, onChange }: Props) {
     }`;
 
   const handleRadioKeyDown = (
-    event: KeyboardEvent<HTMLButtonElement>,
+    event: KeyboardEvent<HTMLElement>,
     timeline: Timeline,
   ) => {
     const direction =
@@ -49,10 +51,14 @@ export default function TimelineFilter({ value, onChange }: Props) {
           ALL_TIMELINES.length
       ];
 
-    if (EXTENDED_TIMELINES.includes(nextTimeline)) {
+    const nextIsExtended = EXTENDED_TIMELINES.includes(nextTimeline);
+    if (nextIsExtended) {
       detailsRef.current?.setAttribute("open", "");
+    } else {
+      detailsRef.current?.removeAttribute("open");
     }
 
+    setIsDisclosureOpen(nextIsExtended);
     onChange(nextTimeline);
     radioRefs.current[nextTimeline]?.focus();
   };
@@ -90,7 +96,10 @@ export default function TimelineFilter({ value, onChange }: Props) {
               role="radio"
               aria-checked={isSelected}
               tabIndex={isSelected ? 0 : -1}
-              onClick={() => onChange(t)}
+              onClick={() => {
+                onChange(t);
+                setIsDisclosureOpen(false);
+              }}
               onKeyDown={(event) => handleRadioKeyDown(event, t)}
               className={buttonClass(isSelected)}
             >
@@ -98,13 +107,32 @@ export default function TimelineFilter({ value, onChange }: Props) {
             </button>
           );
         })}
-        <details ref={detailsRef} className="mt-2">
-          <summary className="flex min-h-11 w-fit cursor-pointer list-none items-center border border-garden-ground/30 bg-pale-mineral px-4 py-2 text-sm font-medium text-garden-ground marker:content-none hover:border-garden-ground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral">
+        <details
+          ref={detailsRef}
+          open={isDisclosureOpen}
+          onToggle={(event) => setIsDisclosureOpen(event.currentTarget.open)}
+        >
+          <summary
+            role={usesDisclosureProxy ? "radio" : undefined}
+            aria-label={
+              usesDisclosureProxy
+                ? `More timeframes, selected ${extendedLabel}`
+                : undefined
+            }
+            aria-checked={usesDisclosureProxy || undefined}
+            tabIndex={usesDisclosureProxy ? 0 : -1}
+            onKeyDown={
+              usesDisclosureProxy
+                ? (event) => handleRadioKeyDown(event, value)
+                : undefined
+            }
+            className="flex min-h-11 w-fit cursor-pointer list-none items-center border border-garden-ground/30 bg-pale-mineral px-4 py-2 text-sm font-medium text-garden-ground marker:content-none hover:border-garden-ground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral"
+          >
             More timeframes{extendedLabel ? ` · ${extendedLabel}` : ""}
           </summary>
           <div className="mt-2 flex flex-wrap gap-2">
             {EXTENDED_TIMELINES.map((t) => {
-              const isSelected = t === value;
+              const isSelected = isDisclosureOpen && t === value;
               return (
                 <button
                   key={t}
@@ -117,7 +145,7 @@ export default function TimelineFilter({ value, onChange }: Props) {
                   tabIndex={isSelected ? 0 : -1}
                   onClick={() => {
                     onChange(t);
-                    detailsRef.current?.removeAttribute("open");
+                    setIsDisclosureOpen(false);
                   }}
                   onKeyDown={(event) => handleRadioKeyDown(event, t)}
                   className={buttonClass(isSelected)}

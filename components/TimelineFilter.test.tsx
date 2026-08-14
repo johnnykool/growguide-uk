@@ -54,7 +54,7 @@ describe("TimelineFilter", () => {
     expect(onChange).toHaveBeenCalledWith("30-days");
   });
 
-  it("keeps common timelines visible and places extended timelines in one disclosure", () => {
+  it("keeps all six timelines split between common controls and one disclosure", () => {
     render(<TimelineFilter value="30-days" onChange={vi.fn()} />);
 
     const group = screen.getByRole("radiogroup", { name: "Advice timeline" });
@@ -75,8 +75,39 @@ describe("TimelineFilter", () => {
         }),
       ).toBeInTheDocument();
     }
+  });
+
+  it("uses the closed disclosure summary as the tab stop for an initial extended selection", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <ControlledTimelineFilter initialValue="30-days" onChange={vi.fn()} />,
+    );
+
+    const disclosure = screen.getByText(/More timeframes/).closest("details");
+    expect(disclosure).toBeTruthy();
+    if (!disclosure) throw new Error("Expected More timeframes disclosure");
+    const summary = disclosure.querySelector("summary");
+    if (!summary) throw new Error("Expected More timeframes summary");
+
+    expect(disclosure).not.toHaveAttribute("open");
+    expect(summary).toHaveAttribute("role", "radio");
+    expect(summary).toHaveAttribute("aria-checked", "true");
+    expect(summary).toHaveAttribute("tabindex", "0");
     expect(
-      screen.getByRole("radio", { name: TIMELINE_LABELS["30-days"] }),
+      within(disclosure).getByRole("radio", {
+        name: TIMELINE_LABELS["30-days"],
+      }),
+    ).toHaveAttribute("aria-checked", "false");
+
+    await user.click(summary);
+
+    expect(disclosure).toHaveAttribute("open", "");
+    expect(summary).not.toHaveAttribute("role");
+    expect(
+      within(disclosure).getByRole("radio", {
+        name: TIMELINE_LABELS["30-days"],
+      }),
     ).toHaveAttribute("aria-checked", "true");
   });
 
@@ -136,5 +167,33 @@ describe("TimelineFilter", () => {
     expect(onChange).toHaveBeenNthCalledWith(2, "30-days");
     expect(onChange).toHaveBeenNthCalledWith(3, "14-days");
     expect(onChange).toHaveBeenNthCalledWith(4, "7-days");
+  });
+
+  it("wraps keyboard selection between the first and last timelines", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <ControlledTimelineFilter initialValue="24-hours" onChange={vi.fn()} />,
+    );
+
+    const twentyFourHours = screen.getByRole("radio", {
+      name: TIMELINE_LABELS["24-hours"],
+    });
+    twentyFourHours.focus();
+
+    await user.keyboard("{ArrowLeft}");
+    const threeMonths = screen.getByRole("radio", {
+      name: TIMELINE_LABELS["3-months"],
+    });
+    const disclosure = threeMonths.closest("details");
+    if (!disclosure) throw new Error("Expected More timeframes disclosure");
+    expect(threeMonths).toHaveFocus();
+    expect(threeMonths).toHaveAttribute("aria-checked", "true");
+    expect(disclosure).toHaveAttribute("open", "");
+
+    await user.keyboard("{ArrowRight}");
+    expect(twentyFourHours).toHaveFocus();
+    expect(twentyFourHours).toHaveAttribute("aria-checked", "true");
+    expect(disclosure).not.toHaveAttribute("open");
   });
 });
