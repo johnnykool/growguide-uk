@@ -117,6 +117,49 @@ describe("TimelineFilter", () => {
     ).toHaveAttribute("tabindex", "0");
   });
 
+  it("keeps the common group keyboard-enterable when an extended timeline is selected", () => {
+    render(<TimelineFilter value="30-days" onChange={vi.fn()} />);
+
+    const commonGroup = screen.getByRole("radiogroup", {
+      name: "Advice timeline",
+    });
+    const commonRadios = within(commonGroup).getAllByRole("radio");
+
+    expect(commonRadios).toHaveLength(3);
+    expect(commonRadios[0]).toHaveAccessibleName(
+      TIMELINE_LABELS["24-hours"],
+    );
+    expect(commonRadios[0]).toHaveAttribute("tabindex", "0");
+    expect(commonRadios[1]).toHaveAttribute("tabindex", "-1");
+    expect(commonRadios[2]).toHaveAttribute("tabindex", "-1");
+    for (const radio of commonRadios) {
+      expect(radio).toHaveAttribute("aria-checked", "false");
+    }
+  });
+
+  it("keeps the extended group keyboard-enterable after opening with a common timeline selected", async () => {
+    const user = userEvent.setup();
+
+    render(<TimelineFilter value="7-days" onChange={vi.fn()} />);
+
+    await user.click(screen.getByText("More timeframes"));
+    const extendedGroup = screen.getByRole("radiogroup", {
+      name: "More timeframes",
+    });
+    const extendedRadios = within(extendedGroup).getAllByRole("radio");
+
+    expect(extendedRadios).toHaveLength(3);
+    expect(extendedRadios[0]).toHaveAccessibleName(
+      TIMELINE_LABELS["14-days"],
+    );
+    expect(extendedRadios[0]).toHaveAttribute("tabindex", "0");
+    expect(extendedRadios[1]).toHaveAttribute("tabindex", "-1");
+    expect(extendedRadios[2]).toHaveAttribute("tabindex", "-1");
+    for (const radio of extendedRadios) {
+      expect(radio).toHaveAttribute("aria-checked", "false");
+    }
+  });
+
   it("selects an extended timeline through the More timeframes disclosure", async () => {
     const user = userEvent.setup();
     const onChange = vi.fn();

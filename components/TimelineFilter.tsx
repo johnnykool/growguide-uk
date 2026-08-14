@@ -16,6 +16,8 @@ export default function TimelineFilter({ value, onChange }: Props) {
   const radioRefs = useRef<Partial<Record<Timeline, HTMLButtonElement | null>>>(
     {},
   );
+  const hasCommonSelection = COMMON_TIMELINES.includes(value);
+  const hasExtendedSelection = EXTENDED_TIMELINES.includes(value);
   const extendedLabel = EXTENDED_TIMELINES.includes(value)
     ? TIMELINE_LABELS[value]
     : null;
@@ -87,7 +89,11 @@ export default function TimelineFilter({ value, onChange }: Props) {
                 type="button"
                 role="radio"
                 aria-checked={isSelected}
-                tabIndex={isSelected ? 0 : -1}
+                tabIndex={
+                  isSelected || (!hasCommonSelection && t === "24-hours")
+                    ? 0
+                    : -1
+                }
                 onClick={() => {
                   onChange(t);
                   setIsDisclosureOpen(false);
@@ -125,7 +131,11 @@ export default function TimelineFilter({ value, onChange }: Props) {
                   type="button"
                   role="radio"
                   aria-checked={isSelected}
-                  tabIndex={isSelected ? 0 : -1}
+                  tabIndex={
+                    isSelected || (!hasExtendedSelection && t === "14-days")
+                      ? 0
+                      : -1
+                  }
                   onClick={() => {
                     onChange(t);
                     setIsDisclosureOpen(false);
