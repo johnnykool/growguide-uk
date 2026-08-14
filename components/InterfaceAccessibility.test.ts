@@ -73,4 +73,22 @@ describe("changed interface accessibility contracts", () => {
       /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.weather-story-path-reveal[\s\S]*animation: none/,
     );
   });
+
+  it("blooms only the authored flower while the action target keeps its full-size text and border", () => {
+    const targetKeyframes = css.match(
+      /@keyframes weather-target-land\s*{([\s\S]*?)\n}/,
+    )?.[1];
+
+    expect(targetKeyframes).toBeDefined();
+    expect(targetKeyframes).not.toContain("transform:");
+    expect(css).toMatch(
+      /\.weather-story-target \[data-black-flower="true"\][\s\S]*animation: weather-flower-bloom 650ms 1150ms/,
+    );
+    expect(css).toMatch(
+      /@keyframes weather-flower-bloom[\s\S]*transform: scale\(0\.82\)[\s\S]*transform: scale\(1\)/,
+    );
+    expect(css).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)[\s\S]*\.weather-story-target \[data-black-flower="true"\][\s\S]*animation: none/,
+    );
+  });
 });

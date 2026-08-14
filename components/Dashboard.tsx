@@ -18,7 +18,6 @@ import AdviceResults from "./AdviceResults";
 import SeasonalCalendar from "./SeasonalCalendar";
 import WeatherMap from "./WeatherMap";
 import AdviceRefreshConfirm from "./AdviceRefreshConfirm";
-import WeatherActionCue from "./WeatherActionCue";
 import WeatherWorksurface from "./WeatherWorksurface";
 import { usePublishHeaderWeather } from "./HeaderWeatherContext";
 
@@ -274,8 +273,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
               weatherError={weatherError}
               onRetryWeather={fetchWeather}
               actionContent={
-                <section aria-label="What needs doing" className="min-w-0">
-                  <WeatherActionCue weather={weather} />
+                <>
                   <div className="mt-5 first:mt-0">
                     <h2 className="text-2xl font-semibold text-garden-ground">
                       What needs doing
@@ -369,7 +367,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
                       work as you go.
                     </p>
                   )}
-                </section>
+                </>
               }
             />
           </div>

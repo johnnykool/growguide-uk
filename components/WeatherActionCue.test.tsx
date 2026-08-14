@@ -23,10 +23,9 @@ describe("WeatherActionCue", () => {
     );
     expect(cue).toHaveAttribute("data-weather-target", "rain");
     expect(cue).toHaveClass("weather-story-target");
-    expect(cue.querySelector("[data-black-flower='true']")).toHaveAttribute(
-      "width",
-      "32",
-    );
+    const flower = cue.querySelector("[data-black-flower='true']");
+    expect(flower).toHaveAttribute("width", "32");
+    expect(flower).toHaveAttribute("data-black-flower-bloom", "true");
   });
 
   it("prioritises frost when both warnings are present", () => {

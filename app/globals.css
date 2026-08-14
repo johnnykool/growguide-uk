@@ -75,12 +75,17 @@ body {
   --weather-story-target-rgb: var(--sky-blue-rgb);
   animation: weather-target-land 650ms 1150ms cubic-bezier(0.16, 1, 0.3, 1) both;
   background-color: rgb(var(--weather-story-target-rgb) / 0.18);
-  transform: scale(1);
-  transform-origin: top left;
 }
 
 .weather-story-target[data-weather-target="frost"] {
   --weather-story-target-rgb: var(--ember-rgb);
+}
+
+.weather-story-target [data-black-flower="true"][data-black-flower-bloom="true"] {
+  animation: weather-flower-bloom 650ms 1150ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform: scale(1);
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 @keyframes weather-source-arrive {
@@ -99,10 +104,17 @@ body {
 @keyframes weather-target-land {
   from {
     background-color: var(--pale-mineral);
-    transform: scale(0.82);
   }
   to {
     background-color: rgb(var(--weather-story-target-rgb) / 0.18);
+  }
+}
+
+@keyframes weather-flower-bloom {
+  from {
+    transform: scale(0.82);
+  }
+  to {
     transform: scale(1);
   }
 }
@@ -115,4 +127,9 @@ body {
   }
 
   .weather-story-path-reveal { stroke-dashoffset: 0; }
+
+  .weather-story-target [data-black-flower="true"] {
+    animation: none;
+    transform: scale(1);
+  }
 }

@@ -1,11 +1,13 @@
 import { useId } from "react";
 
 interface BlackFlowerMarkProps {
+  bloom?: boolean;
   className?: string;
   title?: string;
 }
 
 export default function BlackFlowerMark({
+  bloom = false,
   className,
   title,
 }: BlackFlowerMarkProps) {
@@ -23,6 +25,7 @@ export default function BlackFlowerMark({
       aria-hidden={title ? undefined : true}
       focusable="false"
       data-black-flower="true"
+      data-black-flower-bloom={bloom ? "true" : undefined}
       fill="currentColor"
     >
       {title && <title id={titleId}>{title}</title>}

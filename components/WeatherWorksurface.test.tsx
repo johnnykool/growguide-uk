@@ -1,7 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { UserProfile, WeatherData } from "@/lib/types";
-import WeatherActionCue from "./WeatherActionCue";
 import WeatherWorksurface from "./WeatherWorksurface";
 
 afterEach(cleanup);
@@ -30,20 +29,25 @@ const weather: WeatherData = {
   warnings: { rainSoon: true, frostSoon: false },
 };
 
-function renderWorksurface(nextWeather: WeatherData | null) {
+function renderWorksurface(
+  nextWeather: WeatherData | null,
+  {
+    loading = false,
+    error = null,
+  }: { loading?: boolean; error?: string | null } = {},
+) {
   return render(
     <WeatherWorksurface
       profile={profile}
       weather={nextWeather}
-      weatherLoading={false}
-      weatherError={null}
+      weatherLoading={loading}
+      weatherError={error}
       onRetryWeather={vi.fn()}
       actionContent={
-        <section aria-label="What needs doing">
-          <WeatherActionCue weather={nextWeather} />
+        <>
           <h2>What needs doing</h2>
           <button type="button">Get growing advice</button>
-        </section>
+        </>
       }
     />,
   );
@@ -60,11 +64,18 @@ describe("WeatherWorksurface", () => {
       screen.getByRole("region", { name: "Your garden portrait" }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole("region", { name: "What needs doing" }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("region", { name: "Local forecast" }),
     ).toHaveClass("weather-story-source");
+    const cue = screen.getByRole("note", { name: "Weather-linked action" });
+    expect(cue).toHaveAttribute("data-weather-target", "rain");
     expect(
-      screen.getByRole("note", { name: "Weather-linked action" }),
-    ).toHaveAttribute("data-weather-target", "rain");
+      cue.compareDocumentPosition(
+        screen.getByRole("heading", { name: "What needs doing" }),
+      ) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
     expect(screen.getByTestId("weather-story-path")).toHaveAttribute(
       "data-motion",
       "once",
@@ -107,4 +118,25 @@ describe("WeatherWorksurface", () => {
       screen.queryByRole("note", { name: "Weather-linked action" }),
     ).not.toBeInTheDocument();
   });
+
+  it.each([
+    { state: "loading", loading: true, error: null },
+    {
+      state: "error",
+      loading: false,
+      error: "Weather is unavailable right now.",
+    },
+  ])(
+    "suppresses both path and cue while weather is $state",
+    ({ loading, error }) => {
+      renderWorksurface(weather, { loading, error });
+
+      expect(
+        screen.queryByTestId("weather-story-path"),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("note", { name: "Weather-linked action" }),
+      ).not.toBeInTheDocument();
+    },
+  );
 });

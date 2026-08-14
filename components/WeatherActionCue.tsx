@@ -49,7 +49,10 @@ export default function WeatherActionCue({ weather, id }: Props) {
       className="weather-story-target relative z-20 border-t border-sky-blue p-3 lg:border-l lg:border-t-0"
     >
       <div className="flex items-start gap-3">
-        <BlackFlowerMark className="h-8 w-8 shrink-0 text-black-flower" />
+        <BlackFlowerMark
+          bloom
+          className="h-8 w-8 shrink-0 text-black-flower"
+        />
         <p className="pt-1 text-sm font-semibold text-garden-ground">
           {cue.text}
         </p>

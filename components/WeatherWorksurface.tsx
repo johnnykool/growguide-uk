@@ -1,8 +1,8 @@
 import { useId, type ReactNode } from "react";
 import type { UserProfile, WeatherData } from "@/lib/types";
 import GardenPortrait from "./GardenPortrait";
+import WeatherActionCue, { getWeatherActionCue } from "./WeatherActionCue";
 import WeatherBanner from "./WeatherBanner";
-import { getWeatherActionCue } from "./WeatherActionCue";
 
 interface Props {
   profile: UserProfile;
@@ -27,8 +27,8 @@ export default function WeatherWorksurface({
   const id = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const mobileMaskId = `weather-story-mobile-${id}`;
   const desktopMaskId = `weather-story-desktop-${id}`;
-  const cue =
-    !weatherLoading && !weatherError ? getWeatherActionCue(weather) : null;
+  const linkedWeather = !weatherLoading && !weatherError ? weather : null;
+  const cue = getWeatherActionCue(linkedWeather);
 
   return (
     <section aria-label="Weather to action" className="relative">
@@ -122,7 +122,10 @@ export default function WeatherWorksurface({
             cue ? "" : "border-t-4 border-rain-ink pt-5 lg:border-t-0 lg:pt-0"
           }`}
         >
-          {actionContent}
+          <section aria-label="What needs doing" className="min-w-0">
+            <WeatherActionCue weather={linkedWeather} />
+            {actionContent}
+          </section>
         </div>
 
         <GardenPortrait
