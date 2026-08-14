@@ -19,24 +19,27 @@ export default function Header() {
           </span>
         </a>
         {weatherSummary && (
-          <p
+          <div
+            role="region"
             aria-label="Current garden weather"
-            className="min-w-0 text-right text-xs font-semibold text-garden-ground/70 sm:text-sm"
+            className="min-w-0 border-l-4 border-sky-blue bg-garden-ground px-3 py-1.5 text-right text-pale-mineral"
           >
-            <span>{weatherSummary.postcode}</span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-pale-mineral/80">
+              {weatherSummary.postcode}
+            </span>
             {typeof weatherSummary.temp === "number" && (
               <>
                 <span aria-hidden="true"> · </span>
-                <span>{weatherSummary.temp}°C</span>
+                <span className="text-base font-semibold">{weatherSummary.temp}°C</span>
                 {weatherSummary.description && (
-                  <span className="hidden sm:inline">
+                  <span className="hidden text-xs font-medium text-pale-mineral/80 sm:inline">
                     <span aria-hidden="true"> · </span>
                     {weatherSummary.description}
                   </span>
                 )}
               </>
             )}
-          </p>
+          </div>
         )}
       </div>
     </header>

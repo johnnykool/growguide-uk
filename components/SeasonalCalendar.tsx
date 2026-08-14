@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { getVegetableById } from "@/data/vegetables";
 
 interface Props {
@@ -23,37 +24,68 @@ const MONTH_NAMES = [
 
 export default function SeasonalCalendar({ vegetableIds }: Props) {
   const currentMonth = new Date().getMonth() + 1; // 1-12
+  const scrollRegionRef = useRef<HTMLDivElement>(null);
+  const currentMonthCellRef = useRef<HTMLDivElement>(null);
+  const vegetables = vegetableIds.flatMap((id) => {
+    const vegetable = getVegetableById(id);
+    return vegetable ? [vegetable] : [];
+  });
+
+  useEffect(() => {
+    const scrollRegion = scrollRegionRef.current;
+    const currentMonthCell = currentMonthCellRef.current;
+
+    if (
+      !scrollRegion ||
+      !currentMonthCell ||
+      typeof scrollRegion.scrollTo !== "function"
+    ) {
+      return;
+    }
+
+    const left = Math.max(
+      0,
+      currentMonthCell.offsetLeft - scrollRegion.clientWidth * 0.35,
+    );
+    scrollRegion.scrollTo({ left, behavior: "auto" });
+  }, [vegetableIds]);
 
   return (
     <section aria-label="This season" className="bg-pale-mineral py-5">
       <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 px-1">
         <h2 className="text-xl font-semibold text-garden-ground">This season</h2>
-        <p className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-garden-ground/75">
-          <span>
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block h-2.5 w-2.5 bg-moss-veil align-middle"
-            />
-            sow / plant
+        <div className="flex items-end gap-4">
+          <span className="text-xs font-semibold text-garden-ground sm:hidden">
+            Months →
           </span>
-          <span>
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block h-2.5 w-2.5 bg-rain-ink align-middle"
-            />
-            harvest
-          </span>
-          <span>
-            <span
-              aria-hidden="true"
-              className="mr-1 inline-block h-2.5 w-2.5 border border-garden-ground/30 bg-pale-mineral align-middle"
-            />
-            dormant
-          </span>
-        </p>
+          <p className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-garden-ground/75">
+            <span>
+              <span
+                aria-hidden="true"
+                className="mr-1 inline-block h-2.5 w-2.5 bg-moss-veil align-middle"
+              />
+              sow / plant
+            </span>
+            <span>
+              <span
+                aria-hidden="true"
+                className="mr-1 inline-block h-2.5 w-2.5 bg-rain-ink align-middle"
+              />
+              harvest
+            </span>
+            <span>
+              <span
+                aria-hidden="true"
+                className="mr-1 inline-block h-2.5 w-2.5 border border-garden-ground/30 bg-pale-mineral align-middle"
+              />
+              dormant
+            </span>
+          </p>
+        </div>
       </div>
 
       <div
+        ref={scrollRegionRef}
         role="region"
         aria-label="Seasonal timeline"
         tabIndex={0}
@@ -73,9 +105,7 @@ export default function SeasonalCalendar({ vegetableIds }: Props) {
           </div>
 
           <div className="space-y-2">
-            {vegetableIds.map((id) => {
-              const veg = getVegetableById(id);
-              if (!veg) return null;
+            {vegetables.map((veg, rowIndex) => {
               const active = new Set([
                 ...veg.sowIndoors,
                 ...veg.sowOutdoors,
@@ -84,7 +114,7 @@ export default function SeasonalCalendar({ vegetableIds }: Props) {
               const harvest = new Set(veg.harvest);
               return (
                 <div
-                  key={id}
+                  key={veg.id}
                   className="grid grid-cols-[7rem_repeat(12,minmax(4.75rem,1fr))] items-center gap-px px-1"
                 >
                   <p className="pr-3 text-sm font-medium text-garden-ground">
@@ -107,6 +137,11 @@ export default function SeasonalCalendar({ vegetableIds }: Props) {
                     return (
                       <div
                         key={month}
+                        ref={
+                          rowIndex === 0 && isCurrent
+                            ? currentMonthCellRef
+                            : undefined
+                        }
                         role="img"
                         aria-label={`${veg.name}, ${name}: ${state}`}
                         className={`h-7 border border-garden-ground/20 ${colour} ${

@@ -2,6 +2,24 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import Footer from "./Footer";
 import Header from "./Header";
+import {
+  HeaderWeatherProvider,
+  usePublishHeaderWeather,
+} from "./HeaderWeatherContext";
+
+function WeatherHeader() {
+  usePublishHeaderWeather("SW1A 1AA", {
+    current: {
+      temp: 16,
+      description: "light rain",
+      icon: "10d",
+    },
+    daily: [],
+    warnings: { rainSoon: true, frostSoon: false },
+  });
+
+  return <Header />;
+}
 
 afterEach(cleanup);
 
@@ -24,6 +42,21 @@ describe("GrowGuide shell content", () => {
 
     const homeLink = screen.getByRole("link", { name: "GrowGuide UK" });
     expect(homeLink.querySelector("svg")).toHaveClass("text-rain-ink");
+  });
+
+  it("groups the published weather summary in a current garden weather region", () => {
+    render(
+      <HeaderWeatherProvider>
+        <WeatherHeader />
+      </HeaderWeatherProvider>,
+    );
+
+    const weather = screen.getByRole("region", {
+      name: "Current garden weather",
+    });
+    expect(within(weather).getByText("SW1A 1AA")).toBeVisible();
+    expect(within(weather).getByText("16°C")).toBeVisible();
+    expect(within(weather).getByText("light rain")).toBeVisible();
   });
 
   it("keeps product provenance in the compact footer, not the header", () => {
