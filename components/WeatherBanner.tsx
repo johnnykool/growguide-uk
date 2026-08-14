@@ -114,8 +114,7 @@ export default function WeatherBanner({
     );
   }
 
-  const { current, daily, warnings } = weather;
-  const hasWeatherWarning = warnings.rainSoon || warnings.frostSoon;
+  const { current, daily } = weather;
 
   return (
     <section
@@ -169,51 +168,6 @@ export default function WeatherBanner({
           ))}
         </ul>
       </div>
-
-      {hasWeatherWarning && (
-        <div className="relative mt-3 pt-8">
-          <svg
-            aria-hidden="true"
-            className="forecast-trajectory absolute inset-x-0 top-0 h-8 w-full text-[#7DB8E6]"
-            viewBox="0 0 320 32"
-            preserveAspectRatio="none"
-          >
-            <g className="forecast-trajectory__draw">
-              <path
-                d="M0 3 C92 3 189 7 316 29"
-                fill="none"
-                stroke="currentColor"
-                strokeDasharray="5 7"
-                strokeLinecap="round"
-                strokeWidth="2"
-              />
-              <circle cx="316" cy="29" r="3" fill="currentColor" />
-            </g>
-          </svg>
-          <p className="border-l-2 border-[#E0645B] pl-3 text-sm font-semibold text-[#E7E8E4]">
-            Rain may change your next tasks
-          </p>
-        </div>
-      )}
-
-      <style>{`
-        .forecast-trajectory__draw {
-          animation: forecast-trajectory-draw 900ms ease-out both;
-          transform-box: fill-box;
-          transform-origin: left center;
-        }
-
-        @keyframes forecast-trajectory-draw {
-          from { transform: scaleX(0); }
-          to { transform: scaleX(1); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .forecast-trajectory__draw {
-            animation: none;
-          }
-        }
-      `}</style>
     </section>
   );
 }

@@ -53,7 +53,6 @@ describe("WeatherBanner", () => {
         name: "Tue: high 17°, low 9°, 60% rain",
       }),
     ).toBeVisible();
-    expect(screen.getByText("Rain may change your next tasks")).toBeVisible();
   });
 
   it("announces loading through a polite status region", () => {
