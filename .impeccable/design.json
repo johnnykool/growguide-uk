@@ -1,0 +1,344 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-14T10:01:17Z",
+  "title": "Design System: GrowGuide UK — Gravity Rain",
+  "extensions": {
+    "colorMeta": {
+      "garden-ground": {
+        "role": "neutral",
+        "displayName": "Garden Ground",
+        "canonical": "#20312C",
+        "tonalRamp": [
+          "oklch(15% 0.024 174.4)",
+          "oklch(26% 0.024 174.4)",
+          "oklch(38% 0.024 174.4)",
+          "oklch(50% 0.024 174.4)",
+          "oklch(62% 0.024 174.4)",
+          "oklch(74% 0.024 174.4)",
+          "oklch(86% 0.024 174.4)",
+          "oklch(95% 0.024 174.4)"
+        ]
+      },
+      "pale-mineral": {
+        "role": "neutral",
+        "displayName": "Pale Mineral",
+        "canonical": "#E7E8E4",
+        "tonalRamp": [
+          "oklch(15% 0.005 117.9)",
+          "oklch(26% 0.005 117.9)",
+          "oklch(38% 0.005 117.9)",
+          "oklch(50% 0.005 117.9)",
+          "oklch(62% 0.005 117.9)",
+          "oklch(74% 0.005 117.9)",
+          "oklch(86% 0.005 117.9)",
+          "oklch(95% 0.005 117.9)"
+        ]
+      },
+      "sky-blue": {
+        "role": "primary",
+        "displayName": "Sky Blue",
+        "canonical": "#7DB8E6",
+        "tonalRamp": [
+          "oklch(15% 0.090 242.8)",
+          "oklch(26% 0.090 242.8)",
+          "oklch(38% 0.090 242.8)",
+          "oklch(50% 0.090 242.8)",
+          "oklch(62% 0.090 242.8)",
+          "oklch(74% 0.090 242.8)",
+          "oklch(86% 0.090 242.8)",
+          "oklch(95% 0.090 242.8)"
+        ]
+      },
+      "rain-ink": {
+        "role": "primary",
+        "displayName": "Rain Ink",
+        "canonical": "#285F87",
+        "tonalRamp": [
+          "oklch(15% 0.087 243.3)",
+          "oklch(26% 0.087 243.3)",
+          "oklch(38% 0.087 243.3)",
+          "oklch(50% 0.087 243.3)",
+          "oklch(62% 0.087 243.3)",
+          "oklch(74% 0.087 243.3)",
+          "oklch(86% 0.087 243.3)",
+          "oklch(95% 0.087 243.3)"
+        ]
+      },
+      "ember": {
+        "role": "tertiary",
+        "displayName": "Ember Coral",
+        "canonical": "#E0645B",
+        "tonalRamp": [
+          "oklch(15% 0.157 26.4)",
+          "oklch(26% 0.157 26.4)",
+          "oklch(38% 0.157 26.4)",
+          "oklch(50% 0.157 26.4)",
+          "oklch(62% 0.157 26.4)",
+          "oklch(74% 0.157 26.4)",
+          "oklch(86% 0.157 26.4)",
+          "oklch(95% 0.157 26.4)"
+        ]
+      },
+      "ember-ink": {
+        "role": "tertiary",
+        "displayName": "Ember Ink",
+        "canonical": "#A83F3A",
+        "tonalRamp": [
+          "oklch(15% 0.140 25.9)",
+          "oklch(26% 0.140 25.9)",
+          "oklch(38% 0.140 25.9)",
+          "oklch(50% 0.140 25.9)",
+          "oklch(62% 0.140 25.9)",
+          "oklch(74% 0.140 25.9)",
+          "oklch(86% 0.140 25.9)",
+          "oklch(95% 0.140 25.9)"
+        ]
+      },
+      "moss-veil": {
+        "role": "secondary",
+        "displayName": "Moss Veil",
+        "canonical": "#A6B49C",
+        "tonalRamp": [
+          "oklch(15% 0.037 132.1)",
+          "oklch(26% 0.037 132.1)",
+          "oklch(38% 0.037 132.1)",
+          "oklch(50% 0.037 132.1)",
+          "oklch(62% 0.037 132.1)",
+          "oklch(74% 0.037 132.1)",
+          "oklch(86% 0.037 132.1)",
+          "oklch(95% 0.037 132.1)"
+        ]
+      },
+      "black-flower": {
+        "role": "neutral",
+        "displayName": "Black Flower",
+        "canonical": "#0E0F10",
+        "tonalRamp": [
+          "oklch(15% 0.003 248.0)",
+          "oklch(26% 0.003 248.0)",
+          "oklch(38% 0.003 248.0)",
+          "oklch(50% 0.003 248.0)",
+          "oklch(62% 0.003 248.0)",
+          "oklch(74% 0.003 248.0)",
+          "oklch(86% 0.003 248.0)",
+          "oklch(95% 0.003 248.0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Setup and major page titles."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Compact dashboard promises and surface introductions."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Panel, step, and working-section headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Plain instructions, summaries, task detail, and privacy copy."
+      },
+      "label": {
+        "displayName": "Operational Label",
+        "purpose": "Forecast days, plot facts, crop groups, and timing metadata."
+      }
+    },
+    "shadows": [
+      {
+        "name": "matte",
+        "value": "0 8px 24px rgb(32 49 44 / 0.08)",
+        "purpose": "Defined low ambient compatibility token; core Gravity Rain surfaces remain border-led and flat."
+      },
+      {
+        "name": "soft",
+        "value": "0 1px 0 rgb(32 49 44 / 0.14)",
+        "purpose": "Defined one-pixel compatibility edge; not used by rebuilt dashboard surfaces."
+      },
+      {
+        "name": "lifted",
+        "value": "0 8px 24px rgb(32 49 44 / 0.08)",
+        "purpose": "Alias of matte retained by the Tailwind theme; not a default card treatment."
+      }
+    ],
+    "motion": [
+      {
+        "name": "rain-path-draw",
+        "value": "900ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "purpose": "Draw authored setup rain paths and the desktop forecast-to-action trajectory once, then stop."
+      },
+      {
+        "name": "state-transition",
+        "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Tailwind default transition for colour and opacity state changes."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none",
+        "purpose": "Under prefers-reduced-motion: reduce, remove path drawing while keeping the final path and all content visible."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary setup and advice action with the shipped square, full-colour treatment.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Get growing advice</button>",
+      "css": ".ds-btn-primary { min-height: 44px; border: 0; border-radius: 0; background: var(--rain-ink, #285F87); color: var(--pale-mineral, #E7E8E4); padding: 12px 24px; font-family: var(--font-figtree), sans-serif; font-size: 16px; font-weight: 600; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background: var(--garden-ground, #20312C); } .ds-btn-primary:focus-visible { outline: 2px solid var(--garden-ground, #20312C); outline-offset: 2px; } .ds-btn-primary:active { background: var(--garden-ground, #20312C); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Quiet bordered action for editing, retrying, going back, or cancelling.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">Edit setup</button>",
+      "css": ".ds-btn-secondary { min-height: 44px; border: 1px solid rgb(32 49 44 / 0.4); border-radius: 0; background: var(--pale-mineral, #E7E8E4); color: var(--garden-ground, #20312C); padding: 8px 16px; font-family: var(--font-figtree), sans-serif; font-size: 14px; font-weight: 600; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-secondary:hover { background: var(--garden-ground, #20312C); color: var(--pale-mineral, #E7E8E4); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--garden-ground, #20312C); outline-offset: 2px; } .ds-btn-secondary:active { background: rgb(32 49 44 / 0.9); color: var(--pale-mineral, #E7E8E4); }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Plain labelled field used for postcode and crop search input.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-postcode\">UK postcode <span>(required)</span></label><input class=\"ds-field\" id=\"ds-postcode\" type=\"text\" placeholder=\"e.g. PR1 1AA\" />",
+      "css": ".ds-field-label { display: block; margin-bottom: 4px; color: var(--garden-ground, #20312C); font-family: var(--font-figtree), sans-serif; font-size: 14px; font-weight: 600; } .ds-field-label span { font-weight: 400; color: rgb(32 49 44 / 0.7); } .ds-field { min-height: 44px; width: 100%; border: 1px solid rgb(32 49 44 / 0.45); border-radius: 0; background: var(--pale-mineral, #E7E8E4); color: var(--garden-ground, #20312C); padding: 12px 16px; font-family: var(--font-figtree), sans-serif; font-size: 16px; } .ds-field::placeholder { color: rgb(32 49 44 / 0.6); } .ds-field:hover { border-color: var(--garden-ground, #20312C); } .ds-field:focus-visible { outline: 2px solid var(--garden-ground, #20312C); outline-offset: 2px; }"
+    },
+    {
+      "name": "Selected Choice",
+      "kind": "chip",
+      "description": "Square setup choice with Moss Veil selection and a full Garden Ground boundary.",
+      "html": "<button class=\"ds-choice\" type=\"button\" aria-pressed=\"true\">Open ground</button>",
+      "css": ".ds-choice { min-height: 44px; border: 1px solid rgb(32 49 44 / 0.35); border-radius: 0; background: var(--pale-mineral, #E7E8E4); color: var(--garden-ground, #20312C); padding: 8px 16px; font-family: var(--font-figtree), sans-serif; font-size: 14px; font-weight: 500; transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-choice[aria-pressed=\"true\"] { border-color: var(--garden-ground, #20312C); background: rgb(166 180 156 / 0.6); } .ds-choice:hover { background: rgb(166 180 156 / 0.25); } .ds-choice[aria-pressed=\"true\"]:hover { background: rgb(166 180 156 / 0.6); } .ds-choice:focus-visible { outline: 2px solid var(--garden-ground, #20312C); outline-offset: 2px; }"
+    },
+    {
+      "name": "Plot Profile Panel",
+      "kind": "card",
+      "refersTo": "matte-panel",
+      "description": "Factual matte panel anchored by the authored black-flower mark and fine internal rules.",
+      "html": "<section class=\"ds-plot\" aria-label=\"Your plot profile\"><div class=\"ds-plot-title\"><svg class=\"ds-black-flower\" viewBox=\"0 0 32 32\" aria-hidden=\"true\"><path d=\"M16 13.9c-3.2-2.5-3.5-6.7 0-10.9 3.5 4.2 3.2 8.4 0 10.9Z\"/><path d=\"M18 14.6c.5-4.1 3.8-6.9 9-6.9-1.1 5.3-4.6 7.8-9 6.9Z\"/><path d=\"M17.3 18.2c4-1 7.9 1.2 9.6 6.3-5.3.5-8.9-1.8-9.6-6.3Z\"/><path d=\"M14.7 18.2c-.7 4.5-4.3 6.8-9.6 6.3 1.7-5.1 5.6-7.3 9.6-6.3Z\"/><path d=\"M14 14.6c-4.4.9-7.9-1.6-9-6.9 5.2 0 8.5 2.8 9 6.9Z\"/><circle cx=\"16\" cy=\"16\" r=\"3.1\"/></svg><h2>Your plot</h2></div><dl class=\"ds-plot-facts\"><div><dt>Month</dt><dd>August</dd></div><div><dt>Your crops</dt><dd>4 crops</dd></div><div><dt>In season</dt><dd>3 active this month</dd></div></dl></section>",
+      "css": ".ds-plot { border: 1px solid rgb(32 49 44 / 0.3); border-radius: 0; background: var(--pale-mineral, #E7E8E4); color: var(--garden-ground, #20312C); padding: 20px; font-family: var(--font-figtree), sans-serif; } .ds-plot-title { display: flex; align-items: center; gap: 8px; } .ds-plot-title h2 { margin: 0; font-size: 20px; font-weight: 600; } .ds-black-flower { width: 20px; height: 20px; flex: none; fill: var(--black-flower, #0E0F10); } .ds-plot-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 20px 0 0; padding: 16px 0; border-top: 1px solid rgb(32 49 44 / 0.2); border-bottom: 1px solid rgb(32 49 44 / 0.2); } .ds-plot-facts dt { color: rgb(32 49 44 / 0.7); font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; } .ds-plot-facts dd { margin: 4px 0 0; font-weight: 600; }"
+    },
+    {
+      "name": "Forecast Ribbon",
+      "kind": "custom",
+      "refersTo": "forecast-ribbon",
+      "description": "Dark local-condition band with blue authored weather graphics and horizontally scannable days.",
+      "html": "<section class=\"ds-forecast\" aria-label=\"Local forecast\"><div class=\"ds-current\"><svg class=\"ds-weather-icon\" viewBox=\"0 0 32 32\" role=\"img\" aria-label=\"Light rain weather\"><path d=\"M8.5 20.5a5 5 0 0 1 .8-9.9A7 7 0 0 1 22.8 12a4.5 4.5 0 0 1 .7 8.5H8.5Z\"/><path d=\"m11 24-1 3M17 24l-1 3M23 24l-1 3\"/></svg><div><span class=\"ds-forecast-label\">PR1 1AA</span><strong>12°C</strong><span>Light rain</span></div></div><div class=\"ds-day\"><span class=\"ds-forecast-label\">Tuesday</span><strong>15° / 9°</strong><span class=\"ds-rain\">85% rain</span></div></section>",
+      "css": ".ds-forecast { display: flex; gap: 20px; overflow-x: auto; border: 1px solid rgb(231 232 228 / 0.2); border-radius: 0; background: var(--garden-ground, #20312C); color: var(--pale-mineral, #E7E8E4); padding: 20px; font-family: var(--font-figtree), sans-serif; } .ds-current { display: flex; min-width: 176px; align-items: center; gap: 12px; padding-right: 24px; border-right: 1px solid rgb(231 232 228 / 0.2); } .ds-current div, .ds-day { display: flex; flex-direction: column; } .ds-current strong { font-size: 30px; line-height: 1; } .ds-current span:last-child, .ds-day span { font-size: 14px; } .ds-weather-icon { width: 40px; height: 40px; flex: none; fill: none; stroke: var(--sky-blue, #7DB8E6); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; } .ds-forecast-label { color: var(--moss-veil, #A6B49C); font-size: 12px !important; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; } .ds-day { min-width: 88px; justify-content: center; gap: 4px; text-align: center; } .ds-rain { color: var(--sky-blue, #7DB8E6); font-size: 12px !important; }"
+    },
+    {
+      "name": "Rain-to-Action Cue",
+      "kind": "custom",
+      "description": "One-shot authored weather trajectory that terminates at a real, local action cue.",
+      "html": "<div class=\"ds-rain-action\"><svg class=\"ds-rain-trajectory\" viewBox=\"0 0 100 64\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><defs><mask id=\"ds-rain-mask\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"100\" height=\"64\"><path class=\"ds-rain-reveal\" d=\"M99 1 C99 22 15 12 1 34\" pathLength=\"1\" /></mask></defs><path class=\"ds-rain-visible\" d=\"M99 1 C99 22 15 12 1 34\" mask=\"url(#ds-rain-mask)\" /></svg><aside class=\"ds-action-cue\" aria-label=\"Weather-linked action\"><span aria-hidden=\"true\"></span><p>Rain ahead — check the soil before watering.</p></aside></div>",
+      "css": ".ds-rain-action { position: relative; min-height: 96px; color: var(--garden-ground, #20312C); font-family: var(--font-figtree), sans-serif; } .ds-rain-trajectory { position: absolute; inset: 0 0 auto auto; width: 55%; height: 64px; overflow: visible; fill: none; } .ds-rain-reveal { fill: none; stroke: white; stroke-width: 5; stroke-dasharray: 1; stroke-linecap: round; animation: ds-rain-draw 900ms cubic-bezier(0.16, 1, 0.3, 1) both; } .ds-rain-visible { fill: none; stroke: var(--sky-blue, #7DB8E6); stroke-width: 1.5; stroke-dasharray: 3 3; stroke-linecap: round; vector-effect: non-scaling-stroke; } .ds-action-cue { position: absolute; right: 0; bottom: 0; width: 42%; border-left: 1px solid var(--sky-blue, #7DB8E6); padding-left: 12px; } .ds-action-cue span { display: block; width: 8px; height: 8px; border-radius: 9999px; background: var(--sky-blue, #7DB8E6); } .ds-action-cue p { margin: 8px 0 0; font-size: 14px; font-weight: 600; } @keyframes ds-rain-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } } @media (prefers-reduced-motion: reduce) { .ds-rain-reveal { animation: none; stroke-dashoffset: 0; } }"
+    },
+    {
+      "name": "Rainline Header",
+      "kind": "nav",
+      "description": "Compact sticky shell with the authored two-path Rainline GG and restrained wordmark.",
+      "html": "<nav class=\"ds-header\" aria-label=\"Primary\"><a class=\"ds-home\" href=\"#\"><svg class=\"ds-rainline-gg\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><path d=\"M14 8v17c0 15 10 27 25 27h11V37H38\"/><path d=\"M30 8v13c0 10 7 18 17 18h7V26H43\"/></svg><span>GrowGuide <strong>UK</strong></span></a></nav>",
+      "css": ".ds-header { border-bottom: 1px solid rgb(32 49 44 / 0.25); background: var(--pale-mineral, #E7E8E4); padding: 10px 16px; font-family: var(--font-figtree), sans-serif; } .ds-home { display: inline-flex; min-height: 44px; align-items: center; gap: 12px; color: var(--garden-ground, #20312C); text-decoration: none; } .ds-rainline-gg { width: 32px; height: 32px; flex: none; fill: none; stroke: var(--rain-ink, #285F87); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; } .ds-home span { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; } .ds-home strong { color: var(--rain-ink, #285F87); } .ds-home:hover strong { color: var(--garden-ground, #20312C); } .ds-home:focus-visible { outline: 2px solid var(--garden-ground, #20312C); outline-offset: 2px; }"
+    },
+    {
+      "name": "Weather-aware Task Row",
+      "kind": "card",
+      "description": "Dense but spacious action row with a semantic rail, custom checkbox, and optional weather note.",
+      "html": "<article class=\"ds-task\"><span class=\"ds-task-rail\" aria-hidden=\"true\"></span><label class=\"ds-task-check\"><input type=\"checkbox\" aria-label=\"Mark Check containers as done\" /><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 13l4 4L19 7\"/></svg></label><div><span class=\"ds-task-label\">Tomato</span><h3>Check containers</h3><p>Feel the soil before adding water.</p><p class=\"ds-task-weather\">Rain is likely tomorrow.</p></div></article>",
+      "css": ".ds-task { position: relative; display: flex; gap: 12px; border: 1px solid rgb(32 49 44 / 0.4); border-radius: 0; background: var(--pale-mineral, #E7E8E4); color: var(--garden-ground, #20312C); padding: 20px 4px 20px 20px; font-family: var(--font-figtree), sans-serif; } .ds-task-rail { position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--sky-blue, #7DB8E6); } .ds-task-check { position: relative; display: flex; width: 44px; height: 44px; flex: none; align-items: center; justify-content: center; } .ds-task-check input { width: 24px; height: 24px; appearance: none; border: 1px solid rgb(32 49 44 / 0.5); border-radius: 0; background: var(--pale-mineral, #E7E8E4); } .ds-task-check input:checked { border-color: var(--garden-ground, #20312C); background: var(--garden-ground, #20312C); } .ds-task-check input:focus-visible { outline: 2px solid var(--garden-ground, #20312C); outline-offset: 2px; } .ds-task-check svg { position: absolute; width: 16px; height: 16px; fill: none; stroke: var(--pale-mineral, #E7E8E4); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; opacity: 0; } .ds-task-check input:checked + svg { opacity: 1; } .ds-task h3 { margin: 4px 0 0; font-size: 16px; line-height: 1.375; } .ds-task p { margin: 12px 0 0; font-size: 14px; line-height: 1.625; } .ds-task-label { color: rgb(32 49 44 / 0.65); font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; } .ds-task-weather { border-left: 2px solid var(--sky-blue, #7DB8E6); color: var(--rain-ink, #285F87); padding-left: 12px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Gravity Rain",
+    "overview": "Gravity Rain is a calm, practical working system in which local weather visibly bends the interface toward the action it changes. Its signature composition, Rain to Action, treats forecast paths, timing lines, and a dark flower marker as information architecture rather than decoration. The system feels sophisticated through precision: one humanist sans, matte surfaces, fine boundaries, restrained colour, and generous working space.\n\nThe interface is quiet but not passive. Dark forecast regions establish local conditions; blue motion traces a real consequence; coral and moss identify protection and growth states; the factual plot profile and short priority list complete the thought. Copy stays concise, plain, and encouraging. Setup, privacy, loading, error, and empty states explain only what is needed for the next decision, with no invented claims or decorative gardening language.",
+    "keyCharacteristics": [
+      "Weather visibly leads to a useful action.",
+      "Matte mineral surfaces are structured by fine lines, not floating cards.",
+      "A single humanist sans keeps operational information direct.",
+      "Authored Rainline GG and black-flower marks replace generic gardening symbols.",
+      "Colour is semantic: blue for weather/action, coral for protection/urgency, moss for planting/healthy states.",
+      "Mobile keeps priorities before plot context and never compresses labels into illegibility."
+    ],
+    "rules": [
+      {
+        "name": "The Weather Carries Blue Rule",
+        "body": "Use Rain Ink for action and Sky Blue for weather paths and symbols; blue must explain local conditions or what to do next.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signal Stays Singular Rule",
+        "body": "Coral identifies protection, error, or time-sensitive risk; moss identifies growth and selection. Do not use either as general decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Workhorse Rule",
+        "body": "Use Figtree throughout; do not introduce a serif, script, or ornamental gardening face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Minimal Copy Rule",
+        "body": "Lead with the next decision, use plain UK English, and omit kickers, repeated reassurance, and explanatory copy that does not change an action.",
+        "section": "typography"
+      },
+      {
+        "name": "The Action Before Context Rule",
+        "body": "On narrow screens, show what needs doing before the factual plot profile; never preserve desktop column order at the cost of the next useful action.",
+        "section": "layout"
+      },
+      {
+        "name": "The Matte by Default Rule",
+        "body": "Keep working surfaces flat at rest; establish depth with Garden Ground boundaries, dark/light reversal, and spatial grouping rather than floating card shadows.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Fine Edge Rule",
+        "body": "Start square and use one-pixel rules; add curvature only when the shape itself communicates a point, marker, or path.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Rain Must Land Rule",
+        "body": "Never draw a weather trajectory unless it terminates at a real, deterministic action generated from available weather state.",
+        "section": "components"
+      },
+      {
+        "name": "The Authored Marks Rule",
+        "body": "Never substitute a sprout, seedling, leaf-in-circle, Unicode flower, or generic gardening badge for Rainline GG or the black-flower anchor.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do use Pale Mineral as the working canvas and Garden Ground for structure, focus, and dark functional bands.",
+      "Do preserve the forecast → action → plot → season reading order, adapting actions before plot on phones.",
+      "Do keep every interactive target at least 44px high, keyboard reachable, clearly labelled, and visibly focused.",
+      "Do keep essential content visible without animation; respect reduced motion by showing the final path without drawing it.",
+      "Do write short, plain, factual copy and expose errors, status changes, required fields, and selected states semantically.",
+      "Do use authored SVG for identity, weather symbols, checkmarks, and plot markers."
+    ],
+    "donts": [
+      "Don't use gradients, glass effects, floating generic card grids, broad soft shadows, or cream-and-terracotta editorial styling.",
+      "Don't introduce a display serif, ornamental gardening type, or decorative text that competes with the next action.",
+      "Don't use blue, coral, or moss without their weather/action, protection/error, or planting/selection meaning.",
+      "Don't invent measured plot geometry, weather cues, claims, pop-ups, or additional explanatory copy.",
+      "Don't shrink forecast, timeline, or form labels to preserve a desktop layout on phones; scroll, stack, or switch control form instead.",
+      "Don't animate continuously or make an action, cue, label, or path depend on animation or JavaScript effects to remain understandable."
+    ]
+  }
+}
