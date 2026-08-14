@@ -14,6 +14,8 @@ export default function BlackFlowerMark({
 
   return (
     <svg
+      width="32"
+      height="32"
       viewBox="0 0 32 32"
       className={className}
       role={title ? "img" : undefined}

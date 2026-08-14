@@ -41,4 +41,13 @@ describe("BlackFlowerMark", () => {
     expect(mark?.querySelectorAll("path")).toHaveLength(5);
     expect(mark?.querySelectorAll("circle")).toHaveLength(1);
   });
+
+  it("provides 32px intrinsic dimensions without discarding class sizing", () => {
+    const view = render(<BlackFlowerMark className="h-5 w-5" />);
+    const mark = view.container.querySelector('[data-black-flower="true"]');
+
+    expect(mark).toHaveAttribute("width", "32");
+    expect(mark).toHaveAttribute("height", "32");
+    expect(mark).toHaveClass("h-5", "w-5");
+  });
 });
