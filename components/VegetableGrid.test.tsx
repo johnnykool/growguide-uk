@@ -23,6 +23,17 @@ function SearchableVegetableGrid() {
 }
 
 describe("VegetableGrid", () => {
+  it("uses ruled crop controls without photos and exposes selection state", () => {
+    const { container } = render(
+      <VegetableGrid selected={["lettuce"]} onToggle={vi.fn()} />,
+    );
+
+    expect(container.querySelector("img")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Lettuce/i, pressed: true }),
+    ).toBeVisible();
+  });
+
   it("keeps the full crop catalogue available for the legacy two-prop call site", () => {
     render(<VegetableGrid selected={[]} onToggle={vi.fn()} />);
 

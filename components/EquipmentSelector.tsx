@@ -34,23 +34,23 @@ export default function EquipmentSelector({
 
   return (
     <div className="space-y-3">
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="grid grid-cols-2 border-l border-t border-garden-ground/30">
         {equipment.map((item) => {
           const isSelected = selected.includes(item.id);
           return (
             <label
               key={item.id}
-              className={`flex min-h-11 items-center gap-2.5 border px-3 py-2 text-sm transition-colors ${focusRing} ${
+              className={`flex min-h-11 items-center gap-3 border-b border-r border-garden-ground/30 px-3 py-2 text-sm transition-colors ${focusRing} ${
                 isSelected
-                  ? "border-garden-ground bg-moss-veil/60 text-garden-ground"
-                  : "border-garden-ground/35 bg-pale-mineral text-garden-ground hover:bg-moss-veil/25"
+                  ? "bg-moss-veil/60 text-garden-ground"
+                  : "bg-pale-mineral text-garden-ground hover:bg-moss-veil/25"
               }`}
             >
               <input
                 type="checkbox"
                 checked={isSelected}
                 onChange={() => onToggle(item.id)}
-                className="h-4 w-4 accent-[var(--rain-ink)]"
+                className="h-6 w-6 shrink-0 rounded-none accent-[var(--rain-ink)]"
               />
               <span className="font-medium">{item.label}</span>
             </label>

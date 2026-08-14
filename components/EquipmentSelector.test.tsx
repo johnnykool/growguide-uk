@@ -6,6 +6,12 @@ import EquipmentSelector from "./EquipmentSelector";
 afterEach(cleanup);
 
 describe("EquipmentSelector", () => {
+  it("exposes selected tool state on the native checkbox", () => {
+    render(<EquipmentSelector selected={["trowel"]} onToggle={vi.fn()} />);
+
+    expect(screen.getByRole("checkbox", { name: "Trowel" })).toBeChecked();
+  });
+
   it("keeps every tool available for the legacy two-prop call site", () => {
     render(<EquipmentSelector selected={[]} onToggle={vi.fn()} />);
 

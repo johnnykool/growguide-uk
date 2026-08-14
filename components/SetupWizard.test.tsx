@@ -378,6 +378,25 @@ describe("SetupWizard", () => {
     expect(screen.getByText("2 crops selected.")).toBeVisible();
   });
 
+  it("keeps one live garden portrait mounted as crop selections change", async () => {
+    const user = userEvent.setup();
+    render(<SetupWizard initial={null} onSave={vi.fn()} />);
+
+    const portrait = screen.getByRole("region", {
+      name: "Your garden portrait",
+    });
+
+    await validateLocation(user);
+    await user.click(screen.getByRole("button", { name: /Continue to crops/i }));
+    await user.click(screen.getByRole("button", { name: /Browse all crops/i }));
+    await user.click(screen.getByRole("button", { name: /Lettuce/i }));
+
+    expect(
+      screen.getByRole("region", { name: "Your garden portrait" }),
+    ).toBe(portrait);
+    expect(within(portrait).getByText("Lettuce")).toBeVisible();
+  });
+
   it("summarises completed setup values in the stage list", async () => {
     const user = userEvent.setup();
     render(<SetupWizard initial={null} onSave={vi.fn()} />);

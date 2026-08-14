@@ -6,7 +6,7 @@ import SetupProgress from "./SetupProgress";
 afterEach(cleanup);
 
 describe("SetupProgress", () => {
-  it("announces the current stage and exposes its progress value", () => {
+  it("renders four compact step buttons with the current step announced", () => {
     render(
       <SetupProgress
         activeStep={2}
@@ -16,26 +16,23 @@ describe("SetupProgress", () => {
       />,
     );
 
-    expect(screen.getByText("Step 2 of 4")).toBeVisible();
-    expect(screen.getByRole("progressbar")).toHaveAttribute("value", "2");
-    expect(screen.getByRole("progressbar")).toHaveAttribute("max", "4");
+    expect(screen.getAllByRole("button")).toHaveLength(4);
     expect(screen.getByText("Your location").closest("li")).toHaveTextContent(
       "SW1A 1AA · London",
     );
-    expect(screen.getByText("What you want to grow").closest("li")).toHaveAttribute(
-      "aria-current",
-      "step",
-    );
+    expect(
+      screen.getByRole("button", { name: /What you want to grow/i }),
+    ).toHaveAttribute("aria-current", "step");
   });
 
-  it("offers accessible edit controls only for completed stages", async () => {
+  it("enables completed and current steps while disabling locked steps", async () => {
     const user = userEvent.setup();
     const onEdit = vi.fn();
 
     render(
       <SetupProgress
-        activeStep={4}
-        completedSteps={[1, 2, 3]}
+        activeStep={2}
+        completedSteps={[1]}
         summaries={{
           1: "SW1A 1AA · London",
           2: "2 crops selected",
@@ -46,16 +43,18 @@ describe("SetupProgress", () => {
       />,
     );
 
-    expect(screen.getAllByRole("button", { name: /^Edit /i })).toHaveLength(3);
+    expect(screen.getByRole("button", { name: /Your location/i })).toBeEnabled();
     expect(
-      screen.queryByRole("button", { name: /Edit your tool shed/i }),
-    ).not.toBeInTheDocument();
+      screen.getByRole("button", { name: /What you want to grow/i }),
+    ).toBeEnabled();
+    expect(screen.getByRole("button", { name: /Your plot/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /Your tool shed/i })).toBeDisabled();
 
     await user.click(
-      screen.getByRole("button", { name: /Edit what you want to grow/i }),
+      screen.getByRole("button", { name: /Your location/i }),
     );
 
-    expect(onEdit).toHaveBeenCalledWith(2);
+    expect(onEdit).toHaveBeenCalledWith(1);
   });
 
   it("shows concise real-value summaries for completed stages", () => {

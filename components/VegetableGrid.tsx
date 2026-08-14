@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
 import { CATEGORY_ORDER, VEGETABLES } from "@/data/vegetables";
-import { VEG_PHOTOS } from "@/lib/images";
 import { getSeasonalRecommendations } from "@/lib/seasonal";
 import type { SeasonalMarkerInfo } from "@/lib/seasonal";
 import type { Vegetable } from "@/lib/types";
@@ -36,33 +34,18 @@ function VegetableButton({
       type="button"
       onClick={() => onToggle(vegetable.id)}
       aria-pressed={selected}
-      className={`flex min-h-11 items-center gap-2 border px-3 py-2 text-left text-sm transition-colors ${focusRing} ${
+      className={`flex min-h-11 items-center justify-between gap-3 border-b border-garden-ground/30 px-3 py-2 text-left text-sm transition-colors first:border-t ${focusRing} ${
         selected
-          ? "border-garden-ground bg-moss-veil/60 text-garden-ground"
-          : "border-garden-ground/35 bg-pale-mineral text-garden-ground hover:bg-moss-veil/25"
+          ? "bg-moss-veil/60 text-garden-ground"
+          : "bg-pale-mineral text-garden-ground hover:bg-moss-veil/25"
       }`}
     >
-      {VEG_PHOTOS[vegetable.id] ? (
-        <Image
-          src={VEG_PHOTOS[vegetable.id]}
-          alt=""
-          width={40}
-          height={40}
-          sizes="40px"
-          className="h-10 w-10 shrink-0 object-cover"
-        />
-      ) : (
-        <span
-          className="flex h-10 w-10 shrink-0 items-center justify-center border border-garden-ground/25 bg-moss-veil/30 text-sm font-semibold text-garden-ground"
-          aria-hidden="true"
-        >
-          {vegetable.name.slice(0, 1)}
+      <span className="font-medium">{vegetable.name}</span>
+      {marker && (
+        <span className="text-right text-xs font-medium text-rain-ink">
+          {marker.label}
         </span>
       )}
-      <span>
-        <span className="block font-medium">{vegetable.name}</span>
-        {marker && <span className="block text-xs text-rain-ink">{marker.label}</span>}
-      </span>
     </button>
   );
 }
@@ -100,7 +83,7 @@ export default function VegetableGrid({
               <h4 className="mb-2 text-sm font-semibold uppercase tracking-wide text-garden-ground/75">
                 {category}
               </h4>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+              <div className="grid sm:grid-cols-2">
                 {vegetables.map((vegetable) => (
                   <VegetableButton
                     key={vegetable.id}
@@ -119,22 +102,24 @@ export default function VegetableGrid({
 
   return (
     <div className="space-y-5">
-      <div data-testid="seasonal-recommendations">
-        <p className="mb-2 text-sm font-semibold text-garden-ground">
-          Good to grow this month
-        </p>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
-          {recommendations.map(({ vegetable, marker }) => (
-            <VegetableButton
-              key={vegetable.id}
-              vegetable={vegetable}
-              selected={selected.includes(vegetable.id)}
-              onToggle={onToggle}
-              marker={marker}
-            />
-          ))}
+      {!showAll && (
+        <div data-testid="seasonal-recommendations">
+          <p className="mb-2 text-sm font-semibold text-garden-ground">
+            Good to grow this month
+          </p>
+          <div className="grid sm:grid-cols-2">
+            {recommendations.map(({ vegetable, marker }) => (
+              <VegetableButton
+                key={vegetable.id}
+                vegetable={vegetable}
+                selected={selected.includes(vegetable.id)}
+                onToggle={onToggle}
+                marker={marker}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {!showAll ? (
         <button
@@ -183,7 +168,7 @@ export default function VegetableGrid({
                   <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-garden-ground/75">
                     {category}
                   </h3>
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4">
+                  <div className="grid sm:grid-cols-2">
                     {vegetables.map((vegetable) => (
                       <VegetableButton
                         key={vegetable.id}

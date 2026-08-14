@@ -26,51 +26,63 @@ export default function SetupProgress({
   onEdit,
 }: Props) {
   return (
-    <nav aria-label="Setup stages" className="space-y-4">
-      <div>
-        <p className="mb-2 text-sm font-semibold text-garden-ground">
-          Step {activeStep} of 4
-        </p>
-        <progress
-          aria-label="Setup progress"
-          value={activeStep}
-          max={4}
-          className="h-2 w-full accent-rain-ink"
-        />
-      </div>
-      <ol className="grid border-y border-garden-ground/25 sm:grid-cols-2">
+    <nav
+      aria-label="Setup stages"
+      className="border-b border-garden-ground/30 bg-pale-mineral"
+    >
+      <p className="px-4 py-3 text-sm font-semibold text-garden-ground sm:px-5">
+        Step {activeStep} of 4
+      </p>
+      <ol className="grid grid-cols-4 border-t border-garden-ground/25 lg:grid-cols-1">
         {STEPS.map((step) => {
           const isActive = step.number === activeStep;
           const isComplete = completedSteps.includes(step.number);
+          const isLocked = !isActive && !isComplete;
 
           return (
             <li
               key={step.number}
-              aria-current={isActive ? "step" : undefined}
-              className={`flex min-h-11 items-center justify-between gap-3 border-b border-garden-ground/20 px-3 py-2 text-sm last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 ${
-                isActive
-                  ? "bg-moss-veil/45 text-garden-ground"
-                  : "text-garden-ground/75"
-              }`}
+              className="border-r border-garden-ground/20 last:border-r-0 lg:border-b lg:border-r-0 lg:last:border-b-0"
             >
-              <span>
-                <span className="block font-semibold">{step.label}</span>
-                {isComplete && (
-                  <span className="block text-xs text-garden-ground/70">
-                    {summaries[step.number] ?? "Complete"}
-                  </span>
-                )}
-              </span>
-              {isComplete && !isActive && (
-                <button
-                  type="button"
-                  onClick={() => onEdit(step.number)}
-                  aria-label={`Edit ${step.label.toLocaleLowerCase("en-GB")}`}
-                  className={`min-h-11 px-3 py-2 font-semibold text-rain-ink underline decoration-rain-ink underline-offset-4 hover:text-garden-ground ${focusRing}`}
+              <button
+                type="button"
+                onClick={() => onEdit(step.number)}
+                disabled={isLocked}
+                aria-current={isActive ? "step" : undefined}
+                aria-label={
+                  isComplete && !isActive
+                    ? `Edit ${step.label.toLocaleLowerCase("en-GB")}`
+                    : step.label
+                }
+                className={`flex min-h-11 w-full flex-col items-start gap-1 px-2 py-3 text-left text-xs transition-colors sm:px-3 lg:grid lg:grid-cols-[2rem_minmax(0,1fr)] lg:items-center lg:gap-x-3 lg:px-5 lg:text-sm ${focusRing} ${
+                  isActive
+                    ? "bg-moss-veil/50 text-garden-ground"
+                    : isComplete
+                      ? "text-garden-ground hover:bg-moss-veil/25"
+                      : "cursor-not-allowed text-garden-ground/50"
+                }`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center border text-xs font-semibold ${
+                    isActive || isComplete
+                      ? "border-garden-ground text-garden-ground"
+                      : "border-garden-ground/30"
+                  }`}
                 >
-                  Edit
-                </button>
-              )}
+                  {step.number}
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-semibold leading-4">
+                    {step.label}
+                  </span>
+                  {isComplete && (
+                    <span className="mt-1 hidden text-xs leading-4 text-garden-ground/70 sm:block">
+                      {summaries[step.number] ?? "Complete"}
+                    </span>
+                  )}
+                </span>
+              </button>
             </li>
           );
         })}

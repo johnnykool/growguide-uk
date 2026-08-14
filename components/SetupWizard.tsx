@@ -11,7 +11,7 @@ import {
 } from "@/lib/types";
 import EquipmentSelector from "./EquipmentSelector";
 import BrandMark from "./BrandMark";
-import SetupProgress from "./SetupProgress";
+import SetupWorkbench from "./SetupWorkbench";
 import VegetableGrid from "./VegetableGrid";
 
 interface Props {
@@ -34,9 +34,6 @@ const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
 const focusRing =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral";
-
-const setupPanel =
-  "border border-garden-ground/30 bg-pale-mineral p-5 text-garden-ground sm:p-6";
 
 function normaliseActiveStep(
   requestedStep: Step,
@@ -290,56 +287,38 @@ export default function SetupWizard({
   });
 
   return (
-    <main className="bg-pale-mineral text-garden-ground">
-      <section className="relative overflow-hidden border-b border-pale-mineral/20 bg-garden-ground text-pale-mineral">
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 720 160"
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-y-0 right-0 h-full w-3/5 text-sky-blue opacity-60"
-        >
-          <path
-            className="rain-path"
-            d="M12 20 C210 30 310 62 708 118"
-            fill="none"
-            stroke="currentColor"
-            strokeDasharray="8 12"
-            strokeLinecap="round"
-            strokeWidth="2"
-          />
-          <path
-            className="rain-path"
-            d="M96 2 C250 52 438 48 710 146"
-            fill="none"
-            stroke="currentColor"
-            strokeDasharray="4 11"
-            strokeLinecap="round"
-            strokeWidth="1.5"
-          />
-        </svg>
-        <div className="relative mx-auto flex max-w-3xl items-start gap-5 px-4 py-8 sm:py-10">
-          <BrandMark className="mt-1 h-11 w-11 shrink-0 text-sky-blue" />
-          <div>
-            <h1 className="text-3xl font-semibold tracking-[-0.03em] text-pale-mineral sm:text-4xl">
-              {initial ? "Update your garden" : "Tell us about your garden"}
-            </h1>
-            <p className="mt-2 text-base text-pale-mineral/80">
-              Four short steps. Saved on this device.
-            </p>
-          </div>
-        </div>
-      </section>
+    <SetupWorkbench
+      activeStep={activeStep}
+      completedSteps={reachableCompletedSteps}
+      summaries={summaries}
+      onEdit={openStep}
+      portrait={{
+        postcode: lookup?.postcode,
+        region: lookup?.region,
+        vegetables,
+        plotSize,
+        environment,
+        equipment,
+      }}
+      controls={
+        <>
+          <header className="flex items-start gap-4 border-b border-pale-mineral/20 bg-garden-ground px-5 py-5 text-pale-mineral sm:px-6">
+            <BrandMark className="mt-0.5 h-9 w-9 shrink-0 text-sky-blue" />
+            <div>
+              <h1 className="text-2xl font-semibold tracking-[-0.03em] text-pale-mineral sm:text-3xl">
+                {initial ? "Update your garden" : "Tell us about your garden"}
+              </h1>
+              <p className="mt-1 text-base text-pale-mineral/80">
+                Four short steps. Saved on this device.
+              </p>
+            </div>
+          </header>
 
-      <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
-        <SetupProgress
-          activeStep={activeStep}
-          completedSteps={reachableCompletedSteps}
-          summaries={summaries}
-          onEdit={openStep}
-        />
-
-        {activeStep === 1 && (
-          <section className={setupPanel}>
+          {activeStep === 1 && (
+            <section
+              aria-label="Active setup step"
+              className="bg-pale-mineral p-5 text-garden-ground sm:p-6"
+            >
             <h2 {...headingProps(1)}>
               1. Where do you garden?{" "}
               <span className="font-sans text-sm font-normal text-garden-ground/70">
@@ -350,11 +329,20 @@ export default function SetupWizard({
               Your postcode lets us tailor advice to your local weather and
               region.
             </p>
-            <p id="postcode-help" className="mb-4 text-base text-garden-ground/80">
+            <p
+              id="postcode-help"
+              className="mb-4 text-base text-garden-ground/80"
+            >
               Your postcode is used for local weather and stored on this device.
             </p>
-            <label htmlFor="setup-postcode" className="mb-1 block text-sm font-semibold">
-              UK postcode <span className="font-normal text-garden-ground/70">(required)</span>
+            <label
+              htmlFor="setup-postcode"
+              className="mb-1 block text-sm font-semibold"
+            >
+              UK postcode{" "}
+              <span className="font-normal text-garden-ground/70">
+                (required)
+              </span>
             </label>
             <div className="flex flex-col gap-2 sm:flex-row">
               <input
@@ -418,16 +406,22 @@ export default function SetupWizard({
                     <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
                     <circle cx="12" cy="10" r="2.5" />
                   </svg>
-                  <span><span className="font-semibold">{lookup.postcode}</span> — {lookup.region}</span>
+                  <span>
+                    <span className="font-semibold">{lookup.postcode}</span> —{" "}
+                    {lookup.region}
+                  </span>
                 </p>
               )}
             </div>
             {!lookup && (
-              <p id="location-requirement" className="mt-2 text-sm text-ember-ink">
+              <p
+                id="location-requirement"
+                className="mt-2 text-sm text-ember-ink"
+              >
                 Check your postcode to continue.
               </p>
             )}
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <div className="mt-6 flex flex-col gap-3 border-t border-garden-ground/20 pt-4 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={() => completeAndOpen(2)}
@@ -441,11 +435,14 @@ export default function SetupWizard({
                 Continue to crops
               </button>
             </div>
-          </section>
-        )}
+            </section>
+          )}
 
         {activeStep === 2 && (
-          <section className={setupPanel}>
+          <section
+            aria-label="Active setup step"
+            className="bg-pale-mineral p-5 text-garden-ground sm:p-6"
+          >
             <h2 {...headingProps(2)}>
               2. What would you like to grow?{" "}
               <span className="font-sans text-sm font-normal text-garden-ground/70">
@@ -486,7 +483,7 @@ export default function SetupWizard({
                 Select at least one crop to continue.
               </p>
             )}
-            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+            <div className="mt-6 flex flex-col-reverse gap-3 border-t border-garden-ground/20 pt-4 sm:flex-row sm:justify-between">
               <button
                 type="button"
                 onClick={() => openStep(1)}
@@ -511,7 +508,10 @@ export default function SetupWizard({
         )}
 
         {activeStep === 3 && (
-          <section className={setupPanel}>
+          <section
+            aria-label="Active setup step"
+            className="bg-pale-mineral p-5 text-garden-ground sm:p-6"
+          >
             <h2 {...headingProps(3)}>
               3. Your plot{" "}
               <span className="font-sans text-sm font-normal text-garden-ground/70">
@@ -524,7 +524,10 @@ export default function SetupWizard({
             <p className="mb-4 text-base text-garden-ground/80">
               Optional — you can change this later.
             </p>
-            <label className="mb-1 block text-sm font-semibold" htmlFor="plot-size">
+            <label
+              className="mb-1 block text-sm font-semibold"
+              htmlFor="plot-size"
+            >
               Plot size
             </label>
             <select
@@ -541,7 +544,9 @@ export default function SetupWizard({
             </select>
             <p className="mb-2 text-sm font-semibold">
               Growing environment{" "}
-              <span className="font-normal text-garden-ground/70">(select all that apply)</span>
+              <span className="font-normal text-garden-ground/70">
+                (select all that apply)
+              </span>
             </p>
             <div className="flex flex-wrap gap-2">
               {ENVIRONMENT_OPTIONS.map((item) => {
@@ -563,7 +568,7 @@ export default function SetupWizard({
                 );
               })}
             </div>
-            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+            <div className="mt-6 flex flex-col-reverse gap-3 border-t border-garden-ground/20 pt-4 sm:flex-row sm:justify-between">
               <button
                 type="button"
                 onClick={() => openStep(2)}
@@ -583,7 +588,10 @@ export default function SetupWizard({
         )}
 
         {activeStep === 4 && (
-          <section className={setupPanel}>
+          <section
+            aria-label="Active setup step"
+            className="bg-pale-mineral p-5 text-garden-ground sm:p-6"
+          >
             <h2 {...headingProps(4)}>
               4. Your tool shed{" "}
               <span className="font-sans text-sm font-normal text-garden-ground/70">
@@ -604,11 +612,14 @@ export default function SetupWizard({
               onShowAllChange={setShowAllEquipment}
             />
             {saveError && (
-              <p role="alert" className="mt-4 text-sm font-semibold text-ember-ink">
+              <p
+                role="alert"
+                className="mt-4 text-sm font-semibold text-ember-ink"
+              >
                 {saveError}
               </p>
             )}
-            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+            <div className="mt-6 flex flex-col-reverse gap-3 border-t border-garden-ground/20 pt-4 sm:flex-row sm:justify-between">
               <button
                 type="button"
                 onClick={() => openStep(3)}
@@ -639,15 +650,18 @@ export default function SetupWizard({
         )}
 
         {onCancel && (
-          <button
-            type="button"
-            onClick={onCancel}
-            className={`min-h-11 border border-garden-ground/40 px-6 py-3 font-medium text-garden-ground transition-colors hover:bg-moss-veil/25 ${focusRing}`}
-          >
-            Cancel
-          </button>
+          <div className="border-t border-garden-ground/20 px-5 py-4 sm:px-6">
+            <button
+              type="button"
+              onClick={onCancel}
+              className={`min-h-11 border border-garden-ground/40 px-6 py-3 font-medium text-garden-ground transition-colors hover:bg-moss-veil/25 ${focusRing}`}
+            >
+              Cancel
+            </button>
+          </div>
         )}
-      </div>
-    </main>
+          </>
+      }
+    />
   );
 }
