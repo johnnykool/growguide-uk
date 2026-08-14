@@ -90,3 +90,31 @@ Update metadata and accessible descriptions to remove the seedling reference.
 - Run the existing focused and full test suites, TypeScript, and production build.
 - Inspect desktop and mobile renders against the approved composition.
 - Confirm no visible sprout emoji, seedling logo, or old metadata remains.
+
+## Finish Review Rebuild Addendum — 14 August 2026
+
+The approved rebuild keeps every working data path and re-derives only the dashboard composition.
+
+### Weather must land on an action
+
+- Convert existing `rainSoon` and `frostSoon` flags into one deterministic, local weather-action cue. This adds no AI call and no new user data.
+- Rain cue: `Rain ahead — check the soil before watering.`
+- Frost cue: `Frost risk — protect tender crops before temperatures drop.`
+- When both flags are true, frost takes priority because protection is time-sensitive.
+- On desktop, one authored blue SVG path must visibly run from the forecast ribbon to this cue inside the priority panel. On mobile, reduce it to a short local rainline so labels remain full width.
+- Loading, unavailable-weather, and no-warning states must not invent a cue.
+
+### First viewport composition
+
+- Remove the dashboard and priority kicker labels.
+- Keep the `Weather, translated into action.` heading compact and pair the postcode summary with `Edit setup` on the same line where space permits.
+- Treat the forecast, factual plot profile, and priority panel as one working composition: forecast first, then the 60/40 plot/action split.
+- Put the seasonal timeline immediately after that split and before the weather map.
+- Make the map a compact secondary reference below the first working frame. Keep all existing overlay controls and map behaviour.
+
+### Own-world completion
+
+- Replace the Unicode flower and advice-error emoji with authored SVG or plain text.
+- Use an authored black-flower SVG as the factual plot anchor.
+- Migrate dashboard-visible loading, error, profile, and seasonal surfaces from compatibility aliases, rounded-card, and shadow-soft classes to the semantic Gravity Rain tokens and matte fine-line treatment.
+- Preserve advice requests, confirmation, abort behaviour, cached tasks, checkboxes, storage warnings, privacy, setup, and all API payloads unchanged.
