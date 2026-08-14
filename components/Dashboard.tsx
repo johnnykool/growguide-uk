@@ -21,6 +21,7 @@ import WeatherMap from "./WeatherMap";
 import PlotSummary from "./PlotSummary";
 import AdviceRefreshConfirm from "./AdviceRefreshConfirm";
 import WeatherActionCue, { getWeatherActionCue } from "./WeatherActionCue";
+import { usePublishHeaderWeather } from "./HeaderWeatherContext";
 
 interface Props {
   profile: UserProfile;
@@ -60,6 +61,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
   const adviceAbortController = useRef<AbortController | null>(null);
   const profileFingerprint = getAdviceProfileFingerprint(profile);
   const weatherAction = getWeatherActionCue(weather);
+  usePublishHeaderWeather(profile.postcode, weather);
 
   // Restore the last advice session so returning users see their task list
   // without another AI call.

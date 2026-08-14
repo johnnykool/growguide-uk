@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 
@@ -33,6 +35,29 @@ describe("root metadata", () => {
       },
     ]);
     expect(metadata.twitter?.images).toEqual(["/brand/growguide-social.png"]);
+    expect(metadata.icons).toEqual({
+      icon: [
+        {
+          url: "/brand/growguide-avatar.png",
+          type: "image/png",
+          sizes: "1024x1024",
+        },
+      ],
+      apple: [
+        {
+          url: "/brand/growguide-avatar.png",
+          type: "image/png",
+          sizes: "1024x1024",
+        },
+      ],
+    });
+    expect(
+      Array.from(
+        readFileSync(
+          resolve(process.cwd(), "public/brand/growguide-avatar.png"),
+        ).subarray(0, 8),
+      ),
+    ).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
     const prohibitedAnalyticsTokens = [
       "google-" + "analytics",
       "google" + "tagmanager",

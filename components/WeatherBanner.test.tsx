@@ -74,6 +74,7 @@ describe("WeatherBanner", () => {
       "border-garden-ground/25",
       "bg-pale-mineral",
     );
+    expect(status).not.toHaveClass("animate-pulse");
     expect(status).not.toHaveClass("rounded-card", "shadow-soft");
   });
 

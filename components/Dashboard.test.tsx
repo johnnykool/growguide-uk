@@ -11,6 +11,8 @@ import {
   WeatherData,
 } from "@/lib/types";
 import Dashboard from "./Dashboard";
+import Header from "./Header";
+import { HeaderWeatherProvider } from "./HeaderWeatherContext";
 
 const dashboardSource = readFileSync(
   resolve(process.cwd(), "components", "Dashboard.tsx"),
@@ -151,6 +153,31 @@ function expectSavedAdviceUnchanged() {
 }
 
 describe("Dashboard weather", () => {
+  it("shares one local weather result with the sticky header", async () => {
+    const fetchMock = installFetch(response(replacementAdvice));
+
+    render(
+      <HeaderWeatherProvider>
+        <Header />
+        <Dashboard profile={profile} onEdit={vi.fn()} />
+      </HeaderWeatherProvider>,
+    );
+
+    const headerSummary = await screen.findByLabelText(
+      "Current garden weather",
+    );
+    await waitFor(() => {
+      expect(headerSummary).toHaveTextContent(
+        "BS1 5AH · 19°C · broken clouds",
+      );
+    });
+    expect(
+      fetchMock.mock.calls.filter(
+        ([input]) => routeOf(input) === "/api/weather",
+      ),
+    ).toHaveLength(1);
+  });
+
   it("composes weather, plot context, and actions as the first workspace", () => {
     installFetch(response(replacementAdvice));
 

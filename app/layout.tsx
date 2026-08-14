@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SiteAnalytics from "@/components/SiteAnalytics";
 import SiteStructuredData from "@/components/SiteStructuredData";
+import { HeaderWeatherProvider } from "@/components/HeaderWeatherContext";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 const figtree = Figtree({
@@ -49,6 +50,22 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ["/brand/growguide-social.png"],
   },
+  icons: {
+    icon: [
+      {
+        url: "/brand/growguide-avatar.png",
+        type: "image/png",
+        sizes: "1024x1024",
+      },
+    ],
+    apple: [
+      {
+        url: "/brand/growguide-avatar.png",
+        type: "image/png",
+        sizes: "1024x1024",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -66,8 +83,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: DESIGN_DIRECTION_CONTRACT }}
         />
         <SiteStructuredData />
-        <Header />
-        <div className="flex-1">{children}</div>
+        <HeaderWeatherProvider>
+          <Header />
+          <div className="flex-1">{children}</div>
+        </HeaderWeatherProvider>
         <Footer />
         <SiteAnalytics />
       </body>

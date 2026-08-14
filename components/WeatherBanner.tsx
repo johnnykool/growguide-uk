@@ -89,7 +89,7 @@ export default function WeatherBanner({
       <div
         role="status"
         aria-live="polite"
-        className="animate-pulse border border-garden-ground/25 bg-pale-mineral p-5"
+        className="border border-garden-ground/25 bg-pale-mineral p-5"
       >
         <p className="text-garden-ground">Reading the sky over your plot…</p>
       </div>
