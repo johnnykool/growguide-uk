@@ -65,6 +65,26 @@ describe("SeasonalCalendar", () => {
   });
 
   it("aligns the current month in the accessible timeline", () => {
+    const currentMonthName = new Intl.DateTimeFormat("en-GB", {
+      month: "long",
+    }).format(new Date());
+    vi.spyOn(HTMLElement.prototype, "offsetLeft", "get").mockImplementation(
+      function (this: HTMLElement) {
+        return this.getAttribute("aria-label")?.startsWith(
+          `Tomato, ${currentMonthName}:`,
+        )
+          ? 480
+          : 0;
+      },
+    );
+    vi.spyOn(HTMLElement.prototype, "clientWidth", "get").mockImplementation(
+      function (this: HTMLElement) {
+        return this.getAttribute("aria-label") === "Seasonal timeline"
+          ? 200
+          : 0;
+      },
+    );
+
     render(<SeasonalCalendar vegetableIds={["tomato"]} />);
 
     expect(screen.getByText("Months →")).toBeVisible();
@@ -72,6 +92,6 @@ describe("SeasonalCalendar", () => {
       screen.getByRole("region", { name: "Seasonal timeline" }),
     ).toHaveAttribute("tabindex", "0");
     expect(scrollTo).toHaveBeenCalledTimes(1);
-    expect(scrollTo).toHaveBeenCalledWith({ left: 0, behavior: "auto" });
+    expect(scrollTo).toHaveBeenCalledWith({ left: 410, behavior: "auto" });
   });
 });

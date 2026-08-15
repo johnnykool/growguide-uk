@@ -172,9 +172,30 @@ describe("TimelineFilter", () => {
     );
 
     expect(onChange).toHaveBeenCalledWith("30-days");
-    expect(screen.getByText("More timeframes").closest("details")).not.toHaveAttribute(
-      "open",
+    const summary = screen.getByText(/More timeframes/);
+    expect(summary.closest("details")).not.toHaveAttribute("open");
+    expect(summary).toHaveFocus();
+  });
+
+  it("returns focus to the summary after keyboard activation selects an extended timeline", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+
+    render(
+      <ControlledTimelineFilter initialValue="7-days" onChange={onChange} />,
     );
+
+    const summary = screen.getByText("More timeframes");
+    await user.click(summary);
+    const thirtyDays = screen.getByRole("radio", {
+      name: TIMELINE_LABELS["30-days"],
+    });
+    thirtyDays.focus();
+    await user.keyboard("{Enter}");
+
+    expect(onChange).toHaveBeenCalledWith("30-days");
+    expect(summary.closest("details")).not.toHaveAttribute("open");
+    expect(summary).toHaveFocus();
   });
 
   it("cycles focus and selection through all common timelines with arrow keys", async () => {

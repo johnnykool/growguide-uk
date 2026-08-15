@@ -34,7 +34,59 @@ describe("GardenPortrait", () => {
     expect(within(portrait).getByText("+1 crop")).toBeInTheDocument();
   });
 
-  it("renders a useful empty setup state without inventing selections", () => {
+  it.each([
+    { plotSize: "windowsill", guideBandCount: 2 },
+    { plotSize: "small", guideBandCount: 3 },
+    { plotSize: "medium", guideBandCount: 4 },
+    { plotSize: "large", guideBandCount: 6 },
+  ] as const)(
+    "renders $plotSize as a distinct categorical field with $guideBandCount guide bands",
+    ({ plotSize, guideBandCount }) => {
+      render(
+        <GardenPortrait
+          {...baseProps}
+          plotSize={plotSize}
+          variant="dashboard"
+        />,
+      );
+
+      const field = screen.getByTestId("garden-field-grid");
+      expect(field.querySelectorAll("[data-field-guide-band]")).toHaveLength(
+        guideBandCount,
+      );
+    },
+  );
+
+  it("draws a labelled authored structure for every selected environment", () => {
+    const environments = [
+      ["open-ground", "Open ground"],
+      ["raised-beds", "Raised beds"],
+      ["greenhouse", "Greenhouse"],
+      ["polytunnel", "Polytunnel"],
+      ["containers", "Containers"],
+    ] as const;
+
+    render(
+      <GardenPortrait
+        {...baseProps}
+        environment={environments.map(([id]) => id)}
+        variant="dashboard"
+      />,
+    );
+
+    const register = screen.getByRole("list", {
+      name: "Selected growing environments",
+    });
+    for (const [id, label] of environments) {
+      const item = within(register).getByText(label).closest("li");
+      expect(item).toBeTruthy();
+      expect(
+        item?.querySelector(`[data-environment-structure="${id}"]`),
+      ).toBeInTheDocument();
+    }
+  });
+
+  it("renders a visible empty grid and message without inventing selections", () => {
     render(
       <GardenPortrait
         vegetables={[]}
@@ -44,7 +96,18 @@ describe("GardenPortrait", () => {
         variant="setup"
       />,
     );
+    const emptyGrid = screen.getByTestId("garden-field-grid");
+    expect(emptyGrid).toHaveAttribute("data-empty-grid", "true");
+    expect(
+      emptyGrid.querySelectorAll("[data-field-guide-band]"),
+    ).toHaveLength(4);
+    expect(
+      emptyGrid.querySelectorAll("[data-field-guide-cell]"),
+    ).toHaveLength(8);
     expect(screen.getByText("Your selections will shape this portrait.")).toBeInTheDocument();
     expect(screen.queryByText(/London/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("list", { name: "Selected growing environments" }),
+    ).not.toBeInTheDocument();
   });
 });

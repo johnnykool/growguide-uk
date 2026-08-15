@@ -1,6 +1,6 @@
 "use client";
 
-import { KeyboardEvent, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { TIMELINE_LABELS, Timeline } from "@/lib/types";
 
 interface Props {
@@ -13,6 +13,8 @@ const EXTENDED_TIMELINES: Timeline[] = ["14-days", "30-days", "3-months"];
 
 export default function TimelineFilter({ value, onChange }: Props) {
   const [isDisclosureOpen, setIsDisclosureOpen] = useState(false);
+  const summaryRef = useRef<HTMLElement>(null);
+  const restoreSummaryFocusRef = useRef(false);
   const radioRefs = useRef<Partial<Record<Timeline, HTMLButtonElement | null>>>(
     {},
   );
@@ -21,6 +23,19 @@ export default function TimelineFilter({ value, onChange }: Props) {
   const extendedLabel = EXTENDED_TIMELINES.includes(value)
     ? TIMELINE_LABELS[value]
     : null;
+
+  useEffect(() => {
+    if (!isDisclosureOpen && restoreSummaryFocusRef.current) {
+      restoreSummaryFocusRef.current = false;
+      summaryRef.current?.focus();
+    }
+  }, [isDisclosureOpen, value]);
+
+  const selectExtendedTimeline = (timeline: Timeline) => {
+    restoreSummaryFocusRef.current = true;
+    setIsDisclosureOpen(false);
+    onChange(timeline);
+  };
 
   const buttonClass = (isSelected: boolean) =>
     `min-h-11 whitespace-nowrap border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral ${
@@ -112,7 +127,10 @@ export default function TimelineFilter({ value, onChange }: Props) {
           open={isDisclosureOpen}
           onToggle={(event) => setIsDisclosureOpen(event.currentTarget.open)}
         >
-          <summary className="flex min-h-11 w-fit cursor-pointer list-none items-center border border-garden-ground/30 bg-pale-mineral px-4 py-2 text-sm font-medium text-garden-ground marker:content-none hover:border-garden-ground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral">
+          <summary
+            ref={summaryRef}
+            className="flex min-h-11 w-fit cursor-pointer list-none items-center border border-garden-ground/30 bg-pale-mineral px-4 py-2 text-sm font-medium text-garden-ground marker:content-none hover:border-garden-ground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-garden-ground focus-visible:ring-offset-2 focus-visible:ring-offset-pale-mineral"
+          >
             More timeframes{extendedLabel ? ` · ${extendedLabel}` : ""}
           </summary>
           <div
@@ -136,10 +154,7 @@ export default function TimelineFilter({ value, onChange }: Props) {
                       ? 0
                       : -1
                   }
-                  onClick={() => {
-                    onChange(t);
-                    setIsDisclosureOpen(false);
-                  }}
+                  onClick={() => selectExtendedTimeline(t)}
                   onKeyDown={(event) =>
                     handleRadioKeyDown(event, t, EXTENDED_TIMELINES, false)
                   }

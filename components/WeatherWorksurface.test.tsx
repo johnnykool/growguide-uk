@@ -76,20 +76,14 @@ describe("WeatherWorksurface", () => {
         screen.getByRole("heading", { name: "What needs doing" }),
       ) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(screen.getByTestId("weather-story-path")).toHaveAttribute(
-      "data-motion",
-      "once",
-    );
-    expect(screen.getByTestId("weather-story-path")).toHaveAttribute(
-      "stroke-width",
-      "3",
-    );
-
-    const responsivePaths = Array.from(
-      document.querySelectorAll(".weather-story-path-visible"),
-    );
+    const responsivePaths = [
+      screen.getByTestId("weather-story-path-mobile"),
+      screen.getByTestId("weather-story-path"),
+    ];
     expect(responsivePaths).toHaveLength(2);
     for (const path of responsivePaths) {
+      expect(path.tagName).toBe("path");
+      expect(path).toHaveAttribute("data-motion", "once");
       expect(path).toHaveAttribute("pathLength", "1");
       expect(path).toHaveAttribute("stroke-width", "3");
     }

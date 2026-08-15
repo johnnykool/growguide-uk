@@ -45,8 +45,6 @@ export default function WeatherWorksurface({
         {cue && (
           <svg
             aria-hidden="true"
-            data-testid="weather-story-path"
-            data-motion="once"
             focusable="false"
             className="pointer-events-none absolute inset-x-0 top-full z-10 h-20 w-full overflow-visible text-sky-blue lg:h-24"
             viewBox="0 0 1000 96"
@@ -93,6 +91,9 @@ export default function WeatherWorksurface({
             </defs>
 
             <path
+              aria-hidden="true"
+              data-testid="weather-story-path-mobile"
+              data-motion="once"
               className="weather-story-path-visible lg:hidden"
               d={MOBILE_PATH}
               pathLength="1"
@@ -103,6 +104,9 @@ export default function WeatherWorksurface({
               mask={`url(#${mobileMaskId})`}
             />
             <path
+              aria-hidden="true"
+              data-testid="weather-story-path"
+              data-motion="once"
               className="weather-story-path-visible hidden lg:block"
               d={DESKTOP_PATH}
               pathLength="1"
