@@ -24,6 +24,16 @@ function weatherEmoji(icon: string): string {
   return map[icon.slice(0, 2)] ?? "🌤️";
 }
 
+// How old the reading is, for forecasts served past the daily quota.
+function ageLabel(observedAt: string): string | null {
+  const observed = Date.parse(observedAt);
+  if (Number.isNaN(observed)) return null;
+  const hours = Math.max(0, Math.round((Date.now() - observed) / 3_600_000));
+  if (hours < 1) return "updated just now";
+  if (hours === 1) return "updated 1 hour ago";
+  return `updated ${hours} hours ago`;
+}
+
 export default function WeatherBanner({ weather, loading, error }: Props) {
   if (loading) {
     return (
@@ -49,7 +59,7 @@ export default function WeatherBanner({ weather, loading, error }: Props) {
   const warningMessages: string[] = [];
   if (warnings.frostSoon)
     warningMessages.push(
-      "Frost expected in the next 48 hours — protect tender plants and seedlings."
+      "Frost risk in the next 48 hours — protect tender plants and seedlings."
     );
   if (warnings.rainSoon)
     warningMessages.push(
@@ -106,6 +116,11 @@ export default function WeatherBanner({ weather, loading, error }: Props) {
             ))}
           </div>
         </div>
+        {weather.stale && (
+          <p className="mt-3 text-xs text-dark-earth/70">
+            Showing the last forecast we could fetch — {ageLabel(weather.observedAt) ?? "age unknown"}.
+          </p>
+        )}
       </div>
     </div>
   );
