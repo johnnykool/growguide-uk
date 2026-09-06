@@ -44,17 +44,19 @@ at `features[0].properties.timeSeries`, alongside `modelRunDate` and
 
 Two endpoints are called per refresh.
 
-`daily` returns seven days. Each entry carries `dayMaxScreenTemperature`,
+`daily` returns eight entries, the first of which is the previous day. Each entry carries `dayMaxScreenTemperature`,
 `nightMinScreenTemperature`, `daySignificantWeatherCode`, `nightSignificantWeatherCode`,
 `dayProbabilityOfRain`, `nightProbabilityOfRain`, `maxUvIndex`, and confidence bounds on
 each temperature.
 
-`hourly` returns 48 hours. Each entry carries `screenTemperature`,
+`hourly` returns 49 entries, spanning the current hour to 48 hours ahead. Each entry carries `screenTemperature`,
 `significantWeatherCode`, `probOfPrecipitation`, `minScreenAirTemp`,
 `feelsLikeTemperature`, and `precipitationRate`.
 
 Both endpoints use `-99` as a not-available sentinel, and may omit fields entirely. The
-daily series can lead with a partial past day whose daytime fields are absent.
+daily series leads with the previous day, whose daytime fields are absent while its
+night fields are present. `properties.location` is absent unless explicitly requested,
+and nothing here depends on it.
 
 ## Quota
 
@@ -90,9 +92,21 @@ return the payload or an error.
 
 ## Caching
 
-Coordinates round to 0.05° before any upstream call, roughly 5.5 km north to south.
-DataHub snaps a request to its nearest forecast site regardless — the captured sample
-resolved 1.7 km away — so finer precision buys nothing and costs quota.
+Coordinates round to 0.01° before any upstream call, roughly 1.1 km north to south and
+0.7 km east to west at UK latitudes.
+
+Rounding is a minor optimisation rather than the main quota lever, and the spec should
+not overstate it. Coordinates reach this route from a postcode lookup, so they are
+already identical for repeat visits from the same postcode and would cache correctly
+without rounding at all. Rounding helps only where two different postcodes fall in one
+cell, which is common in cities and rare in the countryside. The three-hour lifetime is
+what actually contains the call volume.
+
+Resolution is therefore chosen for accuracy rather than for quota. A live request
+resolved to a forecast site 222 m away, so sites are dense enough that coarse rounding
+would select a different site than the user's own. That matters most for exactly the
+case this application cares about: frost forms in valley bottoms and not on hillsides
+a few kilometres away.
 
 Two layers sit behind the rounding.
 
@@ -234,9 +248,17 @@ stored payload exists.
 
 ## Verification
 
-The captured fixtures come from real DataHub responses, but one live call against a real
-key must confirm the response shape, the header name, and the code table before this work
-is considered complete.
+Confirmed against the live API on 6 September 2026 with a Global Spot key, and the
+responses are committed as fixtures in `lib/weather/__fixtures__/`.
+
+The `apikey` header, the GeoJSON envelope, `modelRunDate`, `requestPointDistance`, and
+every daily and hourly field named above are present as specified. The leading partial
+day is real: its `daySignificantWeatherCode`, `dayProbabilityOfRain`, and `maxUvIndex`
+are absent while `dayMaxScreenTemperature` and `nightMinScreenTemperature` are present,
+so a partial day cannot be detected by a missing maximum and must be excluded by date.
+No `-99` appeared in either response; the sentinel handling stays as documented defence.
+Observed weather codes fell within 0 to 12, so the table above remains verified against
+published implementations rather than exercised end to end.
 
 ## Out of Scope
 
