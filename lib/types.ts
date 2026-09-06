@@ -25,13 +25,12 @@ export interface UserProfile {
   vegetables: string[];
   plotSize: PlotSize;
   environment: string[];
-  equipment: string[];
   lastUpdated: string;
 }
 
-export interface SetupDraftV1 {
-  version: 1;
-  activeStep: 1 | 2 | 3 | 4;
+export interface SetupDraftV2 {
+  version: 2;
+  activeStep: 1 | 2 | 3;
   postcode: string;
   lookup: {
     lat: number;
@@ -42,9 +41,7 @@ export interface SetupDraftV1 {
   vegetables: string[];
   plotSize: PlotSize;
   environment: string[];
-  equipment: string[];
   showAllCrops: boolean;
-  showAllEquipment: boolean;
 }
 
 export interface DailySummary {
@@ -158,24 +155,4 @@ export const ENVIRONMENT_OPTIONS = [
   { id: "greenhouse", label: "Greenhouse" },
   { id: "polytunnel", label: "Polytunnel" },
   { id: "containers", label: "Containers" },
-] as const;
-
-export const EQUIPMENT_OPTIONS = [
-  { id: "spade", label: "Spade" },
-  { id: "fork", label: "Fork" },
-  { id: "hoe", label: "Hoe" },
-  { id: "rake", label: "Rake" },
-  { id: "trowel", label: "Trowel" },
-  { id: "secateurs", label: "Secateurs" },
-  { id: "watering-can", label: "Watering can" },
-  { id: "hose-irrigation", label: "Hose / irrigation" },
-  { id: "wheelbarrow", label: "Wheelbarrow" },
-  { id: "cold-frame", label: "Cold frame" },
-  { id: "cloche", label: "Cloche" },
-  { id: "fleece-netting", label: "Fleece / netting" },
-  { id: "seed-trays", label: "Seed trays" },
-  { id: "propagator", label: "Propagator" },
-  { id: "compost-bin", label: "Compost bin" },
-  { id: "greenhouse", label: "Greenhouse" },
-  { id: "polytunnel", label: "Polytunnel" },
 ] as const;

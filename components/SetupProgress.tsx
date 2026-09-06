@@ -1,6 +1,6 @@
 "use client";
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3;
 
 interface Props {
   activeStep: Step;
@@ -13,7 +13,6 @@ const STEPS: { number: Step; label: string }[] = [
   { number: 1, label: "Your location" },
   { number: 2, label: "What you want to grow" },
   { number: 3, label: "Your plot" },
-  { number: 4, label: "Your tool shed" },
 ];
 
 const focusRing =
@@ -29,12 +28,12 @@ export default function SetupProgress({
     <nav aria-label="Setup stages" className="space-y-4">
       <div>
         <p className="mb-2 text-sm font-semibold text-dark-earth">
-          Step {activeStep} of 4
+          Step {activeStep} of 3
         </p>
         <progress
           aria-label="Setup progress"
           value={activeStep}
-          max={4}
+          max={3}
           className="h-2 w-full accent-dark-earth"
         />
       </div>

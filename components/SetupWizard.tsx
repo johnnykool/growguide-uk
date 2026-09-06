@@ -11,7 +11,6 @@ import {
   PlotSize,
   UserProfile,
 } from "@/lib/types";
-import EquipmentSelector from "./EquipmentSelector";
 import SetupProgress from "./SetupProgress";
 import VegetableGrid from "./VegetableGrid";
 
@@ -22,7 +21,7 @@ interface Props {
   saveError?: string | null;
 }
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3;
 
 interface LookupResult {
   lat: number;
@@ -100,14 +99,8 @@ export default function SetupWizard({
   const [environment, setEnvironment] = useState<string[]>(
     restoredDraft?.environment ?? initial?.environment ?? [],
   );
-  const [equipment, setEquipment] = useState<string[]>(
-    restoredDraft?.equipment ?? initial?.equipment ?? [],
-  );
   const [showAllCrops, setShowAllCrops] = useState(
     restoredDraft?.showAllCrops ?? false,
-  );
-  const [showAllEquipment, setShowAllEquipment] = useState(
-    restoredDraft?.showAllEquipment ?? false,
   );
   const [cropSearch, setCropSearch] = useState("");
   const headings = useRef<Partial<Record<Step, HTMLHeadingElement | null>>>({});
@@ -127,10 +120,6 @@ export default function SetupWizard({
     1: lookup ? `${lookup.postcode} · ${lookup.region}` : undefined,
     2: `${formatCropCount(vegetables.length)} selected`,
     3: PLOT_SIZE_LABELS[plotSize],
-    4:
-      equipment.length === 0
-        ? "No tools selected"
-        : `${equipment.length} ${equipment.length === 1 ? "tool" : "tools"} selected`,
   };
 
   useEffect(
@@ -142,16 +131,14 @@ export default function SetupWizard({
 
   useEffect(() => {
     saveSetupDraft({
-      version: 1,
+      version: 2,
       activeStep,
       postcode,
       lookup,
       vegetables,
       plotSize,
       environment,
-      equipment,
       showAllCrops,
-      showAllEquipment,
     });
   }, [
     activeStep,
@@ -160,9 +147,7 @@ export default function SetupWizard({
     vegetables,
     plotSize,
     environment,
-    equipment,
     showAllCrops,
-    showAllEquipment,
   ]);
 
   useEffect(() => {
@@ -264,7 +249,7 @@ export default function SetupWizard({
   function handleSave() {
     if (!lookup || vegetables.length === 0) return;
     setCompletedSteps((previous) =>
-      previous.includes(4) ? previous : [...previous, 4],
+      previous.includes(3) ? previous : [...previous, 3],
     );
     onSave({
       postcode: lookup.postcode,
@@ -274,7 +259,6 @@ export default function SetupWizard({
       vegetables,
       plotSize,
       environment,
-      equipment,
       lastUpdated: new Date().toISOString().slice(0, 10),
     });
   }
@@ -539,6 +523,11 @@ export default function SetupWizard({
                 );
               })}
             </div>
+            {saveError && (
+              <p role="alert" className="mt-4 text-sm font-semibold text-earth-ink">
+                {saveError}
+              </p>
+            )}
             <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
               <button
                 type="button"
@@ -549,67 +538,11 @@ export default function SetupWizard({
               </button>
               <button
                 type="button"
-                onClick={() => completeAndOpen(4)}
+                onClick={handleSave}
                 className={`min-h-11 rounded-btn bg-dark-earth px-5 py-3 font-semibold text-cream transition-colors hover:bg-earth-ink ${focusRing}`}
               >
-                Continue to tools
+                Save my garden
               </button>
-            </div>
-          </section>
-        )}
-
-        {activeStep === 4 && (
-          <section className="rounded-card bg-warm-stone/50 p-5 text-earth-ink shadow-soft sm:p-6">
-            <h2 {...headingProps(4)}>
-              4. Your tool shed{" "}
-              <span className="font-sans text-sm font-normal text-earth-ink">
-                (optional)
-              </span>
-            </h2>
-            <p className="mb-1 text-sm text-earth-ink">
-              Tick what you already own — we&apos;ll only suggest jobs you can
-              actually do.
-            </p>
-            <p className="mb-4 text-sm text-earth-ink">
-              Optional — skip this if you are still building your tool shed.
-            </p>
-            <EquipmentSelector
-              selected={equipment}
-              onToggle={(id) => toggle(setEquipment, id)}
-              showAll={showAllEquipment}
-              onShowAllChange={setShowAllEquipment}
-            />
-            {saveError && (
-              <p role="alert" className="mt-4 text-sm font-semibold text-earth-ink">
-                {saveError}
-              </p>
-            )}
-            <div className="mt-5 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-              <button
-                type="button"
-                onClick={() => openStep(3)}
-                className={`min-h-11 rounded-btn px-5 py-3 font-medium text-earth-ink ring-1 ring-dark-earth transition-colors hover:bg-light-sage/40 ${focusRing}`}
-              >
-                Back to plot
-              </button>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                {equipment.length === 0 && (
-                  <button
-                    type="button"
-                    onClick={handleSave}
-                    className={`min-h-11 rounded-btn px-5 py-3 font-medium text-earth-ink ring-1 ring-dark-earth transition-colors hover:bg-light-sage/40 ${focusRing}`}
-                  >
-                    Skip tools and finish
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={handleSave}
-                  className={`min-h-11 rounded-btn bg-dark-earth px-5 py-3 font-semibold text-cream transition-colors hover:bg-earth-ink ${focusRing}`}
-                >
-                  Save my garden
-                </button>
-              </div>
             </div>
           </section>
         )}

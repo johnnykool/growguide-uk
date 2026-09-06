@@ -5,7 +5,6 @@ import {
   AdviceResponse,
   AdviceTask,
   ENVIRONMENT_OPTIONS,
-  EQUIPMENT_OPTIONS,
   PLOT_SIZE_LABELS,
   TIMELINE_LABELS,
   Timeline,
@@ -21,7 +20,6 @@ interface AdviceRequestBody {
   vegetables: string[];
   plotSize: PlotSize;
   environment: string[];
-  equipment: string[];
   timeline: Timeline;
   weather: WeatherData | null;
 }
@@ -34,7 +32,6 @@ const MAX_RATE_LIMIT_CLIENTS = 1_000;
 const VEGETABLE_IDS = new Set(VEGETABLES.map((vegetable) => vegetable.id));
 const PLOT_SIZE_IDS = new Set(Object.keys(PLOT_SIZE_LABELS));
 const ENVIRONMENT_IDS = new Set(ENVIRONMENT_OPTIONS.map((item) => item.id));
-const EQUIPMENT_IDS = new Set(EQUIPMENT_OPTIONS.map((item) => item.id));
 const TIMELINE_IDS = new Set(Object.keys(TIMELINE_LABELS));
 const UK_REGIONS = new Set<string>(UK_GARDEN_REGIONS);
 const DAY_NAMES = new Set(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]);
@@ -46,7 +43,6 @@ const REQUEST_KEYS = new Set([
   "vegetables",
   "plotSize",
   "environment",
-  "equipment",
   "timeline",
   "weather",
 ]);
@@ -174,11 +170,6 @@ function parseAdviceRequest(value: unknown): AdviceRequestBody | null {
       ENVIRONMENT_IDS,
       ENVIRONMENT_OPTIONS.length,
     ) ||
-    !isAllowedIdArray(
-      value.equipment,
-      EQUIPMENT_IDS,
-      EQUIPMENT_OPTIONS.length,
-    ) ||
     typeof value.timeline !== "string" ||
     !TIMELINE_IDS.has(value.timeline) ||
     (value.weather !== null && !isWeatherData(value.weather))
@@ -191,7 +182,6 @@ function parseAdviceRequest(value: unknown): AdviceRequestBody | null {
     vegetables: value.vegetables,
     plotSize: value.plotSize as PlotSize,
     environment: value.environment,
-    equipment: value.equipment,
     timeline: value.timeline as Timeline,
     weather: value.weather,
   };
@@ -294,7 +284,6 @@ Today's date: ${today}
 - Region: ${body.region}
 - Plot size: ${PLOT_SIZE_LABELS[body.plotSize] ?? body.plotSize}
 - Growing environment: ${body.environment.join(", ") || "not specified"}
-- Equipment available: ${body.equipment.join(", ") || "none specified"}
 
 ## Weather
 ${weatherSection}
@@ -307,7 +296,7 @@ ${vegData}
 
 ## Instructions
 - Produce specific, actionable tasks relevant to THIS period, THIS region and THIS weather. Do not invent tasks for months outside the period.
-- Only suggest actions the gardener can perform with their stated equipment and growing environment (e.g. don't suggest greenhouse tasks if they have no greenhouse; suggest fleece only if they have fleece/netting).
+- Assume the gardener has ordinary garden tools. Do key advice to their stated growing environment though — do not suggest greenhouse or polytunnel tasks unless they listed one.
 - Prioritise: "high" for time-critical or weather-critical actions (frost protection, last chance to sow, harvest before spoiling), "medium" for beneficial routine work, "low" for optional or forward-planning tasks.
 - Categories must be one of: sowing, planting, care, harvest, pest control, disease prevention, protection.
 - Include a weatherNote only where the forecast genuinely changes what to do.

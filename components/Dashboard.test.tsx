@@ -29,13 +29,12 @@ const profile: UserProfile = {
   vegetables: ["tomato"],
   plotSize: "small",
   environment: ["raised-beds"],
-  equipment: ["trowel"],
   lastUpdated: "2026-08-08T09:00:00.000Z",
 };
 
 const savedAdvice: SavedAdvice = {
   profileFingerprint:
-    "v1|BS15AH|51.4545|-2.5879|south west england|tomato|small|raised-beds|trowel",
+    "v1|BS15AH|51.4545|-2.5879|south west england|tomato|small|raised-beds",
   timeline: "7-days",
   generatedAt: "2026-08-07T12:00:00.000Z",
   advice: {

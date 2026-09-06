@@ -1,7 +1,7 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { SetupDraftV1, UserProfile } from "@/lib/types";
+import type { SetupDraftV2, UserProfile } from "@/lib/types";
 import {
   loadProfile,
   loadSetupDraft,
@@ -31,13 +31,12 @@ const profile: UserProfile = {
   vegetables: ["tomato"],
   plotSize: "medium",
   environment: [],
-  equipment: [],
   lastUpdated: "2026-08-08",
 };
 
-const draft: SetupDraftV1 = {
-  version: 1,
-  activeStep: 4,
+const draft: SetupDraftV2 = {
+  version: 2,
+  activeStep: 3,
   postcode: profile.postcode,
   lookup: {
     postcode: profile.postcode,
@@ -48,9 +47,7 @@ const draft: SetupDraftV1 = {
   vegetables: profile.vegetables,
   plotSize: profile.plotSize,
   environment: profile.environment,
-  equipment: profile.equipment,
   showAllCrops: false,
-  showAllEquipment: false,
 };
 
 vi.mock("@/components/SetupWizard", () => ({

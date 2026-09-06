@@ -10,7 +10,7 @@ import {
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { saveSetupDraft } from "@/lib/storage";
-import type { SetupDraftV1, UserProfile } from "@/lib/types";
+import type { SetupDraftV2, UserProfile } from "@/lib/types";
 import SetupWizard from "./SetupWizard";
 
 const postcodeResult = {
@@ -59,8 +59,8 @@ const postcodeResult = {
   },
 };
 
-const restoredDraft: SetupDraftV1 = {
-  version: 1,
+const restoredDraft: SetupDraftV2 = {
+  version: 2,
   activeStep: 2,
   postcode: "SW1A 1AA",
   lookup: {
@@ -72,9 +72,7 @@ const restoredDraft: SetupDraftV1 = {
   vegetables: ["tomato"],
   plotSize: "large",
   environment: ["greenhouse"],
-  equipment: ["trowel"],
   showAllCrops: true,
-  showAllEquipment: true,
 };
 
 function deferred<T>() {
@@ -131,7 +129,14 @@ async function validateLocation(user: ReturnType<typeof userEvent.setup>) {
   );
 }
 
-async function completeThroughStageFour(
+// "Browse all crops" leaves the seasonal recommendations rendered above the
+// full catalogue, so a crop can legitimately have two toggle buttons bound to
+// the same state. Take the first — either one selects the crop.
+function cropToggle(name: RegExp, options: { pressed?: boolean } = {}) {
+  return screen.getAllByRole("button", { name, ...options })[0];
+}
+
+async function completeThroughFinalStage(
   user: ReturnType<typeof userEvent.setup>,
 ) {
   await validateLocation(user);
@@ -141,12 +146,12 @@ async function completeThroughStageFour(
   await user.click(
     screen.getByRole("button", { name: /Browse all crops/i }),
   );
-  await user.click(screen.getByRole("button", { name: /Tomato/i }));
+  await user.click(cropToggle(/Tomato/i));
   await user.click(
     screen.getByRole("button", { name: /Continue to plot/i }),
   );
   await user.click(
-    screen.getByRole("button", { name: /Continue to tools/i }),
+    screen.getByRole("button", { name: /Save my garden/i }),
   );
   await user.click(screen.getByRole("button", { name: /Save my garden/i }));
 }
@@ -208,7 +213,7 @@ describe("SetupWizard", () => {
       name: /What would you like to grow/i,
     });
     expect(cropHeading).toHaveFocus();
-    expect(screen.getByText("Step 2 of 4")).toBeVisible();
+    expect(screen.getByText("Step 2 of 3")).toBeVisible();
     expect(
       screen.queryByRole("textbox", { name: /postcode/i }),
     ).not.toBeInTheDocument();
@@ -320,7 +325,7 @@ describe("SetupWizard", () => {
     await user.click(
       screen.getByRole("button", { name: /Browse all crops/i }),
     );
-    await user.click(screen.getByRole("button", { name: /Tomato/i }));
+    await user.click(cropToggle(/Tomato/i));
     expect(continueButton).toBeEnabled();
     expect(screen.getByText("1 crop selected.")).toBeVisible();
     expect(
@@ -338,7 +343,7 @@ describe("SetupWizard", () => {
     await validateLocation(user);
     await user.click(screen.getByRole("button", { name: /Continue to crops/i }));
     await user.click(screen.getByRole("button", { name: /Browse all crops/i }));
-    await user.click(screen.getByRole("button", { name: /Tomato/i }));
+    await user.click(cropToggle(/Tomato/i));
     await user.click(screen.getByRole("button", { name: /Carrot/i }));
 
     expect(screen.getByText("2 crops selected.")).toBeVisible();
@@ -354,15 +359,15 @@ describe("SetupWizard", () => {
     expect(within(stages).getByText("SW1A 1AA · London")).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: /Browse all crops/i }));
-    await user.click(screen.getByRole("button", { name: /Tomato/i }));
+    await user.click(cropToggle(/Tomato/i));
     await user.click(screen.getByRole("button", { name: /Continue to plot/i }));
     expect(within(stages).getByText("1 crop selected")).toBeVisible();
 
-    await user.click(screen.getByRole("button", { name: /Continue to tools/i }));
+    await user.click(screen.getByRole("button", { name: /Save my garden/i }));
     expect(within(stages).getByText("Medium plot (4–20m²)")).toBeVisible();
   });
 
-  it("allows optional plot and tool stages and saves the existing profile shape", async () => {
+  it("allows the optional plot stage and saves the existing profile shape", async () => {
     const user = userEvent.setup();
     const onSave = vi.fn();
     render(<SetupWizard initial={null} onSave={onSave} />);
@@ -374,7 +379,7 @@ describe("SetupWizard", () => {
     await user.click(
       screen.getByRole("button", { name: /Browse all crops/i }),
     );
-    await user.click(screen.getByRole("button", { name: /Tomato/i }));
+    await user.click(cropToggle(/Tomato/i));
     await user.click(
       screen.getByRole("button", { name: /Continue to plot/i }),
     );
@@ -383,20 +388,12 @@ describe("SetupWizard", () => {
       screen.getByText("Optional — you can change this later."),
     ).toBeVisible();
     await user.click(
-      screen.getByRole("button", { name: /Continue to tools/i }),
+      screen.getByRole("button", { name: /Save my garden/i }),
     );
 
     expect(
-      screen.getByText(
-        "Optional — skip this if you are still building your tool shed.",
-      ),
-    ).toBeVisible();
-    expect(
       screen.getByRole("button", { name: /Save my garden/i }),
     ).toBeEnabled();
-    expect(
-      screen.getByRole("button", { name: /Skip tools and finish/i }),
-    ).toBeVisible();
 
     await user.click(screen.getByRole("button", { name: /Save my garden/i }));
 
@@ -408,29 +405,22 @@ describe("SetupWizard", () => {
       vegetables: ["tomato"],
       plotSize: "medium",
       environment: [],
-      equipment: [],
       lastUpdated: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
     } satisfies UserProfile);
   });
 
-  it("labels both non-blocking stages as optional", async () => {
+  it("labels the non-blocking plot stage as optional", async () => {
     const user = userEvent.setup();
     render(<SetupWizard initial={null} onSave={vi.fn()} />);
 
     await validateLocation(user);
     await user.click(screen.getByRole("button", { name: /Continue to crops/i }));
     await user.click(screen.getByRole("button", { name: /Browse all crops/i }));
-    await user.click(screen.getByRole("button", { name: /Tomato/i }));
+    await user.click(cropToggle(/Tomato/i));
     await user.click(screen.getByRole("button", { name: /Continue to plot/i }));
 
     expect(
       screen.getByRole("heading", { name: /Your plot.*optional/i }),
-    ).toBeVisible();
-
-    await user.click(screen.getByRole("button", { name: /Continue to tools/i }));
-
-    expect(
-      screen.getByRole("heading", { name: /Your tool shed.*optional/i }),
     ).toBeVisible();
   });
 
@@ -438,7 +428,7 @@ describe("SetupWizard", () => {
     const user = userEvent.setup();
     render(<SetupWizard initial={null} onSave={vi.fn()} />);
 
-    await completeThroughStageFour(user);
+    await completeThroughFinalStage(user);
     await user.click(
       screen.getByRole("button", { name: /Edit your location/i }),
     );
@@ -459,23 +449,20 @@ describe("SetupWizard", () => {
       screen.queryByRole("button", { name: /Edit your plot/i }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: /Edit your tool shed/i }),
-    ).not.toBeInTheDocument();
-    expect(
       screen.queryByRole("button", { name: /Save my garden/i }),
     ).not.toBeInTheDocument();
   });
 
-  it("removes plot and tool routes after the final crop is deselected", async () => {
+  it("removes the plot route after the final crop is deselected", async () => {
     const user = userEvent.setup();
     render(<SetupWizard initial={null} onSave={vi.fn()} />);
 
-    await completeThroughStageFour(user);
+    await completeThroughFinalStage(user);
     await user.click(
       screen.getByRole("button", { name: /Edit what you want to grow/i }),
     );
     await user.click(
-      screen.getByRole("button", { name: /Tomato/i, pressed: true }),
+      cropToggle(/Tomato/i, { pressed: true }),
     );
 
     expect(
@@ -486,22 +473,19 @@ describe("SetupWizard", () => {
       screen.queryByRole("button", { name: /Edit your plot/i }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: /Edit your tool shed/i }),
-    ).not.toBeInTheDocument();
-    expect(
       screen.queryByRole("button", { name: /Save my garden/i }),
     ).not.toBeInTheDocument();
   });
 
   it.each([
     {
-      name: "location when a stage-four draft has no validated lookup",
+      name: "location when a stage-three draft has no validated lookup",
       draft: {
         ...restoredDraft,
-        activeStep: 4,
+        activeStep: 3,
         lookup: null,
-      } satisfies SetupDraftV1,
-      stepText: "Step 1 of 4",
+      } satisfies SetupDraftV2,
+      stepText: "Step 1 of 3",
       heading: /Where do you garden/i,
     },
     {
@@ -510,8 +494,8 @@ describe("SetupWizard", () => {
         ...restoredDraft,
         activeStep: 3,
         vegetables: [],
-      } satisfies SetupDraftV1,
-      stepText: "Step 2 of 4",
+      } satisfies SetupDraftV2,
+      stepText: "Step 2 of 3",
       heading: /What would you like to grow/i,
     },
   ])("normalises a restored draft to $name", ({ draft, stepText, heading }) => {
@@ -522,7 +506,7 @@ describe("SetupWizard", () => {
     expect(screen.getByText(stepText)).toBeVisible();
     expect(screen.getByRole("heading", { level: 2, name: heading })).toBeVisible();
     expect(
-      screen.queryByRole("button", { name: /Edit your plot|Edit your tool shed/i }),
+      screen.queryByRole("button", { name: /Edit your plot/i }),
     ).not.toBeInTheDocument();
   });
 
@@ -531,9 +515,9 @@ describe("SetupWizard", () => {
 
     const firstRender = render(<SetupWizard initial={null} onSave={vi.fn()} />);
 
-    expect(screen.getByText("Step 2 of 4")).toBeVisible();
+    expect(screen.getByText("Step 2 of 3")).toBeVisible();
     expect(
-      screen.getByRole("button", { name: /Tomato/i, pressed: true }),
+      cropToggle(/Tomato/i, { pressed: true }),
     ).toBeVisible();
     expect(screen.getByRole("searchbox", { name: /Search crops/i })).toBeVisible();
 
@@ -541,10 +525,10 @@ describe("SetupWizard", () => {
     render(<SetupWizard initial={null} onSave={vi.fn()} />);
 
     await waitFor(() =>
-      expect(screen.getByText("Step 2 of 4")).toBeVisible(),
+      expect(screen.getByText("Step 2 of 3")).toBeVisible(),
     );
     expect(
-      screen.getByRole("button", { name: /Tomato/i, pressed: true }),
+      cropToggle(/Tomato/i, { pressed: true }),
     ).toBeVisible();
   });
 });

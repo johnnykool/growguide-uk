@@ -13,7 +13,6 @@ const profile: UserProfile = {
   vegetables: ["tomato"],
   plotSize: "small",
   environment: ["raised-beds"],
-  equipment: ["trowel"],
   lastUpdated: "2026-08-08T09:00:00.000Z",
 };
 
