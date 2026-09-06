@@ -177,7 +177,6 @@ export default function Dashboard({ profile, onEdit }: Props) {
           vegetables: profile.vegetables,
           plotSize: profile.plotSize,
           environment: profile.environment,
-          equipment: profile.equipment,
           timeline,
           weather,
         }),

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { SavedAdvice, SetupDraftV1, UserProfile } from "./types";
+import type { SavedAdvice, SetupDraftV2, UserProfile } from "./types";
 import {
   clearSetupDraft,
   loadSavedAdvice,
@@ -9,8 +9,8 @@ import {
   saveSetupDraft,
 } from "./storage";
 
-const validDraft: SetupDraftV1 = {
-  version: 1,
+const validDraft: SetupDraftV2 = {
+  version: 2,
   activeStep: 2,
   postcode: "SW1A 1AA",
   lookup: {
@@ -22,9 +22,7 @@ const validDraft: SetupDraftV1 = {
   vegetables: ["tomato"],
   plotSize: "medium",
   environment: ["raised-beds"],
-  equipment: ["trowel"],
   showAllCrops: true,
-  showAllEquipment: false,
 };
 
 const profile: UserProfile = {
@@ -35,13 +33,12 @@ const profile: UserProfile = {
   vegetables: ["tomato"],
   plotSize: "small",
   environment: ["raised-beds"],
-  equipment: ["trowel"],
   lastUpdated: "2026-08-08",
 };
 
 const scopedAdvice: SavedAdvice & { profileFingerprint: string } = {
   profileFingerprint:
-    "v1|BS15AH|51.4545|-2.5879|south west england|tomato|small|raised-beds|trowel",
+    "v1|BS15AH|51.4545|-2.5879|south west england|tomato|small|raised-beds",
   timeline: "7-days",
   generatedAt: "2026-08-08T12:00:00.000Z",
   advice: { summary: "Saved plan", weatherWarnings: [], tasks: [] },
@@ -52,7 +49,7 @@ describe("setup draft storage", () => {
   beforeEach(() => window.localStorage.clear());
   afterEach(() => vi.restoreAllMocks());
 
-  it("round-trips a valid version-one draft", () => {
+  it("round-trips a valid version-two draft", () => {
     saveSetupDraft(validDraft);
 
     expect(loadSetupDraft()).toEqual(validDraft);
@@ -80,7 +77,6 @@ describe("setup draft storage", () => {
       { ...validDraft, lookup: { ...validDraft.lookup!, lat: "51.501" } },
       { ...validDraft, vegetables: ["stale-crop"] },
       { ...validDraft, environment: ["stale-environment"] },
-      { ...validDraft, equipment: ["stale-tool"] },
       { ...validDraft, lookup: { ...validDraft.lookup!, region: "Mars" } },
       { ...validDraft, lookup: { ...validDraft.lookup!, postcode: "not-valid" } },
       { ...validDraft, lookup: { ...validDraft.lookup!, lat: Infinity } },

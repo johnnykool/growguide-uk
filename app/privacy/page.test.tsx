@@ -14,7 +14,10 @@ describe("PrivacyPage", () => {
       screen.getByText(/exact postcode.*api\.postcodes\.io/i),
     ).toBeVisible();
     expect(
-      screen.getByText(/coordinates.*OpenWeatherMap/i),
+      screen.getByText(/coordinates are rounded.*Met Office/i),
+    ).toBeVisible();
+    expect(
+      screen.getByText(/OpenWeatherMap never sees you directly/i),
     ).toBeVisible();
     expect(
       screen.getByText(/Anthropic receives bounded region, garden, and derived-weather context/i),
@@ -36,8 +39,8 @@ describe("PrivacyPage", () => {
       description: "How GrowGuide UK handles analytics and gardening data.",
       images: [
         expect.objectContaining({
-          url: "/images/growguide-kofi-logo.png",
-          alt: "GrowGuide UK seedling logo",
+          url: "/images/growguide-logo.jpg",
+          alt: "GrowGuide UK logo: a serif G with a climbing vine",
         }),
       ],
     });
@@ -45,7 +48,7 @@ describe("PrivacyPage", () => {
       card: "summary_large_image",
       title: "Privacy | GrowGuide UK",
       description: "How GrowGuide UK handles analytics and gardening data.",
-      images: ["/images/growguide-kofi-logo.png"],
+      images: ["/images/growguide-logo.jpg"],
     });
   });
 });

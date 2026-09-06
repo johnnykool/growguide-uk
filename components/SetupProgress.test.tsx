@@ -16,9 +16,9 @@ describe("SetupProgress", () => {
       />,
     );
 
-    expect(screen.getByText("Step 2 of 4")).toBeVisible();
+    expect(screen.getByText("Step 2 of 3")).toBeVisible();
     expect(screen.getByRole("progressbar")).toHaveAttribute("value", "2");
-    expect(screen.getByRole("progressbar")).toHaveAttribute("max", "4");
+    expect(screen.getByRole("progressbar")).toHaveAttribute("max", "3");
     expect(screen.getByText("Your location").closest("li")).toHaveTextContent(
       "SW1A 1AA · London",
     );
@@ -34,19 +34,18 @@ describe("SetupProgress", () => {
 
     render(
       <SetupProgress
-        activeStep={4}
-        completedSteps={[1, 2, 3]}
+        activeStep={3}
+        completedSteps={[1, 2]}
         summaries={{
           1: "SW1A 1AA · London",
           2: "2 crops selected",
           3: "Medium plot (4–20m²)",
-          4: "No tools selected",
         }}
         onEdit={onEdit}
       />,
     );
 
-    expect(screen.getAllByRole("button", { name: /^Edit /i })).toHaveLength(3);
+    expect(screen.getAllByRole("button", { name: /^Edit /i })).toHaveLength(2);
     expect(
       screen.queryByRole("button", { name: /Edit your tool shed/i }),
     ).not.toBeInTheDocument();
@@ -62,12 +61,11 @@ describe("SetupProgress", () => {
     render(
       <SetupProgress
         activeStep={1}
-        completedSteps={[1, 2, 3, 4]}
+        completedSteps={[1, 2, 3]}
         summaries={{
           1: "PR1 1AA · North West",
           2: "1 crop selected",
           3: "Small raised bed (<4m²)",
-          4: "2 tools selected",
         }}
         onEdit={vi.fn()}
       />,
@@ -76,6 +74,5 @@ describe("SetupProgress", () => {
     expect(screen.getByText("PR1 1AA · North West")).toBeVisible();
     expect(screen.getByText("1 crop selected")).toBeVisible();
     expect(screen.getByText("Small raised bed (<4m²)")).toBeVisible();
-    expect(screen.getByText("2 tools selected")).toBeVisible();
   });
 });

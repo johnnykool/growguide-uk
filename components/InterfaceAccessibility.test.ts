@@ -9,7 +9,6 @@ function readComponent(name: string) {
 const sources = {
   adviceConfirm: readComponent("AdviceRefreshConfirm.tsx"),
   dashboard: readComponent("Dashboard.tsx"),
-  equipment: readComponent("EquipmentSelector.tsx"),
   progress: readComponent("SetupProgress.tsx"),
   vegetables: readComponent("VegetableGrid.tsx"),
   wizard: readComponent("SetupWizard.tsx"),
@@ -45,15 +44,6 @@ describe("changed interface accessibility contracts", () => {
       "text-sm font-semibold text-earth-ink",
     );
     expect(sources.vegetables).toContain(
-      "text-sm font-medium text-earth-ink ring-1 ring-dark-earth",
-    );
-    expect(sources.equipment).toContain(
-      "bg-blush text-earth-ink ring-2 ring-dark-earth",
-    );
-    expect(sources.equipment).toContain(
-      "bg-warm-stone/60 text-earth-ink ring-1 ring-dark-earth",
-    );
-    expect(sources.equipment).toContain(
       "text-sm font-medium text-earth-ink ring-1 ring-dark-earth",
     );
     expect(sources.wizard).toContain(

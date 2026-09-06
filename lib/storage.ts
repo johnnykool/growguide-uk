@@ -1,10 +1,9 @@
 import { VEGETABLES } from "@/data/vegetables";
 import {
   ENVIRONMENT_OPTIONS,
-  EQUIPMENT_OPTIONS,
   PlotSize,
   SavedAdvice,
-  SetupDraftV1,
+  SetupDraftV2,
   UK_GARDEN_REGIONS,
   UserProfile,
 } from "./types";
@@ -15,7 +14,6 @@ const SETUP_DRAFT_KEY = "growguide-setup-draft-v1";
 const PLOT_SIZES: PlotSize[] = ["windowsill", "small", "medium", "large"];
 const VEGETABLE_IDS = new Set(VEGETABLES.map((vegetable) => vegetable.id));
 const ENVIRONMENT_IDS = new Set(ENVIRONMENT_OPTIONS.map((item) => item.id));
-const EQUIPMENT_IDS = new Set(EQUIPMENT_OPTIONS.map((item) => item.id));
 const UK_REGIONS = new Set<string>(UK_GARDEN_REGIONS);
 const UK_POSTCODE_RE = /^[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}$/i;
 
@@ -44,7 +42,7 @@ function isFiniteCoordinate(
   );
 }
 
-function isSetupDraftV1(value: unknown): value is SetupDraftV1 {
+function isSetupDraftV2(value: unknown): value is SetupDraftV2 {
   if (!value || typeof value !== "object") return false;
 
   const draft = value as Record<string, unknown>;
@@ -63,11 +61,11 @@ function isSetupDraftV1(value: unknown): value is SetupDraftV1 {
       ));
 
   return (
-    draft.version === 1 &&
+    draft.version === 2 &&
     typeof draft.activeStep === "number" &&
     Number.isInteger(draft.activeStep) &&
     draft.activeStep >= 1 &&
-    draft.activeStep <= 4 &&
+    draft.activeStep <= 3 &&
     typeof draft.postcode === "string" &&
     draft.postcode.length <= 12 &&
     validLookup &&
@@ -75,9 +73,7 @@ function isSetupDraftV1(value: unknown): value is SetupDraftV1 {
     typeof draft.plotSize === "string" &&
     PLOT_SIZES.includes(draft.plotSize as PlotSize) &&
     isAllowedIdArray(draft.environment, ENVIRONMENT_IDS) &&
-    isAllowedIdArray(draft.equipment, EQUIPMENT_IDS) &&
-    typeof draft.showAllCrops === "boolean" &&
-    typeof draft.showAllEquipment === "boolean"
+    typeof draft.showAllCrops === "boolean"
   );
 }
 
@@ -113,19 +109,19 @@ export function saveProfile(profile: UserProfile): boolean {
   }
 }
 
-export function loadSetupDraft(): SetupDraftV1 | null {
+export function loadSetupDraft(): SetupDraftV2 | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = window.localStorage.getItem(SETUP_DRAFT_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as unknown;
-    return isSetupDraftV1(parsed) ? parsed : null;
+    return isSetupDraftV2(parsed) ? parsed : null;
   } catch {
     return null;
   }
 }
 
-export function saveSetupDraft(draft: SetupDraftV1): void {
+export function saveSetupDraft(draft: SetupDraftV2): void {
   if (typeof window === "undefined") return;
   try {
     window.localStorage.setItem(SETUP_DRAFT_KEY, JSON.stringify(draft));
@@ -157,7 +153,6 @@ export function getAdviceProfileFingerprint(profile: UserProfile): string {
     normaliseProfileIds(profile.vegetables),
     profile.plotSize,
     normaliseProfileIds(profile.environment),
-    normaliseProfileIds(profile.equipment),
   ].join("|");
 }
 
