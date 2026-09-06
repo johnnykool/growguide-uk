@@ -35,7 +35,7 @@ export interface DailySummary {
   high: number;
   low: number;
   conditions: string;
-  icon: string; // OpenWeatherMap icon code, e.g. "10d"
+  icon: string; // icon key, e.g. "10d"
   rainProbability: number; // 0-100
 }
 
@@ -48,8 +48,10 @@ export interface WeatherData {
   daily: DailySummary[];
   warnings: {
     rainSoon: boolean; // rain forecast in next 48h
-    frostSoon: boolean; // frost forecast in next 48h
+    frostSoon: boolean; // frost risk in next 48h
   };
+  observedAt: string; // ISO date-time of the upstream model run
+  stale?: boolean; // true when served from the last-good store
 }
 
 export type TaskPriority = "high" | "medium" | "low";
