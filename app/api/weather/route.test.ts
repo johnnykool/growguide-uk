@@ -29,6 +29,10 @@ beforeEach(() => {
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
   vi.stubEnv("METOFFICE_API_KEY", "test-key");
+  // The route now logs upstream/normalisation failures via console.error.
+  // Silence it here so existing tests that exercise the failure path stay
+  // pristine; the dedicated logging test below asserts against this spy.
+  vi.spyOn(console, "error").mockImplementation(() => {});
 });
 
 describe("POST /api/weather", () => {
@@ -82,5 +86,32 @@ describe("POST /api/weather", () => {
     const response = await POST(request({ lat: 51.5074, lng: -0.1278 }));
     expect(response.status).toBe(502);
     await expect(response.json()).resolves.toHaveProperty("error");
+  });
+
+  it("rejects coordinates that coerce to numbers instead of being numbers", async () => {
+    const fetchMock = okFetch();
+    vi.stubGlobal("fetch", fetchMock);
+    const response = await POST(request({ lat: null, lng: null }));
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects out-of-range coordinates", async () => {
+    const fetchMock = okFetch();
+    vi.stubGlobal("fetch", fetchMock);
+    const response = await POST(request({ lat: 500, lng: -9999 }));
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("logs the failure server-side without leaking detail to the client", async () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    vi.stubGlobal("fetch", failingFetch(429));
+    const response = await POST(request({ lat: 51.5074, lng: -0.1278 }));
+    expect(response.status).toBe(502);
+    expect(errorSpy).toHaveBeenCalled();
+    await expect(response.json()).resolves.toEqual({
+      error: "Could not reach the weather service. Please try again.",
+    });
   });
 });
