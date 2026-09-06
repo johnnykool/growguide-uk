@@ -14,7 +14,10 @@ describe("PrivacyPage", () => {
       screen.getByText(/exact postcode.*api\.postcodes\.io/i),
     ).toBeVisible();
     expect(
-      screen.getByText(/coordinates.*OpenWeatherMap/i),
+      screen.getByText(/coordinates are rounded.*Met Office/i),
+    ).toBeVisible();
+    expect(
+      screen.getByText(/OpenWeatherMap never sees you directly/i),
     ).toBeVisible();
     expect(
       screen.getByText(/Anthropic receives bounded region, garden, and derived-weather context/i),

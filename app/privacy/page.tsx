@@ -37,38 +37,32 @@ export default function PrivacyPage() {
     <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:py-14">
       <h1 className="font-serif text-4xl text-dark-earth">Privacy</h1>
       <p className="mt-3 text-earth-ink">
-        GrowGuide keeps data collection small and the gardening tools useful.
+        GrowGuide keeps data collection small. There are no accounts, no
+        cookie banner, and nothing to opt out of except analytics.
       </p>
 
       <div className="mt-8 space-y-7">
-        <section aria-labelledby="anonymous-visits">
-          <h2 id="anonymous-visits" className="font-serif text-2xl text-dark-earth">
-            Anonymous visits
-          </h2>
-          <p className="mt-2 text-earth-ink">
-            We use anonymous, cookieless Vercel Web Analytics to understand
-            aggregate visits and which pages are useful.
-          </p>
-        </section>
-
         <section aria-labelledby="saved-device">
           <h2 id="saved-device" className="font-serif text-2xl text-dark-earth">
             Saved on your device
           </h2>
           <p className="mt-2 text-earth-ink">
             Your setup, garden profile, saved advice, and completed tasks stay
-            in this browser.
+            in this browser. Clearing your browser data removes them.
           </p>
         </section>
 
-        <section aria-labelledby="advice-data">
-          <h2 id="advice-data" className="font-serif text-2xl text-dark-earth">
-            Location, weather, and growing advice
+        <section aria-labelledby="what-leaves">
+          <h2 id="what-leaves" className="font-serif text-2xl text-dark-earth">
+            What leaves your browser
           </h2>
           <p className="mt-2 text-earth-ink">
             Postcode validation sends the exact postcode you enter to
-            api.postcodes.io to obtain a region and coordinates. Weather lookup
-            sends those coordinates to OpenWeatherMap.
+            api.postcodes.io, which returns a region and coordinates. Those
+            coordinates are rounded to about a kilometre before the forecast
+            request goes to the Met Office, and map tiles are fetched through
+            this site rather than by your browser, so OpenWeatherMap never sees
+            you directly.
           </p>
           <p className="mt-2 text-earth-ink">
             Anthropic receives bounded region, garden, and derived-weather
@@ -77,14 +71,15 @@ export default function PrivacyPage() {
           </p>
         </section>
 
-        <section aria-labelledby="your-choice">
-          <h2 id="your-choice" className="font-serif text-2xl text-dark-earth">
-            Your choice
+        <section aria-labelledby="analytics">
+          <h2 id="analytics" className="font-serif text-2xl text-dark-earth">
+            Analytics and your choices
           </h2>
           <p className="mt-2 text-earth-ink">
-            You can block analytics without losing GrowGuide features.
-            GrowGuide creates no user accounts, sells no data, and runs no
-            advertising trackers.
+            We use anonymous, cookieless Vercel Web Analytics to see which
+            pages are useful. You can block it without losing any GrowGuide
+            feature. GrowGuide creates no user accounts, sells no data, and
+            runs no advertising trackers.
           </p>
         </section>
       </div>
