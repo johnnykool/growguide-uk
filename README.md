@@ -16,8 +16,7 @@ Browser (React/Next.js UI)
    ├─ postcodes.io ──────────── postcode → lat/lng + region (geocoding)
    │
    └─ Next.js API routes (server-side — API keys never reach the browser)
-        ├─ /api/weather ─────── OpenWeatherMap 5-day forecast, aggregated
-        │                       into daily summaries + 48h frost/rain flags
+        ├─ /api/weather ─────── Met Office DataHub daily + hourly, normalised
         ├─ /api/weather-tiles ─ proxies OpenWeatherMap radar/cloud/temp map
         │                       tiles so the key stays hidden
         └─ /api/advice ──────── builds a prompt from the user's plot, live
@@ -37,7 +36,8 @@ Browser (React/Next.js UI)
 | Framework | Next.js 14 (App Router) · React 18 · TypeScript |
 | Styling | Tailwind CSS with a custom earthy design system (DM Serif Display / DM Sans) |
 | AI | Anthropic Claude API via the official `@anthropic-ai/sdk` |
-| Weather | OpenWeatherMap (forecast + map tiles) |
+| Forecasts | Met Office DataHub (Site Specific / Global Spot) |
+| Map tiles | OpenWeatherMap |
 | Geocoding | postcodes.io |
 | Map | Leaflet + OpenStreetMap |
 | Data | Hand-built database of 30 vegetables with RHS-based UK sowing/harvest windows, pests, diseases and care notes ([data/vegetables.ts](data/vegetables.ts)) |
@@ -49,18 +49,19 @@ Browser (React/Next.js UI)
 git clone https://github.com/johnnykool/growguide-uk.git
 cd growguide-uk
 npm install
-cp .env.local.example .env.local   # then add your two API keys
+cp .env.local.example .env.local   # then add your three API keys
 npm run dev                        # → http://localhost:3000
 ```
 
-You'll need two (free-tier friendly) keys in `.env.local`:
+You'll need three (free-tier friendly) keys in `.env.local`:
 
 | Variable | Where to get it |
 |---|---|
 | `ANTHROPIC_API_KEY` | [platform.claude.com](https://platform.claude.com/) |
+| `METOFFICE_API_KEY` | [datahub.metoffice.gov.uk](https://datahub.metoffice.gov.uk) |
 | `OPENWEATHERMAP_API_KEY` | [openweathermap.org](https://openweathermap.org/api) |
 
-Both are used only inside API route handlers. The app runs without the weather key (advice still works; the forecast banner and map overlays note they're unavailable).
+All three are used only inside API route handlers. The app runs without the Met Office key (advice still works; the forecast banner notes it is unavailable).
 
 ## Project structure
 
@@ -77,6 +78,6 @@ lib/                          types, localStorage persistence, image maps
 
 ## Credits
 
-Growing data based on [RHS](https://www.rhs.org.uk/) guidance · Photos from [Unsplash](https://unsplash.com) and [Pexels](https://pexels.com) · Weather by [OpenWeatherMap](https://openweathermap.org) · Geocoding by [postcodes.io](https://postcodes.io) · Map tiles © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+Growing data based on [RHS](https://www.rhs.org.uk/) guidance · Photos from [Unsplash](https://unsplash.com) and [Pexels](https://pexels.com) · Weather by [Met Office](https://www.metoffice.gov.uk) · Map tiles by [OpenWeatherMap](https://openweathermap.org) · Geocoding by [postcodes.io](https://postcodes.io) · Map tiles © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
 
 Built by John Worley using AI-assisted development ([Claude Code](https://claude.com/claude-code)) — part of [crystalpocket.com](https://crystalpocket.com).
