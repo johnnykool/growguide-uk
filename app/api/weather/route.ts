@@ -97,6 +97,8 @@ export async function POST(request: Request) {
     const payload: WeatherData = {
       current,
       daily,
+      // Stopgap: OpenWeatherMap forecast response carries no model-run timestamp. This route is superseded by the Met Office implementation in a later task.
+      observedAt: new Date().toISOString(),
       warnings: { rainSoon, frostSoon },
     };
     return NextResponse.json(payload);
