@@ -17,10 +17,10 @@ export const metadata: Metadata = {
     description: PRIVACY_DESCRIPTION,
     images: [
       {
-        url: "/images/growguide-kofi-logo.png",
-        width: 1254,
-        height: 1254,
-        alt: "GrowGuide UK seedling logo",
+        url: "/images/growguide-logo.jpg",
+        width: 1024,
+        height: 1024,
+        alt: "GrowGuide UK logo: a serif G with a climbing vine",
       },
     ],
   },
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: PRIVACY_TITLE,
     description: PRIVACY_DESCRIPTION,
-    images: ["/images/growguide-kofi-logo.png"],
+    images: ["/images/growguide-logo.jpg"],
   },
 };
 

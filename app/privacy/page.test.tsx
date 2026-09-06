@@ -36,8 +36,8 @@ describe("PrivacyPage", () => {
       description: "How GrowGuide UK handles analytics and gardening data.",
       images: [
         expect.objectContaining({
-          url: "/images/growguide-kofi-logo.png",
-          alt: "GrowGuide UK seedling logo",
+          url: "/images/growguide-logo.jpg",
+          alt: "GrowGuide UK logo: a serif G with a climbing vine",
         }),
       ],
     });
@@ -45,7 +45,7 @@ describe("PrivacyPage", () => {
       card: "summary_large_image",
       title: "Privacy | GrowGuide UK",
       description: "How GrowGuide UK handles analytics and gardening data.",
-      images: ["/images/growguide-kofi-logo.png"],
+      images: ["/images/growguide-logo.jpg"],
     });
   });
 });
