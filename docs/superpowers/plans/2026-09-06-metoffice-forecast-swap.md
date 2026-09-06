@@ -339,22 +339,32 @@ function sampleForecast(): WeatherData {
 }
 
 describe("roundToGrid", () => {
-  it("rounds a positive coordinate to two decimal places", () => {
-    expect(roundToGrid(51.5074)).toBeCloseTo(51.51, 10);
+  it("rounds a positive coordinate to the grid", () => {
+    expect(roundToGrid(51.5074)).toBe(51.51);
   });
 
-  it("rounds a negative coordinate away from zero correctly", () => {
-    expect(roundToGrid(-0.1278)).toBeCloseTo(-0.13, 10);
+  it("rounds a negative coordinate to the grid", () => {
+    expect(roundToGrid(-0.1278)).toBe(-0.13);
   });
 
   it("leaves an already-aligned coordinate untouched", () => {
-    expect(roundToGrid(53.8)).toBeCloseTo(53.8, 10);
+    expect(roundToGrid(53.8)).toBe(53.8);
+  });
+
+  it("collapses binary float noise so URLs stay clean", () => {
+    // Without normalisation this is 50.120000000000005, which would be
+    // sent verbatim in the upstream query string.
+    expect(roundToGrid(50.1216)).toBe(50.12);
   });
 });
 
 describe("gridKey", () => {
-  it("collapses two nearby coordinates onto one key", () => {
-    expect(gridKey(51.5074, -0.1278)).toBe(gridKey(51.5081, -0.1248));
+  it("collapses two coordinates inside one cell onto one key", () => {
+    expect(gridKey(51.5074, -0.1278)).toBe(gridKey(51.5081, -0.1272));
+  });
+
+  it("separates coordinates that fall either side of a cell boundary", () => {
+    expect(gridKey(51.5074, -0.1278)).not.toBe(gridKey(51.5074, -0.1248));
   });
 
   it("keeps distant coordinates on separate keys", () => {
@@ -417,13 +427,16 @@ import type { WeatherData } from "@/lib/types";
 export const GRID_DEGREES = 0.01;
 
 export function roundToGrid(value: number): number {
-  return Math.round(value / GRID_DEGREES) * GRID_DEGREES;
+  // toFixed collapses binary float noise. Without it, roughly one UK latitude
+  // in six lands on a value like 50.120000000000005, which would be sent
+  // verbatim in the upstream query string.
+  return Number((Math.round(value / GRID_DEGREES) * GRID_DEGREES).toFixed(2));
 }
 
 export function gridKey(lat: number, lng: number): string {
   // Adding zero collapses negative zero, which would otherwise key as "-0.00".
-  const round = (value: number) => (roundToGrid(value) + 0).toFixed(2);
-  return `${round(lat)},${round(lng)}`;
+  const format = (value: number) => (roundToGrid(value) + 0).toFixed(2);
+  return `${format(lat)},${format(lng)}`;
 }
 
 const lastGood = new Map<string, WeatherData>();
@@ -446,7 +459,7 @@ export function clearStoredForecasts(): void {
 - [ ] **Step 5: Run test to verify it passes**
 
 Run: `npm test -- cache`
-Expected: 9 passing.
+Expected: 12 passing.
 
 - [ ] **Step 6: Commit**
 
