@@ -26,10 +26,13 @@ function londonToday(now: number): string {
   );
 }
 
+// Zone pinned to London so the weekday matches the London date sitting
+// beside it, regardless of which zone the server process runs in.
 function dayName(date: string): string {
-  return new Date(`${date}T12:00:00Z`).toLocaleDateString("en-GB", {
+  return new Intl.DateTimeFormat("en-GB", {
     weekday: "short",
-  });
+    timeZone: "Europe/London",
+  }).format(new Date(`${date}T12:00:00Z`));
 }
 
 function summarise(entry: MetOfficeDailyEntry): DailySummary | null {

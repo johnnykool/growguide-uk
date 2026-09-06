@@ -84,6 +84,15 @@ describe("normaliseForecast daily strip", () => {
       icon: "10d",
     });
   });
+
+  it("resolves today in London, not UTC, so a BST evening does not keep a finished day", () => {
+    // At this instant London (BST, UTC+1) has already turned over to the
+    // 7th while UTC is still on the 6th. A toISOString()-based filter would
+    // keep the 6th as "today" and this assertion would fail.
+    const eveningNow = Date.parse("2026-09-06T23:30:00Z");
+    const { daily } = normaliseForecast(fromFixtures(), eveningNow);
+    expect(daily[0].date).toBe("2026-09-07");
+  });
 });
 
 describe("normaliseForecast current reading", () => {
