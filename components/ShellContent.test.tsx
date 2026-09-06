@@ -45,7 +45,11 @@ describe("GrowGuide shell content", () => {
       .toLowerCase();
 
     expect(renderedShell).not.toContain("crystal" + "pocket");
-    expect(within(footer).getByText(/Weather by OpenWeatherMap/i)).toBeVisible();
+    expect(
+      within(footer).getByText(
+        /Weather by Met Office · Map tiles by OpenWeatherMap/i,
+      ),
+    ).toBeVisible();
     expect(within(footer).getByText(/Photos from Unsplash & Pexels/i)).toBeVisible();
 
     for (const socialNetwork of [

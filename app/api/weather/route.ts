@@ -1,16 +1,38 @@
 import { NextResponse } from "next/server";
-import { DailySummary, WeatherData } from "@/lib/types";
+import {
+  gridKey,
+  readStoredForecast,
+  roundToGrid,
+  storeForecast,
+} from "@/lib/weather/cache";
+import { fetchForecast } from "@/lib/weather/metoffice";
+import { normaliseForecast } from "@/lib/weather/normalise";
 
-interface ForecastEntry {
-  dt: number;
-  main: { temp: number; temp_min: number; temp_max: number };
-  weather: { description: string; icon: string; main: string }[];
-  pop?: number;
+// `Number()` coercion turns things like null, "", [], and true into finite
+// numbers (0, 0, 0, 1), so we require a genuine `number` type in addition to
+// the range check.
+function isUsableCoordinate(value: unknown, min: number, max: number): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= min && value <= max;
 }
 
+// Coordinates only ever originate from a postcodes.io UK postcode lookup in
+// the setup wizard, so anything outside the UK is a malformed or malicious
+// request rather than a legitimate one. This box — not the ±90/±180 globe —
+// is the bound that matters: the Met Office free tier allows only 360
+// calls/day and each distinct grid cell costs 2 calls per 3-hour cache
+// window, so an unthrottled endpoint accepting arbitrary global coordinates
+// could burn the entire day's quota for every user in well under 200 POSTs.
+const UK_LAT_MIN = 49.5;
+const UK_LAT_MAX = 61.1;
+const UK_LNG_MIN = -8.7;
+const UK_LNG_MAX = 2.1;
+
 export async function POST(request: Request) {
-  const apiKey = process.env.OPENWEATHERMAP_API_KEY;
+  const apiKey = process.env.METOFFICE_API_KEY;
   if (!apiKey) {
+    // Name the variable in the server log, never in the response — the client
+    // has no use for our configuration and an attacker shouldn't learn it.
+    console.error("Weather route is not configured: METOFFICE_API_KEY is unset");
     return NextResponse.json(
       { error: "Weather is unavailable right now." },
       { status: 500 }
@@ -20,20 +42,14 @@ export async function POST(request: Request) {
   let lat: number, lng: number;
   try {
     const body = await request.json();
-    lat = body.lat;
-    lng = body.lng;
     if (
-      typeof lat !== "number" ||
-      !Number.isFinite(lat) ||
-      lat < -90 ||
-      lat > 90 ||
-      typeof lng !== "number" ||
-      !Number.isFinite(lng) ||
-      lng < -180 ||
-      lng > 180
+      !isUsableCoordinate(body.lat, UK_LAT_MIN, UK_LAT_MAX) ||
+      !isUsableCoordinate(body.lng, UK_LNG_MIN, UK_LNG_MAX)
     ) {
       throw new Error("bad coords");
     }
+    lat = body.lat;
+    lng = body.lng;
   } catch {
     return NextResponse.json(
       { error: "Please provide a valid location." },
@@ -41,83 +57,27 @@ export async function POST(request: Request) {
     );
   }
 
+  const key = gridKey(lat, lng);
+
   try {
-    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&units=metric&appid=${apiKey}`;
-    const res = await fetch(url, { next: { revalidate: 600 } });
-    if (!res.ok) {
-      console.error("Weather upstream request failed", {
-        status: res.status,
-        statusText: res.statusText,
-      });
-      return NextResponse.json(
-        { error: "Weather is unavailable right now." },
-        { status: 502 }
-      );
-    }
-    const data = await res.json();
-    const list: ForecastEntry[] = data.list ?? [];
-    if (list.length === 0) {
-      console.error("Weather upstream response contained no forecast entries");
-      return NextResponse.json(
-        { error: "Weather is unavailable right now." },
-        { status: 502 }
-      );
-    }
-
-    const current = {
-      temp: Math.round(list[0].main.temp),
-      description: list[0].weather[0]?.description ?? "unknown",
-      icon: list[0].weather[0]?.icon ?? "01d",
-    };
-
-    // Group 3-hourly entries into daily summaries.
-    const byDate = new Map<string, ForecastEntry[]>();
-    for (const entry of list) {
-      const date = new Date(entry.dt * 1000).toISOString().slice(0, 10);
-      const bucket = byDate.get(date) ?? [];
-      bucket.push(entry);
-      byDate.set(date, bucket);
-    }
-
-    const daily: DailySummary[] = [];
-    for (const [date, entries] of Array.from(byDate.entries()).slice(0, 5)) {
-      const highs = entries.map((e) => e.main.temp_max);
-      const lows = entries.map((e) => e.main.temp_min);
-      // Pick the condition from the midday-ish entry as representative.
-      const midday =
-        entries.find((e) => new Date(e.dt * 1000).getUTCHours() >= 12) ??
-        entries[Math.floor(entries.length / 2)];
-      daily.push({
-        date,
-        dayName: new Date(date + "T12:00:00Z").toLocaleDateString("en-GB", {
-          weekday: "short",
-        }),
-        high: Math.round(Math.max(...highs)),
-        low: Math.round(Math.min(...lows)),
-        conditions: midday.weather[0]?.description ?? "unknown",
-        icon: midday.weather[0]?.icon ?? "01d",
-        rainProbability: Math.round(
-          Math.max(...entries.map((e) => e.pop ?? 0)) * 100
-        ),
-      });
-    }
-
-    // Warnings: rain or frost within the next 48 hours.
-    const cutoff = Date.now() / 1000 + 48 * 3600;
-    const next48 = list.filter((e) => e.dt <= cutoff);
-    const rainSoon = next48.some(
-      (e) => (e.pop ?? 0) >= 0.5 || /rain|drizzle|thunder/i.test(e.weather[0]?.main ?? "")
+    const forecast = await fetchForecast(
+      roundToGrid(lat),
+      roundToGrid(lng),
+      apiKey
     );
-    const frostSoon = next48.some((e) => e.main.temp_min <= 1);
-
-    const payload: WeatherData = {
-      current,
-      daily,
-      warnings: { rainSoon, frostSoon },
-    };
-    return NextResponse.json(payload);
+    const weather = normaliseForecast(forecast);
+    storeForecast(key, weather);
+    return NextResponse.json(weather);
   } catch (error) {
-    console.error("Weather request failed", error);
+    // Past the daily quota, upstream is down, or normaliseForecast hit a
+    // genuine bug. Log server-side (grid key only — never raw coordinates,
+    // the API key, or the upstream URL) so a real regression isn't invisible
+    // in production, then fall back exactly as before: a forecast a few
+    // hours old beats no forecast, so long as the banner says how old it is.
+    console.error(`Weather fetch failed for grid ${key}:`, error);
+    const stored = readStoredForecast(key);
+    if (stored) return NextResponse.json(stored);
+
     return NextResponse.json(
       { error: "Weather is unavailable right now." },
       { status: 502 }

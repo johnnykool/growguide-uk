@@ -11,7 +11,7 @@ export default function Footer() {
           </p>
           <p>
             Growing data based on RHS guidance · Photos from Unsplash &amp;
-            Pexels · Weather by OpenWeatherMap
+            Pexels · Weather by Met Office · Map tiles by OpenWeatherMap
           </p>
           <div className="flex flex-col items-start gap-2 sm:items-end">
             <p>Help cover weather and AI costs.</p>

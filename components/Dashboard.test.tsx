@@ -58,6 +58,7 @@ const weather: WeatherData = {
   current: { temp: 19, description: "broken clouds", icon: "04d" },
   daily: [],
   warnings: { rainSoon: false, frostSoon: false },
+  observedAt: "2026-09-06T11:00Z",
 };
 
 const replacementAdvice: AdviceResponse = {
