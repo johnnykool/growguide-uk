@@ -85,4 +85,14 @@ describe("last-good store", () => {
     expect(readStoredForecast("51.51,-0.13")?.current.temp).toBe(1);
     expect(readStoredForecast("53.48,-2.24")?.current.temp).toBe(2);
   });
+
+  it("deep-clones nested objects so mutations do not corrupt the stored record", () => {
+    storeForecast("51.51,-0.13", sampleForecast());
+    const copy = readStoredForecast("51.51,-0.13");
+    if (copy) {
+      copy.current.temp = 999;
+    }
+    const secondRead = readStoredForecast("51.51,-0.13");
+    expect(secondRead?.current.temp).toBe(14); // original value, not 999
+  });
 });

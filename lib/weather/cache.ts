@@ -27,7 +27,10 @@ export function storeForecast(key: string, data: WeatherData): void {
 export function readStoredForecast(key: string): WeatherData | null {
   const stored = lastGood.get(key);
   if (!stored) return null;
-  return { ...stored, stale: true };
+  // Deep clone, not a spread: a shallow copy would leave `current`, `daily`
+  // and `warnings` aliased to the stored record, so a caller mutating those
+  // would corrupt the last-good entry for this cell.
+  return { ...structuredClone(stored), stale: true };
 }
 
 export function clearStoredForecasts(): void {
