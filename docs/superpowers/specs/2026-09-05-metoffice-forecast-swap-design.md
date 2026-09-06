@@ -199,7 +199,7 @@ determine the day or night icon suffix directly. No sunrise calculation is neede
 
 ## Behaviour Changes
 
-Two changes alter what users see, and both are deliberate.
+Three changes alter what users see, and all are deliberate.
 
 The frost threshold moves from 1 °C to 3 °C. Screen temperature is measured at 1.25 m,
 and ground frost forms while air at that height remains near 3–4 °C. The banner's wording
@@ -207,6 +207,12 @@ becomes `Frost risk in the next 48 hours — protect tender plants and seedlings
 
 A forecast served past the quota ceiling is labelled. When `stale` is true, the banner
 appends the age of the reading, taken from `observedAt`.
+
+The rain-warning trigger narrows. The old OpenWeatherMap route set `rainSoon` when the
+condition text matched rain, drizzle, or thunder — a wording match with no probability
+attached. The new route uses `probOfPrecipitation >= 50` alone. An hour coded "light rain"
+at 40% no longer raises the warning, where the old route would have flagged it regardless
+of probability.
 
 ## Type Changes
 

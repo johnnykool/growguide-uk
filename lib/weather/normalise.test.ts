@@ -112,6 +112,18 @@ describe("normaliseForecast current reading", () => {
   it("carries the model run date through as observedAt", () => {
     expect(normaliseForecast(fromFixtures(), NOW).observedAt).toBe("2026-09-06T11:00Z");
   });
+
+  it("skips the nearest entry when it has no screenTemperature, using a neighbour instead", () => {
+    const forecast = withHourly([
+      hour(-5, { screenTemperature: 5 }),
+      hour(0.1, { screenTemperature: undefined, significantWeatherCode: 7 }),
+      hour(2, { screenTemperature: 21 }),
+    ]);
+    // The entry nearest to `now` (offset 0.1h) lacks a screenTemperature —
+    // it should be skipped in favour of the nearest entry that has one,
+    // rather than falling back to 0 C.
+    expect(normaliseForecast(forecast, NOW).current.temp).toBe(21);
+  });
 });
 
 describe("normaliseForecast warnings", () => {
@@ -141,6 +153,13 @@ describe("normaliseForecast warnings", () => {
       rainSoon: false,
       frostSoon: false,
     });
+  });
+
+  it("falls back to screenTemperature for frost when minScreenAirTemp is missing", () => {
+    const forecast = withHourly([
+      hour(6, { minScreenAirTemp: undefined, screenTemperature: 2 }),
+    ]);
+    expect(normaliseForecast(forecast, NOW).warnings.frostSoon).toBe(true);
   });
 
   it("ignores conditions already in the past", () => {

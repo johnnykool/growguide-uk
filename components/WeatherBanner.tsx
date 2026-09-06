@@ -8,7 +8,7 @@ interface Props {
   error: string | null;
 }
 
-// Map OpenWeatherMap icon codes to emoji so we stay inside the palette.
+// Map icon keys (lib/weather/codes.ts) to emoji so we stay inside the palette.
 function weatherEmoji(icon: string): string {
   const map: Record<string, string> = {
     "01": "☀️",

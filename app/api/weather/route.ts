@@ -8,12 +8,24 @@ import {
 import { fetchForecast } from "@/lib/weather/metoffice";
 import { normaliseForecast } from "@/lib/weather/normalise";
 
-// Real-world latitude/longitude ranges. `Number()` coercion turns things
-// like null, "", [], and true into finite numbers (0, 0, 0, 1), so we
-// require a genuine `number` type in addition to the range check.
+// `Number()` coercion turns things like null, "", [], and true into finite
+// numbers (0, 0, 0, 1), so we require a genuine `number` type in addition to
+// the range check.
 function isUsableCoordinate(value: unknown, min: number, max: number): value is number {
   return typeof value === "number" && Number.isFinite(value) && value >= min && value <= max;
 }
+
+// Coordinates only ever originate from a postcodes.io UK postcode lookup in
+// the setup wizard, so anything outside the UK is a malformed or malicious
+// request rather than a legitimate one. This box — not the ±90/±180 globe —
+// is the bound that matters: the Met Office free tier allows only 360
+// calls/day and each distinct grid cell costs 2 calls per 3-hour cache
+// window, so an unthrottled endpoint accepting arbitrary global coordinates
+// could burn the entire day's quota for every user in well under 200 POSTs.
+const UK_LAT_MIN = 49.5;
+const UK_LAT_MAX = 61.1;
+const UK_LNG_MIN = -8.7;
+const UK_LNG_MAX = 2.1;
 
 export async function POST(request: Request) {
   const apiKey = process.env.METOFFICE_API_KEY;
@@ -28,8 +40,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     if (
-      !isUsableCoordinate(body.lat, -90, 90) ||
-      !isUsableCoordinate(body.lng, -180, 180)
+      !isUsableCoordinate(body.lat, UK_LAT_MIN, UK_LAT_MAX) ||
+      !isUsableCoordinate(body.lng, UK_LNG_MIN, UK_LNG_MAX)
     ) {
       throw new Error("bad coords");
     }

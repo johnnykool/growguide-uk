@@ -73,6 +73,12 @@ async function getSeries(
   apiKey: string
 ): Promise<MetOfficeResponse> {
   const url = `${BASE_URL}/${endpoint}?latitude=${lat}&longitude=${lng}`;
+  // Auth travels in the `apikey` header, not `Authorization`, and that
+  // choice is load-bearing: Next's Data Cache only caches this fetch because
+  // it looks cacheable. An `Authorization: Bearer ...` header trips Next's
+  // autoNoCache heuristic and silently disables caching for the request —
+  // no error, no failing test, just a jump from ~16 calls/location/day to 2
+  // per page load against the 360/day quota. Do not "tidy" this to Bearer.
   const response = await fetch(url, {
     headers: { apikey: apiKey, accept: "application/json" },
     next: { revalidate: CACHE_SECONDS },

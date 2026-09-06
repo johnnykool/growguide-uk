@@ -104,6 +104,21 @@ describe("POST /api/weather", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("accepts a valid UK coordinate (Manchester)", async () => {
+    const fetchMock = okFetch();
+    vi.stubGlobal("fetch", fetchMock);
+    const response = await POST(request({ lat: 53.4808, lng: -2.2426 }));
+    expect(response.status).toBe(200);
+  });
+
+  it("rejects a well-formed but non-UK coordinate (Paris) without reaching the network", async () => {
+    const fetchMock = okFetch();
+    vi.stubGlobal("fetch", fetchMock);
+    const response = await POST(request({ lat: 48.8566, lng: 2.3522 }));
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("logs the failure server-side without leaking detail to the client", async () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     vi.stubGlobal("fetch", failingFetch(429));

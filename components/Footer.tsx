@@ -80,7 +80,7 @@ export default function Footer() {
           </p>
           <p>
             Growing data based on RHS guidance · Photos from Unsplash &amp;
-            Pexels · Weather by OpenWeatherMap
+            Pexels · Weather by Met Office · Map tiles by OpenWeatherMap
           </p>
         </div>
       </div>

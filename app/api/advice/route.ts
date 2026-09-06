@@ -62,8 +62,14 @@ function buildPrompt(body: AdviceRequestBody): string {
           `- ${d.dayName} ${d.date}: high ${d.high}°C, low ${d.low}°C, ${d.conditions}, rain probability ${d.rainProbability}%`
       )
       .join("\n");
+    const staleHours = Math.round(
+      (Date.now() - Date.parse(w.observedAt)) / 3_600_000
+    );
     weatherSection = [
       `Current conditions: ${w.current.temp}°C, ${w.current.description}.`,
+      w.stale
+        ? `Note: this forecast could not be refreshed and is roughly ${staleHours} hour${staleHours === 1 ? "" : "s"} old — weight it as background context rather than an exact current reading.`
+        : "",
       `5-day forecast:`,
       dailyLines,
       w.warnings.frostSoon ? "⚠ Frost is forecast within the next 48 hours." : "",
