@@ -162,6 +162,19 @@ describe("POST /api/advice", () => {
     expect(prompt).not.toContain(String(validBody.lng));
   });
 
+  // The generated task list is the main prose a reader actually sees, so the
+  // house em-dash rule has to reach the model, not just the data fed to it.
+  it("tells the model to write without em-dashes", async () => {
+    vi.stubEnv("ANTHROPIC_API_KEY", "test-key");
+
+    await POST(adviceRequest(validBody, "198.51.100.20"));
+
+    const prompt = anthropic.create.mock.calls[0][0].messages[0].content as string;
+    expect(prompt).toMatch(/em-dash/i);
+    // The rule must spare ranges and compounds, or it would mangle "10-15cm".
+    expect(prompt).toMatch(/en-dash|range/i);
+  });
+
   it("rate-limits repeated advice requests from one client", async () => {
     vi.stubEnv("ANTHROPIC_API_KEY", "test-key");
     const clientIp = "203.0.113.40";

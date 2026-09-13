@@ -186,7 +186,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
       if (!res.ok || !data) {
         setAdviceError(
           res.status === 504
-            ? "The advice took too long to generate — try a shorter timeline or fewer vegetables, then try again."
+            ? "The advice took too long to generate. Try a shorter timeline or fewer vegetables, then try again."
             : res.status >= 500
               ? ADVICE_UNAVAILABLE_MESSAGE
               : data?.error ?? "Something went wrong generating advice."
@@ -342,7 +342,7 @@ export default function Dashboard({ profile, onEdit }: Props) {
                   </p>
                 ) : (
                   <p className="mt-2 text-sm text-earth-ink">
-                    Your saved tasks are below — tick them off as you go. Fresh
+                    Your saved tasks are below. Tick them off as you go. Fresh
                     advice replaces the list.
                   </p>
                 )

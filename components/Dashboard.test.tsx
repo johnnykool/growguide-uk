@@ -296,7 +296,7 @@ describe("Dashboard advice replacement", () => {
       status: 504,
       apiError: "The upstream request timed out.",
       expected:
-        "The advice took too long to generate — try a shorter timeline or fewer vegetables, then try again.",
+        "The advice took too long to generate. Try a shorter timeline or fewer vegetables, then try again.",
     },
     {
       name: "retains safe API copy for a representative 4xx response",

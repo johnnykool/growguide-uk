@@ -51,7 +51,7 @@ export default function WeatherMap({ lat, lng, postcode }: Props) {
         fillOpacity: 0.9,
       })
         .addTo(map)
-        .bindPopup(`Your plot — ${postcode}`);
+        .bindPopup(`Your plot · ${postcode}`);
 
       mapRef.current = map;
       setReady(true);
