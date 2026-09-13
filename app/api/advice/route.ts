@@ -321,6 +321,7 @@ ${vegData}
 - Include a weatherNote only where the forecast genuinely changes what to do.
 - Cover every selected vegetable that has something worth doing this period; it's fine to omit vegetables with nothing to do, but mention them in the summary if the whole period is quiet.
 - Keep details practical and specific (quantities, depths, spacings, timings) rather than generic.
+- Never use an em-dash (—) in a sentence. Where you would reach for one, use a full stop if the thought breaks, or a colon if the second half explains the first. Do not just substitute a comma. Hyphens in compounds (frost-tender) and en-dashes in ranges (10–15cm, Feb–Mar) are correct and should be kept.
 - Be concise: at most 2 tasks per vegetable, and keep each task's detail to 2–3 sentences. Prefer the single most valuable task per vegetable for short periods (24 hours / 3 days).
 
 Return ONLY valid JSON — no markdown fences, no preamble, no trailing commentary — matching exactly this structure:

@@ -117,7 +117,7 @@ describe("WeatherBanner", () => {
       />,
     );
     expect(
-      screen.getByText(/last forecast we could fetch — updated 4 hours ago/),
+      screen.getByText(/last forecast we could fetch, updated 4 hours ago/),
     ).toBeInTheDocument();
   });
 

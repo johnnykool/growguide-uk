@@ -291,7 +291,7 @@ export default function SetupWizard({
             <p className="text-sm text-cream">
               {initial
                 ? "Change anything below, then save."
-                : "We'll tailor advice to your patch — one season at a time."}
+                : "We'll tailor advice to your patch, one season at a time."}
             </p>
           </div>
         </div>
@@ -366,7 +366,7 @@ export default function SetupWizard({
             >
               {lookupState === "invalid" && (
                 <p className="text-earth-ink">
-                  That doesn&apos;t look like a UK postcode — try the format
+                  That doesn&apos;t look like a UK postcode. Try the format
                   &ldquo;PR1 1AA&rdquo;.
                 </p>
               )}
@@ -377,7 +377,7 @@ export default function SetupWizard({
               )}
               {lookup && (
                 <p className="text-earth-ink">
-                  📍 <span className="font-semibold">{lookup.postcode}</span> —{" "}
+                  📍 <span className="font-semibold">{lookup.postcode}</span> ·{" "}
                   {lookup.region}
                 </p>
               )}
@@ -482,7 +482,7 @@ export default function SetupWizard({
               Size and growing environment help us keep advice realistic.
             </p>
             <p className="mb-4 text-sm text-earth-ink">
-              Optional — you can change this later.
+              Optional. You can change this later.
             </p>
             <label className="mb-1 block text-sm font-semibold" htmlFor="plot-size">
               Plot size

@@ -75,11 +75,11 @@ export default function WeatherBanner({
   const warningMessages: string[] = [];
   if (warnings.frostSoon)
     warningMessages.push(
-      "Frost risk in the next 48 hours — protect tender plants and seedlings."
+      "Frost risk in the next 48 hours. Protect tender plants and seedlings."
     );
   if (warnings.rainSoon)
     warningMessages.push(
-      "Rain expected in the next 48 hours — hold off watering and plan indoor jobs."
+      "Rain expected in the next 48 hours. Hold off watering and plan indoor jobs."
     );
 
   return (
@@ -134,7 +134,7 @@ export default function WeatherBanner({
         </div>
         {weather.stale && (
           <p className="mt-3 text-xs text-dark-earth/70">
-            Showing the last forecast we could fetch — {ageLabel(weather.observedAt) ?? "age unknown"}.
+            Showing the last forecast we could fetch, {ageLabel(weather.observedAt) ?? "age unknown"}.
           </p>
         )}
       </div>

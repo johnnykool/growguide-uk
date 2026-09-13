@@ -385,7 +385,7 @@ describe("SetupWizard", () => {
     );
 
     expect(
-      screen.getByText("Optional — you can change this later."),
+      screen.getByText("Optional. You can change this later."),
     ).toBeVisible();
     await user.click(
       screen.getByRole("button", { name: /Save my garden/i }),
