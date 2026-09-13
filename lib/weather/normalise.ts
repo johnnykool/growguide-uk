@@ -42,6 +42,18 @@ function dayName(date: string): string {
   }).format(new Date(`${date}T12:00:00Z`));
 }
 
+// Exported so the last-good cache can re-apply the same London "today" rule
+// when it serves a stored forecast. Duplicating the rule there would risk the
+// two drifting apart, which is exactly the kind of divergence that shows up
+// only at midnight in one timezone.
+export function dropPastDays(weather: WeatherData, now: number): WeatherData {
+  const today = londonToday(now);
+  return {
+    ...weather,
+    daily: weather.daily.filter((day) => day.date >= today),
+  };
+}
+
 function summarise(entry: MetOfficeDailyEntry): DailySummary | null {
   const high = entry.dayMaxScreenTemperature;
   const low = entry.nightMinScreenTemperature;

@@ -10,3 +10,6 @@ next-env.d.ts
 
 # Original photo downloads (optimized copies live in public/images)
 /images/
+
+# Private provenance records — must not be published in this public repo
+/docs/provenance/

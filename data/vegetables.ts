@@ -1,7 +1,7 @@
 import { Vegetable } from "@/lib/types";
 
-// UK growing data based on RHS (Royal Horticultural Society) growing guides.
-// Month numbers are 1-12 (January-December).
+// UK growing data compiled by GrowGuide UK from multiple independent
+// horticultural sources. Month numbers are 1-12 (January-December).
 export const VEGETABLES: Vegetable[] = [
   // ── Fruiting ──────────────────────────────────────────────
   {

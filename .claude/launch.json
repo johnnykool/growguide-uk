@@ -4,8 +4,24 @@
     {
       "name": "cable-selector",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "/Users/johnworley/Desktop/claude/cable-selector"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "/Users/johnworley/Desktop/claude/cable-selector"
+      ],
       "port": 3000
+    },
+    {
+      "name": "growguide",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        "/Users/johnworley/Desktop/claude/veg planner"
+      ],
+      "port": 3001
     }
   ]
 }

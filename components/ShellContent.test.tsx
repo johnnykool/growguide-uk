@@ -21,7 +21,9 @@ describe("GrowGuide shell content", () => {
         name: new RegExp("crystal" + "pocket", "i"),
       }),
     ).not.toBeInTheDocument();
-    expect(within(footer).getByText(/GrowGuide UK/i)).toBeVisible();
+    // Exact string, not a regex: the credits line also names GrowGuide UK, so
+    // a substring match would find both it and the copyright mark.
+    expect(within(footer).getByText("GrowGuide UK")).toBeVisible();
     const supportLink = within(footer).getByRole("link", {
       name: /Support GrowGuide/i,
     });
@@ -69,5 +71,28 @@ describe("GrowGuide shell content", () => {
         /(?:facebook|instagram|x|twitter|youtube|linkedin)\.com/i,
       );
     }
+  });
+  it("credits growing data to GrowGuide UK rather than a horticultural body", () => {
+    // Scope to this render: the suite runs without Testing Library's global
+    // cleanup, so an unscoped role query would also match the earlier footer.
+    const { container } = render(<Footer />);
+
+    const footer = within(container).getByRole("contentinfo");
+
+    expect(
+      within(footer).getByText(/Growing data compiled by GrowGuide UK/i),
+    ).toBeVisible();
+
+    const renderedFooter = [
+      footer.textContent,
+      ...within(footer)
+        .getAllByRole("link")
+        .map((anchor) => anchor.getAttribute("href")),
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    expect(renderedFooter).not.toContain("rhs");
+    expect(renderedFooter).not.toContain("royal horticultural");
   });
 });

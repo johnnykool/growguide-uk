@@ -55,6 +55,21 @@ describe("gridKey", () => {
   });
 });
 
+function forecastWithDays(dates: string[]): WeatherData {
+  return {
+    ...sampleForecast(),
+    daily: dates.map((date) => ({
+      date,
+      dayName: "Sun",
+      high: 18,
+      low: 9,
+      conditions: "cloudy",
+      icon: "03d",
+      rainProbability: 20,
+    })),
+  };
+}
+
 describe("last-good store", () => {
   beforeEach(() => {
     clearStoredForecasts();
@@ -84,6 +99,45 @@ describe("last-good store", () => {
     storeForecast("53.48,-2.24", { ...sampleForecast(), current: { temp: 2, description: "b", icon: "01d" } });
     expect(readStoredForecast("51.51,-0.13")?.current.temp).toBe(1);
     expect(readStoredForecast("53.48,-2.24")?.current.temp).toBe(2);
+  });
+
+  // A stored strip was filtered against the day it was fetched. Served again
+  // after midnight it would otherwise carry days that have already happened.
+  it("drops days that have already passed from a stored forecast", () => {
+    storeForecast(
+      "51.51,-0.13",
+      forecastWithDays(["2026-09-05", "2026-09-06", "2026-09-07"]),
+    );
+
+    const served = readStoredForecast(
+      "51.51,-0.13",
+      Date.parse("2026-09-06T09:00:00Z"),
+    );
+
+    expect(served?.daily.map((day) => day.date)).toEqual([
+      "2026-09-06",
+      "2026-09-07",
+    ]);
+  });
+
+  it("leaves the stored strip intact when every day is still ahead", () => {
+    storeForecast("51.51,-0.13", forecastWithDays(["2026-09-06", "2026-09-07"]));
+
+    const served = readStoredForecast(
+      "51.51,-0.13",
+      Date.parse("2026-09-06T09:00:00Z"),
+    );
+
+    expect(served?.daily).toHaveLength(2);
+  });
+
+  it("does not shorten the stored copy when serving a filtered one", () => {
+    const forecast = forecastWithDays(["2026-09-05", "2026-09-06"]);
+    storeForecast("51.51,-0.13", forecast);
+
+    readStoredForecast("51.51,-0.13", Date.parse("2026-09-06T09:00:00Z"));
+
+    expect(forecast.daily).toHaveLength(2);
   });
 
   it("deep-clones nested objects so mutations do not corrupt the stored record", () => {
