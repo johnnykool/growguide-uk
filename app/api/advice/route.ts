@@ -187,6 +187,25 @@ function parseAdviceRequest(value: unknown): AdviceRequestBody | null {
   };
 }
 
+// This endpoint spends money on every call and has no accounts to authenticate
+// against, so the cheapest real protection is refusing anything that did not
+// come from the site itself. Browsers attach Origin to every POST, same-origin
+// included, so a request without one is not a gardener using the app.
+//
+// Compared against the request's own host rather than a hardcoded domain, so
+// preview deployments and local development keep working untouched. A
+// determined attacker can forge the header; this stops opportunistic scripts,
+// and a provider spend cap is what bounds the worst case.
+function isSameOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
+  try {
+    return new URL(origin).host === new URL(request.url).host;
+  } catch {
+    return false;
+  }
+}
+
 function clientIdentifier(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0].trim();
   return (forwarded || request.headers.get("x-real-ip") || "unknown").slice(0, 64);
@@ -361,6 +380,15 @@ function extractJson(text: string): AdviceResponse {
 }
 
 export async function POST(request: Request) {
+  // Checked before anything else: a rejected request must cost nothing, not
+  // even body parsing, and must never reach the paid model call.
+  if (!isSameOrigin(request)) {
+    return NextResponse.json(
+      { error: "This endpoint only serves requests from GrowGuide UK." },
+      { status: 403 },
+    );
+  }
+
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json(
       {
