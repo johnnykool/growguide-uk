@@ -28,16 +28,21 @@ const validBody = {
   weather: null,
 };
 
+// Defaults to a same-origin POST, which is what the browser actually sends.
+// Pass origin: null to simulate a script that sends no Origin at all.
 function adviceRequest(
   body: unknown = validBody,
   ip = "203.0.113.10",
+  origin: string | null = "http://localhost",
 ) {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "x-forwarded-for": ip,
+  };
+  if (origin !== null) headers.origin = origin;
   return new Request("http://localhost/api/advice", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-forwarded-for": ip,
-    },
+    headers,
     body: JSON.stringify(body),
   });
 }
@@ -74,6 +79,29 @@ describe("POST /api/advice", () => {
       error: "We can't generate growing advice right now. Please try again.",
     });
     expect(JSON.stringify(payload)).not.toMatch(/ANTHROPIC|API_KEY/);
+  });
+
+  // This endpoint spends money per call and is unauthenticated, so the cheapest
+  // real protection is refusing anything that did not come from the site.
+  // Browsers send Origin on every POST, same-origin included.
+  it("turns away a request that carries no Origin", async () => {
+    vi.stubEnv("ANTHROPIC_API_KEY", "test-key");
+
+    const response = await POST(adviceRequest(validBody, "198.51.100.10", null));
+
+    expect(response.status).toBe(403);
+    expect(anthropic.create).not.toHaveBeenCalled();
+  });
+
+  it("turns away a request sent from another site", async () => {
+    vi.stubEnv("ANTHROPIC_API_KEY", "test-key");
+
+    const response = await POST(
+      adviceRequest(validBody, "198.51.100.11", "https://evil.example"),
+    );
+
+    expect(response.status).toBe(403);
+    expect(anthropic.create).not.toHaveBeenCalled();
   });
 
   it("rejects request bodies above the bounded payload limit", async () => {
