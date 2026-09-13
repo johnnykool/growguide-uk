@@ -66,6 +66,13 @@ export async function POST(request: Request) {
       apiKey
     );
     const weather = normaliseForecast(forecast);
+    // Every day in the run has already passed. An empty upstream timeSeries is
+    // treated as a gateway error and this is no more usable: storing it would
+    // poison the last-good cache, and returning it would leave the client
+    // rendering an empty forecast strip behind a 200.
+    if (weather.daily.length === 0) {
+      throw new Error("forecast carried no days from today onwards");
+    }
     storeForecast(key, weather);
     return NextResponse.json(weather);
   } catch (error) {
@@ -75,8 +82,11 @@ export async function POST(request: Request) {
     // in production, then fall back exactly as before: a forecast a few
     // hours old beats no forecast, so long as the banner says how old it is.
     console.error(`Weather fetch failed for grid ${key}:`, error);
+    // The stored strip is re-filtered on read, so a forecast held across
+    // enough midnights comes back with nothing left in it. That is no more
+    // serveable than the empty run above.
     const stored = readStoredForecast(key);
-    if (stored) return NextResponse.json(stored);
+    if (stored && stored.daily.length > 0) return NextResponse.json(stored);
 
     return NextResponse.json(
       { error: "Weather is unavailable right now." },

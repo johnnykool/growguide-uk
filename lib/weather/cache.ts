@@ -1,4 +1,5 @@
 import type { WeatherData } from "@/lib/types";
+import { dropPastDays } from "./normalise";
 
 // Roughly 1.1 km north to south, 0.7 km east to west at UK latitudes.
 // Chosen for accuracy, not quota: forecast sites sit a few hundred metres
@@ -24,13 +25,20 @@ export function storeForecast(key: string, data: WeatherData): void {
   lastGood.set(key, data);
 }
 
-export function readStoredForecast(key: string): WeatherData | null {
+export function readStoredForecast(
+  key: string,
+  now: number = Date.now(),
+): WeatherData | null {
   const stored = lastGood.get(key);
   if (!stored) return null;
   // Deep clone, not a spread: a shallow copy would leave `current`, `daily`
   // and `warnings` aliased to the stored record, so a caller mutating those
   // would corrupt the last-good entry for this cell.
-  return { ...structuredClone(stored), stale: true };
+  //
+  // The strip is re-filtered on the way out because it was built against the
+  // day it was fetched: served after midnight it would otherwise offer days
+  // that have already happened. Callers must handle an empty result.
+  return { ...dropPastDays(structuredClone(stored), now), stale: true };
 }
 
 export function clearStoredForecasts(): void {

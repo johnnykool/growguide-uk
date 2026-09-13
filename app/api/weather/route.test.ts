@@ -153,6 +153,51 @@ describe("POST /api/weather", () => {
     await expect(response.json()).resolves.toMatchObject({ stale: true });
   });
 
+  // An empty upstream timeSeries is already a 502. A model run whose days have
+  // all passed is just as unusable, but it survives that check and would reach
+  // the client as a 200 carrying an empty strip.
+  it("keeps a forecast whose days have all passed as a safe gateway error", async () => {
+    vi.setSystemTime(Date.parse("2026-09-20T12:00:00Z"));
+    vi.stubGlobal("fetch", okFetch());
+
+    const response = await POST(weatherRequest({ lat: 51.5, lng: -0.1 }));
+
+    expect(response.status).toBe(502);
+    await expectSafeError(response, WEATHER_UNAVAILABLE);
+  });
+
+  it("drops days that have passed from the last good forecast", async () => {
+    vi.stubGlobal("fetch", okFetch());
+    await POST(weatherRequest({ lat: 51.5074, lng: -0.1278 }));
+
+    vi.setSystemTime(NOW + 2 * 86_400_000);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response(null, { status: 429 })),
+    );
+    const response = await POST(weatherRequest({ lat: 51.5074, lng: -0.1278 }));
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.stale).toBe(true);
+    expect(body.daily[0].date).toBe("2026-09-08");
+  });
+
+  it("keeps an exhausted forecast as a gateway error once every stored day has passed", async () => {
+    vi.stubGlobal("fetch", okFetch());
+    await POST(weatherRequest({ lat: 51.5074, lng: -0.1278 }));
+
+    vi.setSystemTime(Date.parse("2026-09-20T12:00:00Z"));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(new Response(null, { status: 429 })),
+    );
+    const response = await POST(weatherRequest({ lat: 51.5074, lng: -0.1278 }));
+
+    expect(response.status).toBe(502);
+    await expectSafeError(response, WEATHER_UNAVAILABLE);
+  });
+
   it("keeps an upstream rejection as a safe gateway error", async () => {
     vi.stubGlobal(
       "fetch",
