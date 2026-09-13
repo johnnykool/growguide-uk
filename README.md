@@ -1,10 +1,10 @@
 # GrowGuide UK 🌱
 
-GrowGuide UK helps gardeners decide exactly what to do in their garden today. It combines local weather forecasts, RHS growing guidance, and AI reasoning to generate personalised daily gardening tasks tailored to each user's postcode, crops, and plot.
+GrowGuide UK helps gardeners decide exactly what to do in their garden today. It combines local weather forecasts, our own UK growing database, and AI reasoning to generate personalised daily gardening tasks tailored to each user's postcode, crops, and plot.
 
 A full-stack web app that gives UK gardeners AI-generated, weather-aware growing advice tailored to their exact plot — postcode, crops, plot size, and the tools in their shed.
 
-Tell it where you garden and what you grow, and it combines your local 5-day forecast with an RHS-based growing database to produce a prioritised task list: what to sow, plant, protect and harvest right now — including warnings like "frost Thursday night, fleece your seedlings."
+Tell it where you garden and what you grow, and it combines your local 5-day forecast with our own UK growing database to produce a prioritised task list: what to sow, plant, protect and harvest right now — including warnings like "frost Thursday night, fleece your seedlings."
 
 ## How it works
 
@@ -18,7 +18,7 @@ Browser (React/Next.js UI)
         ├─ /api/weather-tiles ─ proxies OpenWeatherMap radar/cloud/temp map
         │                       tiles so the key stays hidden
         └─ /api/advice ──────── builds a prompt from the user's plot, live
-                                forecast and RHS growing data, then calls
+                                forecast and GrowGuide growing data, then calls
                                 Claude (claude-sonnet-4-6) for a structured
                                 JSON task list
 ```
@@ -38,7 +38,7 @@ Browser (React/Next.js UI)
 | Map tiles | OpenWeatherMap |
 | Geocoding | postcodes.io |
 | Map | Leaflet + OpenStreetMap |
-| Data | Hand-built database of 30 vegetables with RHS-based UK sowing/harvest windows, pests, diseases and care notes ([data/vegetables.ts](data/vegetables.ts)) |
+| Data | Hand-built database of 32 vegetables with UK sowing/harvest windows, pests, diseases and care notes, compiled by GrowGuide UK from multiple horticultural sources ([data/vegetables.ts](data/vegetables.ts)) |
 | Hosting | Vercel, auto-deployed from this repo, on a custom subdomain |
 
 ## Running it locally
@@ -70,12 +70,12 @@ app/
   api/weather/route.ts        forecast aggregation + frost/rain warnings
   api/weather-tiles/          server-side tile proxy
 components/                   SetupWizard, Dashboard, WeatherMap, TaskCard…
-data/vegetables.ts            the RHS-based growing database
+data/vegetables.ts            the GrowGuide UK growing database
 lib/                          types, localStorage persistence, image maps
 ```
 
 ## Credits
 
-Growing data based on [RHS](https://www.rhs.org.uk/) guidance · Photos from [Unsplash](https://unsplash.com) and [Pexels](https://pexels.com) · Weather by [Met Office](https://www.metoffice.gov.uk) · Map tiles by [OpenWeatherMap](https://openweathermap.org) · Geocoding by [postcodes.io](https://postcodes.io) · Map tiles © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
+Growing data compiled by GrowGuide UK · Photos from [Unsplash](https://unsplash.com) and [Pexels](https://pexels.com) · Weather by [Met Office](https://www.metoffice.gov.uk) · Map tiles by [OpenWeatherMap](https://openweathermap.org) · Geocoding by [postcodes.io](https://postcodes.io) · Map tiles © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors
 
 Built by John Worley using AI-assisted development ([Claude Code](https://claude.com/claude-code)).

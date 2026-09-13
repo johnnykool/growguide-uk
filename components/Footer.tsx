@@ -10,7 +10,7 @@ export default function Footer() {
             <span className="font-serif text-sm text-cream">GrowGuide UK</span>
           </p>
           <p>
-            Growing data based on RHS guidance · Photos from Unsplash &amp;
+            Growing data compiled by GrowGuide UK · Photos from Unsplash &amp;
             Pexels · Weather by Met Office · Map tiles by OpenWeatherMap
           </p>
           <div className="flex flex-col items-start gap-2 sm:items-end">

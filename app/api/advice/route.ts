@@ -276,7 +276,7 @@ function buildPrompt(body: AdviceRequestBody): string {
       .join("\n");
   }
 
-  return `You are an expert UK vegetable-gardening adviser writing practical, weather-aware task lists for home gardeners, following RHS (Royal Horticultural Society) guidance.
+  return `You are an expert UK vegetable-gardening adviser writing practical, weather-aware task lists for home gardeners, following established UK horticultural practice.
 
 Today's date: ${today}
 
@@ -291,7 +291,7 @@ ${weatherSection}
 ## Advice period
 Generate tasks for the period: ${TIMELINE_LABELS[body.timeline] ?? body.timeline} from today.
 
-## The gardener's vegetables (RHS growing data)
+## The gardener's vegetables (growing data)
 ${vegData}
 
 ## Instructions
