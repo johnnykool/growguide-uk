@@ -8,6 +8,13 @@ import { POST } from "./route";
 const WEATHER_UNAVAILABLE = { error: "Weather is unavailable right now." };
 const INVALID_LOCATION = { error: "Please provide a valid location." };
 
+// The fixtures are a real capture whose days run 2026-09-05 to 2026-09-12, and
+// POST calls normaliseForecast() without a `now`, so it reads the system clock.
+// Left on real time the daily strip silently empties once that week passes, so
+// pin the clock to the capture the way normalise.test.ts already does. Only
+// Date is faked: faking timers wholesale would stall the awaited fetches.
+const NOW = Date.parse("2026-09-06T12:00:00Z");
+
 function weatherRequest(body: unknown) {
   return new Request("http://localhost/api/weather", {
     method: "POST",
@@ -39,12 +46,15 @@ function okFetch() {
 }
 
 beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(NOW);
   clearStoredForecasts();
   vi.stubEnv("METOFFICE_API_KEY", "test-key");
   vi.spyOn(console, "error").mockImplementation(() => undefined);
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
 });
@@ -109,7 +119,11 @@ describe("POST /api/weather", () => {
 
     expect(response.status).toBe(200);
     const body = await response.json();
-    expect(body.daily.length).toBeGreaterThan(0);
+    expect(body.daily).toHaveLength(5);
+    // The capture opens on the 5th and "today" is pinned to the 6th, so this
+    // discriminates: a strip that stopped dropping past days would start on
+    // the 5th and still be five entries long.
+    expect(body.daily[0].date).toBe("2026-09-06");
     expect(body.observedAt).toBe("2026-09-06T11:00Z");
     expect(body.stale).toBeUndefined();
   });
