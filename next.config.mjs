@@ -12,6 +12,16 @@ const connectSrc = ["'self'", "https://api.postcodes.io", "https://va.vercel-scr
 const imgSrc = ["'self'", "data:", "blob:", "https://*.tile.openstreetmap.org"];
 const scriptSrc = ["'self'", "'unsafe-inline'", "https://va.vercel-scripts.com"];
 
+// `next dev` compiles with webpack's eval source maps, so every chunk arrives
+// wrapped in eval() and the policy below blocks the lot: the app never
+// hydrates and the shell sits on its loading state forever. Production bundles
+// contain no eval, so this is relaxed for development only and the deployed
+// policy is unchanged. Keep it that way — an 'unsafe-eval' that leaks into
+// production would give an injected string a way to execute.
+if (process.env.NODE_ENV === "development") {
+  scriptSrc.push("'unsafe-eval'");
+}
+
 // 'unsafe-inline' is required for scripts: the App Router ships inline
 // bootstrap and hydration scripts, and removing it needs per-request nonces
 // from middleware. So this policy is not a meaningful XSS backstop — it earns

@@ -106,12 +106,24 @@ export const TOMATO_VARIETIES: CropVariety[] = [
 
 export const VARIETY_REVIEW_DATE = "18 September 2026";
 
-export function seedDestination(retailer: SeedRetailer) {
-  // Invalid configuration must never turn a working seed link into a dead button.
+// Returns the URL only if it is one a seed link may safely point at. Anything
+// else — a javascript: URI, a malformed string — collapses to null.
+function httpsUrl(candidate: string | undefined): string | null {
+  if (!candidate) return null;
   try {
-    if (retailer.affiliateUrl && new URL(retailer.affiliateUrl).protocol === "https:") {
-      return { href: retailer.affiliateUrl, affiliate: true };
-    }
-  } catch { /* Fall back to the verified ordinary product page. */ }
-  return { href: retailer.url, affiliate: false };
+    return new URL(candidate).protocol === "https:" ? candidate : null;
+  } catch {
+    return null;
+  }
+}
+
+export function seedDestination(retailer: SeedRetailer) {
+  // Invalid configuration must never turn a working seed link into a dead
+  // button, so an unusable affiliate link falls back to the ordinary product
+  // page. Both go through the same check: the fallback is the path taken by
+  // every non-affiliate retailer, so screening only the rarer field would
+  // guard the exception and leave the rule open.
+  const affiliate = httpsUrl(retailer.affiliateUrl);
+  if (affiliate) return { href: affiliate, affiliate: true };
+  return { href: httpsUrl(retailer.url) ?? "#", affiliate: false };
 }

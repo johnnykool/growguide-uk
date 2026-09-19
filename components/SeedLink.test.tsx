@@ -31,4 +31,15 @@ describe("seed links", () => {
     expect(screen.getByRole("link")).toHaveAttribute("href", retailer.url);
     expect(screen.queryByText("(affiliate)")).not.toBeInTheDocument();
   });
+
+  // The fallback is the path every non-affiliate retailer takes, so it is
+  // screened on the same terms as the affiliate link rather than trusted.
+  it.each([
+    ["a javascript: URI", "javascript:alert(1)"],
+    ["a plain-text scheme", "data:text/html,<script>alert(1)</script>"],
+    ["an unparseable URL", "not-a-url"],
+  ])("refuses to link an ordinary product page that is %s", (_label, url) => {
+    render(<SeedLink crop="tomatoes" variety="sungold-f1" name="Sungold F1" retailer={{ name: "Seed retailer", url }} />);
+    expect(screen.getByRole("link")).toHaveAttribute("href", "#");
+  });
 });
