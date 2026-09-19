@@ -3,7 +3,7 @@ export const SITE_NAME = "GrowGuide UK";
 export const SITE_DESCRIPTION =
   "A vegetable planner and growing guide for UK gardeners, with weather-aware advice for your plot.";
 
-export const PUBLIC_ROUTES = ["/", "/privacy"] as const;
+export const PUBLIC_ROUTES = ["/", "/privacy", "/varieties", "/varieties/tomatoes"] as const;
 
 export const SITE_STRUCTURED_DATA = {
   "@context": "https://schema.org",

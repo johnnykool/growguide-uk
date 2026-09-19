@@ -12,7 +12,7 @@ describe("site identity", () => {
     expect(SITE_URL).toBe("https://growguideuk.co.uk");
     expect(SITE_NAME).toBe("GrowGuide UK");
     expect(SITE_DESCRIPTION).toMatch(/UK gardeners/i);
-    expect(PUBLIC_ROUTES).toEqual(["/", "/privacy"]);
+    expect(PUBLIC_ROUTES).toEqual(["/", "/privacy", "/varieties", "/varieties/tomatoes"]);
   });
 
   it("describes a free web application without unsupported claims", () => {

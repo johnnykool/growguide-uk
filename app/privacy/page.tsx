@@ -81,6 +81,20 @@ export default function PrivacyPage() {
             feature. GrowGuide creates no user accounts, sells no data, and
             runs no advertising trackers.
           </p>
+          <p className="mt-2 text-earth-ink">
+            On variety guides we count seed-link clicks by crop, variety and
+            retailer, and whether the link is an affiliate link. We do not send
+            your garden profile with these events. A temporary marker in this
+            tab’s session storage lets us count a return to the Grow Guide
+            within 24 hours of viewing a variety guide. It contains only the
+            crop and visit time, is removed when you return, and ends when the
+            tab is closed. This measurement does not follow you across devices.
+          </p>
+          <p className="mt-2 text-earth-ink">
+            Seed links take you to a separate retailer website, which has its
+            own privacy policy. Affiliate links, when used, are labelled on
+            the guide; the current ordinary links do not earn us a commission.
+          </p>
         </section>
       </div>
     </main>

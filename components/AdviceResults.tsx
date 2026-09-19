@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { AdviceResponse, AdviceTask } from "@/lib/types";
 import { taskKey } from "@/lib/storage";
 import TaskCard from "./TaskCard";
+import VarietyPrompt from "./VarietyPrompt";
 
 interface Props {
   advice: AdviceResponse;
@@ -140,6 +141,7 @@ export default function AdviceResults({
             <h3 className="mb-2 font-serif text-lg text-dark-earth">
               {vegetable}
             </h3>
+            <VarietyPrompt vegetable={vegetable} tasks={tasks} />
             <div className="grid gap-3 sm:grid-cols-2">
               {tasks.map((task) => {
                 const key = taskKey(task.vegetable, task.title);

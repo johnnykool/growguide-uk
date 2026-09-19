@@ -40,3 +40,9 @@ body {
   background-color: var(--blush);
   color: var(--dark-earth);
 }
+
+@layer components {
+  .variety-text-link {
+    @apply inline-flex min-h-11 items-center gap-2 font-semibold text-earth-ink underline underline-offset-4 hover:decoration-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream;
+  }
+}
