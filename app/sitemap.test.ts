@@ -8,6 +8,9 @@ describe("sitemap", () => {
       "https://growguideuk.co.uk/privacy",
       "https://growguideuk.co.uk/varieties",
       "https://growguideuk.co.uk/varieties/tomatoes",
+      "https://growguideuk.co.uk/varieties/courgettes",
+      "https://growguideuk.co.uk/varieties/spring-onions",
+      "https://growguideuk.co.uk/varieties/cucumbers",
     ]);
     expect(JSON.stringify(sitemap())).not.toContain("/api/");
     expect(JSON.stringify(sitemap())).not.toContain("vercel.app");

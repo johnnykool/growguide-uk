@@ -1,4 +1,5 @@
 import { track } from "@vercel/analytics";
+import { VARIETY_CROPS } from "./variety-crops";
 
 const VISIT_KEY = "growguide:variety-visit";
 const RETURN_WINDOW = 24 * 60 * 60 * 1000;
@@ -17,7 +18,7 @@ export function trackGrowGuideReturn() {
     const visit = JSON.parse(raw);
     const age = Date.now() - visit.at;
     // Allow only published crop identifiers, never arbitrary stored input.
-    if (visit.crop === "tomatoes" && typeof visit.at === "number" && age >= 0 && age < RETURN_WINDOW) {
+    if (VARIETY_CROPS.some(crop => crop.slug === visit.crop) && typeof visit.at === "number" && age >= 0 && age < RETURN_WINDOW) {
       track("grow_guide_return", { crop: visit.crop });
     }
   } catch { /* Storage and analytics can be blocked independently. */ }

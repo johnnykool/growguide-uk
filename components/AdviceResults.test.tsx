@@ -12,6 +12,18 @@ function show(tasks: AdviceTask[]) {
 const sow: AdviceTask = { vegetable: "Tomato", title: "Sow your tomatoes", category: "sowing", priority: "medium", detail: "Sow into seed compost." };
 
 describe("contextual variety guidance", () => {
+  it.each([
+    ["Courgette", "courgette", "courgettes"],
+    ["Cucumbers", "cucumber", "cucumbers"],
+    ["Spring Onion", "spring onion", "spring-onions"],
+  ])("links %s planting advice to its own guide once", (vegetable, label, slug) => {
+    show([{ ...sow, vegetable }, { ...sow, vegetable, title: "Plant out", category: "planting" }]);
+    const links = screen.getAllByRole("link", { name: new RegExp(`Explore ${label} varieties`) });
+    expect(links).toHaveLength(1);
+    expect(links[0]).toHaveAttribute("href", `/varieties/${slug}`);
+    expect(screen.queryByRole("link", { name: /View seeds/ })).not.toBeInTheDocument();
+  });
+
   it("shows one internal link before instructions when tomato planting tasks are present", () => {
     show([sow, { ...sow, title: "Plant out", category: "planting" }]);
     const links = screen.getAllByRole("link", { name: /Explore tomato varieties/ });

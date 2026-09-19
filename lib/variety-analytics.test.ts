@@ -7,6 +7,18 @@ vi.mock("@vercel/analytics", () => ({ track: vi.fn() }));
 beforeEach(() => { sessionStorage.clear(); vi.mocked(track).mockReset(); });
 
 describe("variety analytics", () => {
+  it.each(["courgettes", "spring-onions", "cucumbers"])("attributes a return from %s", (crop) => {
+    rememberVarietyVisit(crop);
+    trackGrowGuideReturn();
+    expect(track).toHaveBeenCalledWith("grow_guide_return", { crop });
+  });
+
+  it("does not send unknown stored crop names", () => {
+    rememberVarietyVisit("private stored value");
+    trackGrowGuideReturn();
+    expect(track).not.toHaveBeenCalled();
+  });
+
   it("records a return once with crop context and no garden data", () => {
     rememberVarietyVisit("tomatoes");
     trackGrowGuideReturn();
