@@ -5,7 +5,13 @@ Two printable PDFs for GrowGuide UK:
 - `public/downloads/growguide-uk-growing-calendar-a4.pdf`: two A4 portrait pages for home printers.
 - `public/downloads/growguide-uk-growing-calendar-a3.pdf`: one A3 portrait wall chart.
 
-The footer offers both downloads at `/downloads/growguide-uk-growing-calendar-a4.pdf` and `/downloads/growguide-uk-growing-calendar-a3.pdf`. Matching review copies are in `output/pdf/`.
+The Resources page (`/resources`) previews every page before offering the downloads. The header and footer link to Resources. PDFs remain available at `/downloads/growguide-uk-growing-calendar-a4.pdf` and `/downloads/growguide-uk-growing-calendar-a3.pdf`. Matching local review copies are generated in `output/pdf/`.
+
+## Adding more resources
+
+Add a resource entry to `data/resources.ts`, place the PDF under `public/downloads/`, and add a preview image for every page under `public/images/resources/`. Each resource supplies its own title, description, highlights, printing advice, formats, file sizes and preview alt text. The page renders the catalogue automatically, and its preview controls handle multiple formats and pages. No account or email form is required.
+
+Preview images must be rendered from the final PDF, not recreated separately. For this calendar, render both editions with `pdftoppm -scale-to 2000 -png`, using the prefixes `public/images/resources/growing-calendar-a3` and `public/images/resources/growing-calendar-a4`. Regenerate them whenever the PDF changes and update the catalogue's dimensions and file sizes if necessary. The existing PDFs and preview files are tested for availability.
 
 Print at actual size on the matching paper size. All content sits within normal printer margins. White paper, restrained ivory panels, and muted sage, clay and oat marks reduce ink coverage. Different track positions and additional mark shapes distinguish activities when printed in greyscale. Fonts are embedded; text and chart geometry remain sharp when enlarged.
 

@@ -6,6 +6,7 @@ describe("sitemap", () => {
     expect(sitemap().map(({ url }) => url)).toEqual([
       "https://growguideuk.co.uk/",
       "https://growguideuk.co.uk/privacy",
+      "https://growguideuk.co.uk/resources",
       "https://growguideuk.co.uk/varieties",
       "https://growguideuk.co.uk/varieties/tomatoes",
       "https://growguideuk.co.uk/varieties/courgettes",

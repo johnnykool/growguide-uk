@@ -6,24 +6,16 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-5">
         <div id="free-growing-calendar" className="mb-5 flex scroll-mt-20 flex-col gap-3 border-b border-cream/20 pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-serif text-xl">Sow. Plant. Harvest.</p>
-            <p className="text-sm">Your free UK growing calendar, ready to print.</p>
+            <p className="font-serif text-xl">Good things to grow with.</p>
+            <p className="text-sm">Free guides and printables for your patch.</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <a
-              href="/downloads/growguide-uk-growing-calendar-a4.pdf"
-              download
+            <Link
+              href="/resources"
               className="inline-flex min-h-11 items-center rounded-btn border border-sage/70 px-4 py-2 text-sm font-semibold transition-colors hover:bg-cream/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage"
             >
-              Download A4 PDF · 2 pages
-            </a>
-            <a
-              href="/downloads/growguide-uk-growing-calendar-a3.pdf"
-              download
-              className="inline-flex min-h-11 items-center rounded-btn border border-sage/70 px-4 py-2 text-sm font-semibold transition-colors hover:bg-cream/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage"
-            >
-              Download A3 PDF · Wall chart
-            </a>
+              Preview our free resources
+            </Link>
           </div>
         </div>
         <div className="flex flex-col gap-2 text-xs text-cream sm:flex-row sm:items-center sm:justify-between">
