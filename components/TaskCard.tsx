@@ -64,7 +64,7 @@ export default function TaskCard({ task, done, onToggle }: Props) {
               </span>
             )}
             <div>
-              <p className="text-sm font-medium text-moss">{task.vegetable}</p>
+              <p className="text-sm font-medium text-earth-ink">{task.vegetable}</p>
               <h4
                 className={`font-semibold leading-snug ${
                   done ? "line-through decoration-moss/60" : ""

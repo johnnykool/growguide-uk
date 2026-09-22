@@ -26,7 +26,7 @@ export default function Header() {
           {/* The second nav link left the wordmark too little room at 375px,
               where it broke across two lines. */}
           <span className="whitespace-nowrap font-serif text-lg text-dark-earth sm:text-xl">
-            GrowGuide <span className="text-moss">UK</span>
+            GrowGuide UK
           </span>
         </a>
         <nav aria-label="Main navigation" className="flex items-center gap-1">

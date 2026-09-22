@@ -5,7 +5,7 @@
 :root {
   --cream: #F1EAD8;        /* page background */
   --sage: #B5C7AD;         /* cards, secondary fills */
-  --moss: #8A8E75;         /* text accents, icons */
+  --moss: #8A8E75;         /* decorative fills only: 2.4-2.8:1 on our surfaces, too low for text or control borders. Secondary text is earth-ink. */
   --light-sage: #BEC5A4;   /* hover states, borders, tags */
   --dark-earth: #68604D;   /* primary text, headings */
   --earth-ink: #5F5746;    /* accessible secondary text on tinted surfaces */

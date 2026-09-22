@@ -28,7 +28,7 @@ export default function SeasonalCalendar({ vegetableIds }: Props) {
   return (
     <div className="bg-warm-stone/50 rounded-card shadow-soft p-5">
       <h3 className="font-serif text-xl mb-1">Season at a glance</h3>
-      <p className="text-xs text-moss mb-4">
+      <p className="text-xs text-earth-ink mb-4">
         <span className="inline-block h-2.5 w-2.5 rounded-sm bg-moss align-middle mr-1" />
         sow / plant
         <span className="inline-block h-2.5 w-2.5 rounded-sm bg-light-sage align-middle ml-3 mr-1" />

@@ -114,17 +114,17 @@ export default function WeatherBanner({
                 key={day.date}
                 className="flex flex-col items-center rounded-btn bg-cream/70 px-3 py-2 min-w-[4.5rem]"
               >
-                <span className="text-xs font-semibold text-moss">
+                <span className="text-xs font-semibold text-earth-ink">
                   {day.dayName}
                 </span>
                 <span className="text-lg" aria-hidden>
                   {weatherEmoji(day.icon)}
                 </span>
                 <span className="text-sm font-medium">
-                  {day.high}° <span className="text-moss">{day.low}°</span>
+                  {day.high}° <span className="text-earth-ink">{day.low}°</span>
                 </span>
                 {day.rainProbability >= 30 && (
-                  <span className="text-xs text-moss">
+                  <span className="text-xs text-earth-ink">
                     💧{day.rainProbability}%
                   </span>
                 )}

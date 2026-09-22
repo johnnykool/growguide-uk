@@ -134,7 +134,7 @@ export default function AdviceResults({
 
       {/* Task cards grouped by vegetable */}
       {grouped.length === 0 ? (
-        <p className="text-moss">No tasks match this filter.</p>
+        <p className="text-earth-ink">No tasks match this filter.</p>
       ) : (
         grouped.map(([vegetable, tasks]) => (
           <section key={vegetable}>
