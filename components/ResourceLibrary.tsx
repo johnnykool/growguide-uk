@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { DownloadSimple } from "@phosphor-icons/react";
 import { RESOURCES } from "@/data/resources";
+import { ICON_WEIGHT } from "@/lib/icons";
 import ResourcePreview from "@/components/ResourcePreview";
 
 export default function ResourceLibrary() {
@@ -36,7 +38,7 @@ export default function ResourceLibrary() {
                     {resource.editions.map((edition) => (
                       <div key={edition.format}>
                         <a href={edition.href} download className="inline-flex min-h-11 items-center justify-center gap-3 rounded-btn bg-dark-earth px-5 py-3 font-semibold text-cream transition-colors hover:bg-earth-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-cream">
-                          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" /></svg>
+                          <DownloadSimple size={18} weight={ICON_WEIGHT} aria-hidden="true" />
                           Download {edition.format} PDF
                         </a>
                         <p className="mt-2 text-sm text-earth-ink">{edition.description} · {edition.fileSize}</p>
