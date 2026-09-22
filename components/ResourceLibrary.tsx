@@ -14,7 +14,7 @@ export default function ResourceLibrary() {
       </div>
 
       <div role="group" aria-label="Choose a resource" className="mt-8 flex flex-wrap gap-2">
-        {RESOURCES.map((resource, index) => <button key={resource.id} type="button" aria-pressed={selected === index} onClick={() => setSelected(index)} className={`min-h-11 rounded-btn border border-moss px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth ${selected === index ? "bg-dark-earth text-cream" : "hover:bg-light-sage/40"}`}>{resource.subtitle}</button>)}
+        {RESOURCES.map((resource, index) => <button key={resource.id} type="button" aria-pressed={selected === index} onClick={() => setSelected(index)} className={`min-h-11 rounded-btn border border-dark-earth px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth ${selected === index ? "bg-dark-earth text-cream" : "hover:bg-light-sage/40"}`}>{resource.subtitle}</button>)}
       </div>
       <div className="mt-7">
         {[RESOURCES[selected]].map((resource) => (

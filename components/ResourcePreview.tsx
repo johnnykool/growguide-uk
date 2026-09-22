@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { ResourceEdition } from "@/data/resources";
 
-const buttonStyle = "min-h-11 rounded-btn border border-moss px-3 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth";
+const buttonStyle = "min-h-11 rounded-btn border border-dark-earth px-3 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth";
 export default function ResourcePreview({ title, editions }: { title: string; editions: ResourceEdition[] }) {
   const [editionIndex, setEditionIndex] = useState(0);
   const [pageIndex, setPageIndex] = useState(0);
@@ -36,7 +36,7 @@ export default function ResourcePreview({ title, editions }: { title: string; ed
         {edition.previews.map((page, index) => <button key={page.src} type="button" aria-pressed={pageIndex === index} onClick={() => setPageIndex(index)} className={`${buttonStyle} ${pageIndex === index ? "bg-dark-earth text-cream" : "bg-cream"}`}>Page {index + 1}</button>)}
       </div>
       <div className="flex items-center gap-2">
-        <select aria-label="Preview zoom" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} className="min-h-11 rounded-btn border border-moss bg-cream px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth">
+        <select aria-label="Preview zoom" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} className="min-h-11 rounded-btn border border-dark-earth bg-cream px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth">
           <option value={100}>Fit width</option><option value={125}>125%</option><option value={150}>150%</option><option value={200}>200%</option>
         </select>
         <button ref={expanded ? undefined : expandButton} type="button" aria-expanded={expanded} onClick={() => expanded ? closeExpanded() : setExpanded(true)} className={`${buttonStyle} bg-cream`}>{expanded ? "Close expanded view" : "Expand"}</button>
