@@ -63,7 +63,7 @@ export default function WeatherBanner({
         <button
           type="button"
           onClick={onRetry}
-          className="mt-3 rounded-btn bg-cream px-4 py-2 text-sm font-semibold text-dark-earth shadow-soft transition-colors hover:bg-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2 focus-visible:ring-offset-warm-stone"
+          className="mt-3 rounded-btn bg-cream px-4 py-2 text-sm font-semibold text-dark-earth shadow-soft transition-colors hover:bg-blush focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth focus-visible:ring-offset-2 focus-visible:ring-offset-warm-stone"
         >
           Try weather again
         </button>
