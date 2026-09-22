@@ -97,13 +97,6 @@ export default function CropVarietyGuide({ guide }: { guide: VarietyGuide }) {
         <p className="mt-2 max-w-2xl text-earth-ink">Use your growing space and local weather to plan the next step, from sowing to planting out.</p>
         <Link href="/" className="variety-text-link mt-3">Back to your personalised Grow Guide <span aria-hidden="true">→</span></Link>
       </section>
-
-      <section aria-labelledby="sources-title" className="mt-10 max-w-3xl text-sm text-earth-ink">
-        <h2 id="sources-title" className="font-semibold">About this selection</h2>
-        <p className="mt-2">Growing guidance and seed listings checked on {guide.reviewDate}. The four retailer links above lead to the named seed varieties. We do not monitor stock or show live prices.</p>
-        <p className="mt-2">Variety details are based on the linked Thompson &amp; Morgan seed listings and their <a className="variety-text-link" href={guide.growingGuide}>{guide.singular} growing guide</a>. Container, difficulty and seasonal planning notes are our editorial interpretation of the growing advice.</p>
-        {guide.additionalSource && <p className="mt-2">Further reading: <a className="variety-text-link" href={guide.additionalSource.url}>{guide.additionalSource.label}</a>.</p>}
-      </section>
     </main>
   );
 }
