@@ -12,8 +12,11 @@ describe("resource preview", () => {
     expect(screen.getByRole("link", { name: /Open full-size preview/ })).toHaveAttribute(
       "href", "/images/resources/growing-calendar-a3-1.png",
     );
+    fireEvent.change(screen.getByRole("combobox", { name: "Preview zoom" }), { target: { value: "150" } });
+    expect(screen.getByRole("img").closest("figure")).toHaveStyle({ width: "150%" });
     fireEvent.click(screen.getByRole("button", { name: "A4 home print" }));
     expect(screen.getByRole("img")).toHaveAttribute("alt", expect.stringContaining("page 1 of 2"));
+    expect(screen.getByRole("link", { name: /Open PDF/ })).toHaveAttribute("href", RESOURCES[0].editions[1].href);
     fireEvent.click(screen.getByRole("button", { name: "Page 2" }));
     expect(screen.getByRole("link", { name: /Open full-size preview/ })).toHaveAttribute(
       "href", "/images/resources/growing-calendar-a4-2.png",

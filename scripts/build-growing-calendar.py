@@ -19,12 +19,12 @@ OUT = ROOT / 'output/pdf'
 PUBLIC = ROOT / 'public/downloads'
 ASSETS = Path(__file__).parent / 'calendar-assets'
 INK = '#5F5746'
-MOSS = '#8A8E75'
-SAGE = '#B5C7AD'
-CLAY = '#B18B7E'
+MOSS = '#5F5746'
+SAGE = '#A6BA94'
+CLAY = '#B35B42'
 STONE = '#D5C7AD'
 PAPER = '#F1EAD8'
-OAT = '#B7A071'
+OAT = '#3D707B'
 RULE = '#D8D5CA'
 PALE = '#FAF9F5'
 
@@ -168,8 +168,8 @@ class Page:
             self.rect(x+.2, y+.25, w-.4, h-.5, stroke=MOSS, width=.65)
         else:
             self.rect(x, y, w, h, OAT)
-            self.c.setFillColor(HexColor(INK))
-            self.c.circle(x+w/2, self.h-y-h/2, .65, fill=1, stroke=0)
+            self.c.setFillColor(HexColor('#FFFFFF'))
+            self.c.circle(x+w/2, self.h-y-h/2, .85, fill=1, stroke=0)
 
 
 def draw_page(pdf, size, crops, number, total):

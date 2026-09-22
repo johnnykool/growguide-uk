@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import ResourcesPage, { metadata } from "./page";
 import { RESOURCES } from "@/data/resources";
@@ -13,6 +13,7 @@ describe("resources page", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Resources" })).toBeVisible();
     expect(screen.getByRole("img")).toBeVisible();
     for (const resource of RESOURCES) {
+      fireEvent.click(screen.getByRole("button", { name: resource.subtitle }));
       for (const edition of resource.editions) {
         const link = screen.getByRole("link", { name: `Download ${edition.format} PDF` });
         expect(link).toHaveAttribute("href", edition.href);
