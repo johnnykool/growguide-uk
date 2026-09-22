@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# A newer push to the same branch makes the older run's answer irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # tsc covers the test files too, which next build does not reach.
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm test
+
+      # No secrets: every API key is read at request time by a dynamic route,
+      # so a build with none of them set still produces all 17 pages.
+      - name: Build
+        run: npm run build
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Reads package-lock.json directly, so there is nothing to install
+      # and nothing worth caching.
+      # Gated at critical because main once carried two unnoticed for weeks.
+      # Highs and moderates are reported without failing the run; raise this
+      # to "high" if the dev-tooling noise ever gets cleared.
+      - name: Fail on critical advisories
+        run: npm audit --audit-level=critical
+
+      - name: Report everything else
+        if: always()
+        run: npm audit || true
