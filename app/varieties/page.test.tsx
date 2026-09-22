@@ -6,6 +6,7 @@ import Tomatoes from "./tomatoes/page";
 import Courgettes from "./courgettes/page";
 import SpringOnions from "./spring-onions/page";
 import Cucumbers from "./cucumbers/page";
+import { VARIETY_GUIDES } from "@/data/variety-guides";
 
 vi.mock("@vercel/analytics", () => ({ track: vi.fn() }));
 afterEach(cleanup);
@@ -29,8 +30,10 @@ describe("variety guide journeys", () => {
     render(<Page />);
     expect(screen.getAllByRole("article")).toHaveLength(4);
     const card = screen.getByRole("article", { name });
-    expect(within(card).getByRole("heading", { name: "In general" })).toBeInTheDocument();
-    for (const field of ["Conditions", "Height & spread", "Sowing time", "Planting time", "Harvest time", "Pests & diseases"]) {
+    const data = VARIETY_GUIDES.find(g => g.slug === crop)!.varieties.find(v => v.id === variety)!;
+    expect(within(card).getByText(data.general)).toBeInTheDocument();
+    expect(within(card).getByText(data.limitation)).toBeInTheDocument();
+    for (const field of ["Where it grows", "Conditions", "Containers", "Size and effort", "Height & spread", "Difficulty", "When", "Sow", "Plant", "Harvest", "Pests & diseases", "Bear in mind"]) {
       expect(within(card).getByText(field)).toBeInTheDocument();
     }
     const seed = within(card).getByRole("link", { name: /View seeds at Thompson & Morgan/ });

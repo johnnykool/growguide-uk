@@ -56,6 +56,7 @@ export const COURGETTE_GUIDE: VarietyGuide = {
     "One well-grown courgette can keep you picking for weeks. Choose the fruit you enjoy cooking, then give the plant the space and regular attention it needs.",
     "These four bush varieties suit different priorities, from familiar green courgettes to fruit set under cover. All are summer crops that need warmth, sun and protection from frost.",
   ],
+  image: { src: "/images/veg/courgette.jpg", alt: "Dark green courgettes freshly picked with their flowers attached" },
   varieties: COURGETTE_VARIETIES,
   comparisonIntro: "All four are bush varieties with a generous spread. Compare fruit colour and pollination needs before deciding where to plant.",
   timing: [
