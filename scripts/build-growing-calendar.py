@@ -28,6 +28,12 @@ OAT = '#3D707B'
 RULE = '#D8D5CA'
 PALE = '#FAF9F5'
 
+# DMSans-Semibold.ttf carries a corrected name table: the file Google ships
+# names itself DMSans9pt-Regular, identical to the regular weight, and
+# reportlab keys faces by that internal name. Registering both then silently
+# served regular glyphs for every 'Strong' run and every <b>. If this font is
+# ever refreshed, re-apply nameIDs 1/4/6 as DM Sans 9pt SemiBold /
+# DMSans9pt-SemiBold, or the bold weight disappears again without any error.
 for family, filename in [('Body', 'DMSans-Regular.ttf'),
                          ('Strong', 'DMSans-Semibold.ttf'),
                          ('Display', 'DMSerifDisplay-Regular.ttf')]:

@@ -39,7 +39,7 @@ export const RESOURCES: PrintableResource[] = [
         label: "A3 wall chart",
         description: "One sheet for the shed or potting bench",
         href: "/downloads/growguide-uk-growing-calendar-a3.pdf",
-        fileSize: "361 KB",
+        fileSize: "368 KB",
         previews: [
           {
             src: "/images/resources/growing-calendar-a3-1.png",
@@ -54,7 +54,7 @@ export const RESOURCES: PrintableResource[] = [
         label: "A4 home print",
         description: "Two pages for your garden folder",
         href: "/downloads/growguide-uk-growing-calendar-a4.pdf",
-        fileSize: "364 KB",
+        fileSize: "372 KB",
         previews: [
           {
             src: "/images/resources/growing-calendar-a4-1.png",
@@ -89,7 +89,7 @@ export const RESOURCES: PrintableResource[] = [
       "label": "A4 guide",
       "description": "Two pages for your garden folder",
       "href": "/downloads/growguide-uk-crop-rotation.pdf",
-      "fileSize": "348 KB",
+      "fileSize": "356 KB",
       "previews": [
         {
           "src": "/images/resources/crop-rotation-1.png",
@@ -124,7 +124,7 @@ export const RESOURCES: PrintableResource[] = [
       "label": "A4 guide",
       "description": "Two pages for your garden folder",
       "href": "/downloads/growguide-uk-companion-planting.pdf",
-      "fileSize": "348 KB",
+      "fileSize": "356 KB",
       "previews": [
         {
           "src": "/images/resources/companion-planting-1.png",
@@ -159,7 +159,7 @@ export const RESOURCES: PrintableResource[] = [
       "label": "A4 guide",
       "description": "Two pages for your garden folder",
       "href": "/downloads/growguide-uk-vegetable-storage.pdf",
-      "fileSize": "348 KB",
+      "fileSize": "356 KB",
       "previews": [
         {
           "src": "/images/resources/vegetable-storage-1.png",
@@ -194,7 +194,7 @@ export const RESOURCES: PrintableResource[] = [
       "label": "A4 guide",
       "description": "Two pages for your garden folder",
       "href": "/downloads/growguide-uk-seed-storage-and-lifespan.pdf",
-      "fileSize": "348 KB",
+      "fileSize": "356 KB",
       "previews": [
         {
           "src": "/images/resources/seed-storage-and-lifespan-1.png",

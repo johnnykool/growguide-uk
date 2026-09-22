@@ -17,6 +17,12 @@ M = 36
 CW = W-2*M
 INK='#5F5746'; MOSS='#8A8E75'; SAGE='#B5C7AD'; CLAY='#B18B7E'
 CREAM='#F1EAD8'; STONE='#D5C7AD'; PALE='#FAF9F5'; RULE='#D8D5CA'
+# DMSans-Semibold.ttf carries a corrected name table: the file Google ships
+# names itself DMSans9pt-Regular, identical to the regular weight, and
+# reportlab keys faces by that internal name. Registering both then silently
+# served regular glyphs for every 'Strong' run and every <b>. If this font is
+# ever refreshed, re-apply nameIDs 1/4/6 as DM Sans 9pt SemiBold /
+# DMSans9pt-SemiBold, or the bold weight disappears again without any error.
 for name,file in [('Body','DMSans-Regular.ttf'),('Strong','DMSans-Semibold.ttf'),('Display','DMSerifDisplay-Regular.ttf')]:
     pdfmetrics.registerFont(TTFont(name,str(FONT/file)))
 pdfmetrics.registerFontFamily('Body',normal='Body',bold='Strong',italic='Body',boldItalic='Strong')
