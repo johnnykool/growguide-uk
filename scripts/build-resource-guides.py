@@ -1,7 +1,6 @@
 """Build the approved GrowGuide UK printable resource guides."""
 from pathlib import Path
 import json
-from xml.sax.saxutils import escape
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -22,6 +21,8 @@ for name,file in [('Body','DMSans-Regular.ttf'),('Strong','DMSans-Semibold.ttf')
     pdfmetrics.registerFont(TTFont(name,str(FONT/file)))
 pdfmetrics.registerFontFamily('Body',normal='Body',bold='Strong',italic='Body',boldItalic='Strong')
 
+# Retained as an unpublished record of where each guide's facts came from.
+# The guides no longer print a 'Sources checked' line or inline markers.
 SOURCES = {
  'R1': ('Garden Organic - Planning your planting','https://www.gardenorganic.org.uk/expert-advice/how-to-grow/how-to-grow-vegetables-and-herbs/planning-your-planting'),
  'R2': ('University of Minnesota - Healthy garden soil','https://extension.umn.edu/garden-and-home/yard-and-garden/gardening-in-minnesota/living-soil-healthy-garden'),
@@ -107,13 +108,6 @@ class Page:
             ht=self.para(t,x=x,y=y+25,w=w,size=10,leading=14)
             bottom=max(bottom,y+25+ht)
         self.y=bottom+14
-    def refs(self,ids):
-        self.y+=3
-        links=[]
-        for id in ids:
-            label,url=SOURCES[id]
-            links.append(f'<link href="{escape(url)}" color="{INK}">[{id}] {escape(label)}</link>')
-        self.para('Sources checked / '+ ' · '.join(links),size=7.5,leading=10,gap=4)
     def end(self):
         assert self.y<771, (self.title,self.n,self.y)
         self.line(M,783,W-M,783,STONE)
@@ -133,7 +127,7 @@ def new_pdf(slug,title):
 def rotation():
     c=new_pdf('crop-rotation','Crop rotation')
     p=Page(c,'01','Rotate. Record. Repeat.','Crop rotation for UK beds, allotments and containers',1,'Crop rotation / know your families')
-    p.para('Move related annual crops around your growing space to reduce repeated pressure from some soil pests and diseases. A four-year cycle is a useful starting point: return in year five, after three intervening growing years. [R1]')
+    p.para('Move related annual crops around your growing space to reduce repeated pressure from some soil pests and diseases. A four-year cycle is a useful starting point: return in year five, after three intervening growing years.')
     p.heading('Start with the plant family')
     p.table(['FAMILY','COMMON CROPS','GROUP*'],[
       ['Potato family','Potato, tomato, pepper, aubergine','A'],
@@ -146,7 +140,7 @@ def rotation():
       ['Daisy family','Lettuce, chicory, endive','D'],
       ['Grass family','Sweetcorn','B'],
     ],[127,CW-182,55],size=9.5,pad=7)
-    p.para('*Letters refer to the example on page 2. B and D combine different families in separate patches; they are planning groups, not botanical families. Choose the crops you actually grow. [R1, R2]',size=9.2,leading=12.5)
+    p.para('*Letters refer to the example on page 2. B and D combine different families in separate patches; they are planning groups, not botanical families. Choose the crops you actually grow.',size=9.2,leading=12.5)
     p.note('Two easy mistakes to avoid','Radish and turnip belong with brassicas, even though you harvest their roots. Potatoes and tomatoes share a family, even though one grows below ground and the other above it.')
     p.para('Keep established perennial crops, such as asparagus, rhubarb and chives, in permanent positions. Record annual herbs in the rotation; basil belongs to the mint family and can occupy a separate annual herb patch.',size=9.5,leading=13)
     p.end()
@@ -157,75 +151,75 @@ def rotation():
     ],[67]+[(CW-67)/4]*4,size=10.8,pad=8)
     p.para('<b>A</b> Potato family  ·  <b>B</b> Peas/beans, cucurbits and sweetcorn<br/><b>C</b> Brassicas  ·  <b>D</b> Alliums, carrots/related crops, beets and lettuce',size=9.5,leading=14)
     p.cols([
-      ('Beds & allotments','Draw a map each season and record catch crops, overwintered crops and problems. Keep mustard green manure in the brassica group. Feed for the crop and soil condition; peas and beans do not provide a complete fertiliser programme. [R1, R2]'),
+      ('Beds & allotments','Draw a map each season and record catch crops, overwintered crops and problems. Keep mustard green manure in the brassica group. Feed for the crop and soil condition; peas and beans do not provide a complete fertiliser programme.'),
       ('Raised beds & small plots','Use named sections if whole beds are impractical. A tiny move within shared soil gives limited separation. If the full cycle will not fit, avoid repeating susceptible families where possible and use pots to add space.'),
     ])
     p.cols([
-      ('Pots & grow bags','Changing a pot\'s position does not change its compost history. For repeated tomatoes or potatoes, use clean containers and fresh suitable peat-free compost. Keep suspect compost away from susceptible crops. [R5]'),
-      ('The UK winter','A winter leek or kale crop still occupies its group until cleared. Do not force a change on 1 January. Plan from actual harvests, and avoid working soil when waterlogged; wet ground is easily compacted. [R2]'),
+      ('Pots & grow bags','Changing a pot\'s position does not change its compost history. For repeated tomatoes or potatoes, use clean containers and fresh suitable peat-free compost. Keep suspect compost away from susceptible crops.'),
+      ('The UK winter','A winter leek or kale crop still occupies its group until cleared. Do not force a change on 1 January. Plan from actual harvests, and avoid working soil when waterlogged; wet ground is easily compacted.'),
     ])
-    p.note('When rotation is not enough','Clubroot and allium white rot can survive much longer than four years. If either is suspected, identify the problem before replanting, avoid moving affected soil and get disease-specific advice. A routine rotation is not a cure. [R3, R4]',PALE)
-    p.refs(['R1','R2','R3','R4','R5']);p.end();c.save()
+    p.note('When rotation is not enough','Clubroot and allium white rot can survive much longer than four years. If either is suspected, identify the problem before replanting, avoid moving affected soil and get disease-specific advice. A routine rotation is not a cure.',PALE)
+    p.end();c.save()
 
 def companions():
     c=new_pdf('companion-planting','Companion planting')
     p=Page(c,'02','Good neighbours.','Companion planting for a useful, diverse UK kitchen garden',1,'Companion planting / evidence first')
     p.para('Start with space, light and healthy soil. Mixed planting can support useful insects and make a bed more productive, but no pairing guarantees a pest-free crop. The examples below separate practical uses from results shown in particular trials.')
     p.table(['PAIRING','WHY TRY IT?','HOW TO USE IT'],[
-      ['<b>Lettuce + widely spaced brassicas</b><br/>Practical use of space [C4]','Harvest a quick salad crop while the larger plants are still small.','Keep the brassicas\' full spacing. Remove lettuce before leaves overlap heavily. Both crops still count in your rotation.'],
-      ['<b>Vegetables + open flowers</b><br/>Habitat support [C1]','Flowering coriander, calendula and poached-egg plant provide food for useful insects.','Use an edge strip or nearby pots. Aim for flowers over several months. More insect visits do not automatically mean less crop damage.'],
-      ['<b>Tomato + French marigold</b><br/>UK trial evidence [C2]','Glasshouse trials found slower population growth of glasshouse whitefly.','Grow Tagetes patula alongside tomatoes from early in the crop. This is specific evidence, not proof against all pests or a rescue for a heavy infestation.'],
-      ['<b>Vegetables + flowering herbs</b><br/>Practical habitat [R5]','Nearby herb pots add flowers without taking space from crop roots.','Let some dill or coriander flower, and keep others for leaves. Put pots where they will not shade crops or block paths.'],
+      ['<b>Lettuce + widely spaced brassicas</b><br/>Practical use of space','Harvest a quick salad crop while the larger plants are still small.','Keep the brassicas\' full spacing. Remove lettuce before leaves overlap heavily. Both crops still count in your rotation.'],
+      ['<b>Vegetables + open flowers</b><br/>Habitat support','Flowering coriander, calendula and poached-egg plant provide food for useful insects.','Use an edge strip or nearby pots. Aim for flowers over several months. More insect visits do not automatically mean less crop damage.'],
+      ['<b>Tomato + French marigold</b><br/>UK trial evidence','Glasshouse trials found slower population growth of glasshouse whitefly.','Grow Tagetes patula alongside tomatoes from early in the crop. This is specific evidence, not proof against all pests or a rescue for a heavy infestation.'],
+      ['<b>Vegetables + flowering herbs</b><br/>Practical habitat','Nearby herb pots add flowers without taking space from crop roots.','Let some dill or coriander flower, and keep others for leaves. Put pots where they will not shade crops or block paths.'],
     ],[136,167,CW-303],size=9.6,pad=9)
     p.heading('Keep the basics working')
-    p.para('<b>Room to grow:</b> allow mature crop spacing and good airflow, especially in damp weather. <b>Protection:</b> use suitable insect mesh where a crop needs it. <b>Observation:</b> check leaf undersides, new shoots and companion plants regularly. [C1, R5]')
-    p.note('Choose the right marigold','French marigold is Tagetes patula. Pot marigold is Calendula officinalis. Both can be useful garden plants, but the tomato-whitefly trial used French marigolds. [C2, C3]')
+    p.para('<b>Room to grow:</b> allow mature crop spacing and good airflow, especially in damp weather. <b>Protection:</b> use suitable insect mesh where a crop needs it. <b>Observation:</b> check leaf undersides, new shoots and companion plants regularly.')
+    p.note('Choose the right marigold','French marigold is Tagetes patula. Pot marigold is Calendula officinalis. Both can be useful garden plants, but the tomato-whitefly trial used French marigolds.')
     p.end()
     p=Page(c,'02','Useful, with limits.','Traditional pairings, practical layouts and a simple garden trial',2,'Companion planting / what to expect')
     p.table(['TRADITIONAL IDEA','WHAT THE EVIDENCE ALLOWS'],[
-      ['<b>Carrots + onions</b><br/>"Stops carrot fly"','Results are inconsistent. Grow them together if the layout suits you, but use well-fitted insect mesh when protection matters. [C1]'],
+      ['<b>Carrots + onions</b><br/>"Stops carrot fly"','Results are inconsistent. Grow them together if the layout suits you, but use well-fitted insect mesh when protection matters.'],
       ['<b>Tomatoes + basil</b><br/>"Improves tomato flavour"','Treat this as a kitchen pairing, not a dependable flavour treatment. Both enjoy warmth; keep enough root space and light for each.'],
-      ['<b>Beans + nasturtiums</b><br/>"Diverts blackfly from beans"','Trap planting is not a guarantee. Nasturtiums can host aphids too: inspect both plants and do not rely on diversion alone. [C1]'],
-      ['<b>Sweetcorn + beans + squash</b><br/>The Three Sisters','A traditional system with crop, variety and timing requirements. It can be difficult in cool, short UK summers. Give climbing beans their own strong supports for a simpler first attempt. [C1]'],
+      ['<b>Beans + nasturtiums</b><br/>"Diverts blackfly from beans"','Trap planting is not a guarantee. Nasturtiums can host aphids too: inspect both plants and do not rely on diversion alone.'],
+      ['<b>Sweetcorn + beans + squash</b><br/>The Three Sisters','A traditional system with crop, variety and timing requirements. It can be difficult in cool, short UK summers. Give climbing beans their own strong supports for a simpler first attempt.'],
     ],[178,CW-178],size=9.7,pad=8)
     p.heading('Three ways to start small')
-    p.para('<b>Allotment:</b> keep a narrow flower strip beside your vegetable rows, with access for weeding, picking and netting.<br/><b>Raised bed:</b> use young lettuce in temporary gaps between larger crops; clear it before competition starts.<br/><b>Patio:</b> place separate herb or flower pots near the vegetables. Match watering needs if sharing a container, and keep drainage holes clear. [R5]')
+    p.para('<b>Allotment:</b> keep a narrow flower strip beside your vegetable rows, with access for weeding, picking and netting.<br/><b>Raised bed:</b> use young lettuce in temporary gaps between larger crops; clear it before competition starts.<br/><b>Patio:</b> place separate herb or flower pots near the vegetables. Match watering needs if sharing a container, and keep drainage holes clear.')
     p.note('Try one change and keep a record','Compare similar plants of the same variety, with and without the companion. Keep watering, feeding and spacing similar. Each week, note pest numbers, damage and harvest. One good season suggests something to try again; it does not prove the pairing caused it.',PALE)
     p.para('<b>UK timing:</b> harden off tender plants and wait until frost risk has passed locally. In cool or exposed gardens, prioritise crop light and warmth over squeezing in extra neighbours. Keep flowers outside insect mesh so pollinators can reach them.',size=9.5,leading=13)
-    p.refs(['C1','C2','C3','C4','R5']);p.end();c.save()
+    p.end();c.save()
 
 def storage():
     c=new_pdf('vegetable-storage','Vegetable storage')
     p=Page(c,'03','Keep the harvest.','Vegetable storage for UK homes, sheds and allotments',1,'Vegetable storage / the longer keepers')
-    p.para('Store only sound produce. Separate anything damaged for prompt use if still safe, and discard mouldy or rotten vegetables. Harvest gently and label batches. The conditions matter more than a calendar date. [V1, V3]')
+    p.para('Store only sound produce. Separate anything damaged for prompt use if still safe, and discard mouldy or rotten vegetables. Harvest gently and label batches. The conditions matter more than a calendar date.')
     p.table(['CROP','PREPARE & STORE','KEEPING EXPECTATION'],[
-      ['<b>Maincrop potatoes</b> [V5]','Let surfaces dry; brush off loose soil. Store in darkness in paper sacks or breathable bags, protected from frost.','Weeks to months, depending on variety and store. Check for rot and sprouts.'],
-      ['<b>Onions, garlic & shallots</b> [V5]','Dry under cover with airflow until skins and necks are thoroughly dry. Store cool, dry and ventilated.','Storage varieties can last months. Use thick-necked or damaged bulbs first if sound.'],
+      ['<b>Maincrop potatoes</b>','Let surfaces dry; brush off loose soil. Store in darkness in paper sacks or breathable bags, protected from frost.','Weeks to months, depending on variety and store. Check for rot and sprouts.'],
+      ['<b>Onions, garlic & shallots</b>','Dry under cover with airflow until skins and necks are thoroughly dry. Store cool, dry and ventilated.','Storage varieties can last months. Use thick-necked or damaged bulbs first if sound.'],
       ['<b>Carrot, parsnip, beetroot, swede & turnip</b>','Remove tops without cutting the crown. Pack sound, unwashed roots in slightly damp sand or coir; keep very cool, about 0-4°C, without freezing.','Several weeks or longer in a suitable store. Check that packing is not wet and roots are not shrivelling.'],
       ['<b>Pumpkin & winter squash</b>','Harvest mature fruit before frost. Keep the stalk intact; cure skin in a warm, dry, airy place. Store around 10-15°C with fruits apart.','Often months when properly matured. Immature or frost-damaged fruit stores poorly.'],
       ['<b>Winter cabbage</b>','Choose firm storage varieties. Keep sound heads very cool, about 0-4°C, with airflow and frost protection.','Weeks to months. Spring cabbage and loose heads are for quicker use.'],
     ],[113,263,CW-376],size=9.4,pad=8)
-    p.para('These are broad expectations for suitable varieties and good storage, not guaranteed shelf lives. The root-packing, bulb-drying and squash conditions are different: one damp shed corner will not suit them all. [V1]',size=9.2,leading=12.5)
-    p.note('A UK shed is not automatically a safe store','Check actual temperatures with a min/max thermometer. Protect from rain, rodents and frost; avoid condensation. If your store is unsuitable, keep smaller batches in the house or fridge and freeze a glut. [V1, V2]')
+    p.para('These are broad expectations for suitable varieties and good storage, not guaranteed shelf lives. The root-packing, bulb-drying and squash conditions are different: one damp shed corner will not suit them all.',size=9.2,leading=12.5)
+    p.note('A UK shed is not automatically a safe store','Check actual temperatures with a min/max thermometer. Protect from rain, rodents and frost; avoid condensation. If your store is unsuitable, keep smaller batches in the house or fridge and freeze a glut.')
     p.end()
     p=Page(c,'03','Fresh for the week.','A fridge guide and simple habits that reduce waste',2,'Vegetable storage / everyday harvests')
-    p.para('Keep the fridge at 0-5°C; check with a thermometer. The times below are approximate quality windows for fresh, whole produce in good condition. Cut produce needs prompt refrigeration; follow any use-by date. [V2, V4]')
+    p.para('Keep the fridge at 0-5°C; check with a thermometer. The times below are approximate quality windows for fresh, whole produce in good condition. Cut produce needs prompt refrigeration; follow any use-by date.')
     p.table(['CROP','WHERE & HOW','USE AS A GUIDE'],[
       ['Lettuce, spinach, kale','Fridge; a container or bag limits wilting. Keep leaves from sitting in water.','3-5 days'],
       ['Broccoli, sprouts; peas','Fridge; cool promptly after picking.','3-5 days'],
       ['French / runner beans','Fridge; keep in a bag. Young, tender pods are best.','About 1 week'],
       ['Cauliflower, peppers, cucumber','Fridge; protect from drying out and use promptly.','About 1 week'],
       ['Courgette; aubergine','Fridge for short storage; use aubergines first.','3-5 days; 2-3 days'],
-      ['Spring onion; soft herbs','Fridge; protect from wilting. Keep basil stems in water at room temperature and use promptly. [V7]','A few days'],
+      ['Spring onion; soft herbs','Fridge; protect from wilting. Keep basil stems in water at room temperature and use promptly.','A few days'],
       ['Carrot, beetroot, radish','Fridge; remove leafy tops and bag roots.','1-2 weeks'],
-      ['Ripe tomatoes','Refrigerate to slow deterioration; bring to room temperature to serve. Ripen unripe whole fruit indoors first. [V6]','Use within a few days'],
+      ['Ripe tomatoes','Refrigerate to slow deterioration; bring to room temperature to serve. Ripen unripe whole fruit indoors first.','Use within a few days'],
     ],[140,268,CW-408],size=9.2,pad=6.7)
     p.cols([
-      ('Still in the ground?','Suitable winter leeks, parsnips and hardy brassicas can be harvested as needed. Lift a small supply before frozen ground makes access difficult. Waterlogging, pests and exposed sites can make outdoor storage unreliable. [V1]'),
-      ('A glut to freeze','Freeze while quality is good. Most vegetables need blanching first; use a crop-specific method. Cool cooked food and refrigerate within 1-2 hours. Keep leftovers for no more than 48 hours, or freeze. [V1, V2]'),
+      ('Still in the ground?','Suitable winter leeks, parsnips and hardy brassicas can be harvested as needed. Lift a small supply before frozen ground makes access difficult. Waterlogging, pests and exposed sites can make outdoor storage unreliable.'),
+      ('A glut to freeze','Freeze while quality is good. Most vegetables need blanching first; use a crop-specific method. Cool cooked food and refrigerate within 1-2 hours. Keep leftovers for no more than 48 hours, or freeze.'),
     ])
-    p.para('<b>Potato check:</b> current UK advice allows fridge storage as well as a cool, dark, dry place. Remove sprouts and green portions; discard extensively green, bitter, mouldy or rotten potatoes. Wash all produce before preparing or eating it. [V3]',size=9.5,leading=13)
-    p.refs(['V1','V2','V3','V4','V5','V6','V7']);p.end();c.save()
+    p.para('<b>Potato check:</b> current UK advice allows fridge storage as well as a cool, dark, dry place. Remove sprouts and green portions; discard extensively green, bitter, mouldy or rotten potatoes. Wash all produce before preparing or eating it.',size=9.5,leading=13)
+    p.end();c.save()
 
 SEEDS=[
  ('Aubergine','2-4'),('Basil','3-5'),('Beans, broad','3-4'),('Beans, French','3-4'),('Beans, runner','3-4'),('Beetroot','2-4'),('Broccoli','3-5'),('Brussels sprouts','3-5'),('Butternut squash','2-4'),('Cabbage','3-5'),('Carrot','2-3'),('Cauliflower','4-5'),('Celeriac','3-5'),('Celery','3-5'),('Chard','2-4'),('Chives','1-3'),('Coriander','1-4'),('Courgette','2-4'),
@@ -234,29 +228,29 @@ SEEDS=[
 def seeds():
     c=new_pdf('seed-storage-and-lifespan','Seed storage and lifespan')
     p=Page(c,'04','Save for next season.','Seed storage, germination checks and a 36-crop lifespan chart',1,'Seed care / cool, dry and labelled')
-    p.para('Seed is alive. Age, heat and moisture affect how well it germinates, and old seed can produce weaker seedlings. Good storage slows decline; it cannot restore damaged seed. [S1, S3]')
+    p.para('Seed is alive. Age, heat and moisture affect how well it germinates, and old seed can produce weaker seedlings. Good storage slows decline; it cannot restore damaged seed.')
     p.heading('A simple storage routine')
     p.table(['STEP','WHAT TO DO'],[
-      ['<b>01 / Dry</b>','For home-saved seed, remove pulp and debris and dry thoroughly before sealing. Damp UK autumn air can make drying slow. Use gentle airflow indoors; avoid ovens, radiators and hot greenhouses. [S3]'],
-      ['<b>02 / Label</b>','Keep the original packet. For saved seed, record crop, variety, harvest year and collection notes. For bought seed, record purchase year and sow-by date; the seed may already be a year old. [S1]'],
-      ['<b>03 / Seal</b>','Put dry seed in labelled paper envelopes inside an airtight jar or box. Add a sealed silica-gel sachet, kept separate from seed. Paper envelopes alone do not exclude moisture. [S2]'],
-      ['<b>04 / Keep cool</b>','Use a reliably cool, dry cupboard, or an airtight container in the fridge at about 4-5°C. A damp shed or greenhouse is a poor choice for long-term storage. [S1, S2]'],
-      ['<b>05 / Warm, then open</b>','After refrigeration, let the sealed container reach room temperature before opening, so moisture does not condense on the cold seed. Return only dry packets to storage. [S2]'],
+      ['<b>01 / Dry</b>','For home-saved seed, remove pulp and debris and dry thoroughly before sealing. Damp UK autumn air can make drying slow. Use gentle airflow indoors; avoid ovens, radiators and hot greenhouses.'],
+      ['<b>02 / Label</b>','Keep the original packet. For saved seed, record crop, variety, harvest year and collection notes. For bought seed, record purchase year and sow-by date; the seed may already be a year old.'],
+      ['<b>03 / Seal</b>','Put dry seed in labelled paper envelopes inside an airtight jar or box. Add a sealed silica-gel sachet, kept separate from seed. Paper envelopes alone do not exclude moisture.'],
+      ['<b>04 / Keep cool</b>','Use a reliably cool, dry cupboard, or an airtight container in the fridge at about 4-5°C. A damp shed or greenhouse is a poor choice for long-term storage.'],
+      ['<b>05 / Warm, then open</b>','After refrigeration, let the sealed container reach room temperature before opening, so moisture does not condense on the cold seed. Return only dry packets to storage.'],
     ],[96,CW-96],size=10,pad=8)
     p.heading('Test a packet before you rely on it')
-    p.para('About a month before sowing, take <b>20 seeds at random</b> (or 10 if supplies are limited). Put them on damp kitchen paper in a covered container. Label the sample; use the crop\'s recommended germination temperature and light conditions. Keep damp, not waterlogged. [S2, S3]')
-    p.para('Check daily and allow the full expected germination time; parsley and parsnip can be slow. Count normal seedlings, not just split seed coats. <b>16 seedlings from 20 seeds = 80% germination.</b> A small test is an estimate; garden emergence can be lower. [S3]')
+    p.para('About a month before sowing, take <b>20 seeds at random</b> (or 10 if supplies are limited). Put them on damp kitchen paper in a covered container. Label the sample; use the crop\'s recommended germination temperature and light conditions. Keep damp, not waterlogged.')
+    p.para('Check daily and allow the full expected germination time; parsley and parsnip can be slow. Count normal seedlings, not just split seed coats. <b>16 seedlings from 20 seeds = 80% germination.</b> A small test is an estimate; garden emergence can be lower.')
     p.note('Use the result to plan','If the result is poor or seedlings weak, fresh seed is usually the better use of limited space. If you keep the batch, sow extra and thin to the correct spacing. Never eat seeds sold for sowing; they may be treated.',PALE)
     p.end()
     p=Page(c,'04','How long do seeds last?','Approximate useful storage life for common vegetables and herbs',2,'Seed care / keep, test or replace')
-    p.para('Years below are <b>rough planning ranges from harvest</b> for dry, mature, untreated seed kept consistently cool and dry. Bought seed is not necessarily new: do not add these years to a packet\'s sow-by date. Germination testing is more useful than age alone. [S1-S4]')
+    p.para('Years below are <b>rough planning ranges from harvest</b> for dry, mature, untreated seed kept consistently cool and dry. Bought seed is not necessarily new: do not add these years to a packet\'s sow-by date. Germination testing is more useful than age alone.')
     rows=[]
     for a,b in zip(SEEDS[:18],SEEDS[18:]):rows.append([a[0],a[1],b[0],b[1]])
     p.table(['CROP','YEARS','CROP','YEARS'],rows,[CW*.375,CW*.125,CW*.375,CW*.125],size=10,pad=3.4)
-    p.para('<b>*Parsnip:</b> buy or save fresh seed each season for reliability. Some older seed can germinate, but test before committing a row. Prioritise fresh onion, spring onion and leek seed too. [S1, S4]',size=9.5,leading=13)
-    p.para('<b>These are not expiry dates.</b> Sources report different lifespans; the chart uses practical, generally cautious ranges. Some batches fail sooner and some last much longer. Heat or damp can shorten any range. [S1-S4]',size=9.4,leading=13)
-    p.para('<b>Exceptions:</b> pelleted or primed seed may store for less time; follow the supplier\'s advice. Potato tubers, garlic cloves and onion sets are planting material, not dry seeds, and are outside this chart. [S2, S5]',size=9.4,leading=13)
-    p.refs(['S1','S2','S3','S4','S5']);p.end();c.save()
+    p.para('<b>*Parsnip:</b> buy or save fresh seed each season for reliability. Some older seed can germinate, but test before committing a row. Prioritise fresh onion, spring onion and leek seed too.',size=9.5,leading=13)
+    p.para('<b>These are not expiry dates.</b> Sources report different lifespans; the chart uses practical, generally cautious ranges. Some batches fail sooner and some last much longer. Heat or damp can shorten any range.',size=9.4,leading=13)
+    p.para('<b>Exceptions:</b> pelleted or primed seed may store for less time; follow the supplier\'s advice. Potato tubers, garlic cloves and onion sets are planting material, not dry seeds, and are outside this chart.',size=9.4,leading=13)
+    p.end();c.save()
 
 if __name__=='__main__':
     OUT.mkdir(parents=True,exist_ok=True)

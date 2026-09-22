@@ -89,7 +89,7 @@ export const RESOURCES: PrintableResource[] = [
       "label": "A4 guide",
       "description": "Two pages for your garden folder",
       "href": "/downloads/growguide-uk-crop-rotation.pdf",
-      "fileSize": "350 KB",
+      "fileSize": "348 KB",
       "previews": [
         {
           "src": "/images/resources/crop-rotation-1.png",
@@ -124,7 +124,7 @@ export const RESOURCES: PrintableResource[] = [
       "label": "A4 guide",
       "description": "Two pages for your garden folder",
       "href": "/downloads/growguide-uk-companion-planting.pdf",
-      "fileSize": "350 KB",
+      "fileSize": "348 KB",
       "previews": [
         {
           "src": "/images/resources/companion-planting-1.png",
@@ -159,7 +159,7 @@ export const RESOURCES: PrintableResource[] = [
       "label": "A4 guide",
       "description": "Two pages for your garden folder",
       "href": "/downloads/growguide-uk-vegetable-storage.pdf",
-      "fileSize": "351 KB",
+      "fileSize": "348 KB",
       "previews": [
         {
           "src": "/images/resources/vegetable-storage-1.png",
@@ -194,7 +194,7 @@ export const RESOURCES: PrintableResource[] = [
       "label": "A4 guide",
       "description": "Two pages for your garden folder",
       "href": "/downloads/growguide-uk-seed-storage-and-lifespan.pdf",
-      "fileSize": "350 KB",
+      "fileSize": "348 KB",
       "previews": [
         {
           "src": "/images/resources/seed-storage-and-lifespan-1.png",
