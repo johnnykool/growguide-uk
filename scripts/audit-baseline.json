@@ -1,0 +1,33 @@
+{
+  "comment": "Advisories reviewed and accepted. Anything not listed here, and anything critical, fails CI. Keep this short: an entry is a decision, not a parking space.",
+  "accepted": [
+    {
+      "module": "postcss",
+      "maxSeverity": "high",
+      "reason": "Bundled inside next as postcss 8.4.31. Build-time sourceMappingURL and stringify issues that need attacker-controlled CSS in our own source to reach.",
+      "clearedBy": "next >= 16.3.6, the first release bundling postcss 8.5.23",
+      "reviewed": "2026-09-22"
+    },
+    {
+      "module": "next",
+      "maxSeverity": "moderate",
+      "reason": "Flagged only as the parent of the bundled postcss above, not for an advisory against next itself.",
+      "clearedBy": "next >= 16.3.6",
+      "reviewed": "2026-09-22"
+    },
+    {
+      "module": "vitest",
+      "maxSeverity": "moderate",
+      "reason": "Test runner, never shipped. Path traversal via the mocker redirect, which needs a malicious test in our own suite.",
+      "clearedBy": "vitest >= 4.1.11",
+      "reviewed": "2026-09-22"
+    },
+    {
+      "module": "@vitest/mocker",
+      "maxSeverity": "moderate",
+      "reason": "Same advisory as vitest above, reported against the sub-package.",
+      "clearedBy": "vitest >= 4.1.11",
+      "reviewed": "2026-09-22"
+    }
+  ]
+}

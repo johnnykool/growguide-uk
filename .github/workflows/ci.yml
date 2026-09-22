@@ -51,12 +51,13 @@ jobs:
 
       # Reads package-lock.json directly, so there is nothing to install
       # and nothing worth caching.
-      # Gated at critical because main once carried two unnoticed for weeks.
-      # Highs and moderates are reported without failing the run; raise this
-      # to "high" if the dev-tooling noise ever gets cleared.
-      - name: Fail on critical advisories
-        run: npm audit --audit-level=critical
+      # The gate checks against scripts/audit-baseline.json rather than a
+      # severity threshold: anything critical, anything not already reviewed,
+      # and any escalation of a known issue all fail. A plain --audit-level
+      # would either be red every day or miss what it is meant to catch.
+      - name: Audit gate
+        run: node scripts/audit-gate.mjs
 
-      - name: Report everything else
+      - name: Full report
         if: always()
         run: npm audit || true
