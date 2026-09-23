@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { getVegetableById, VEGETABLES } from "@/data/vegetables";
+import { consumeAdviceQuota } from "@/lib/advice-rate-limit";
 import {
   AdviceResponse,
   AdviceTask,
@@ -25,9 +26,6 @@ interface AdviceRequestBody {
 }
 
 const MAX_REQUEST_BYTES = 24_000;
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
-const RATE_LIMIT_MAX_REQUESTS = 5;
-const MAX_RATE_LIMIT_CLIENTS = 1_000;
 
 const VEGETABLE_IDS = new Set(VEGETABLES.map((vegetable) => vegetable.id));
 const PLOT_SIZE_IDS = new Set(Object.keys(PLOT_SIZE_LABELS));
@@ -46,16 +44,6 @@ const REQUEST_KEYS = new Set([
   "timeline",
   "weather",
 ]);
-
-interface RateLimitEntry {
-  count: number;
-  windowStartedAt: number;
-}
-
-// Defensive per-process limit only: serverless instances do not share this map,
-// and cold starts reset it. A shared edge/store limiter is still required for a
-// globally enforced quota, but this bounds repeat spend within each live process.
-const adviceRateLimits = new Map<string, RateLimitEntry>();
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -209,32 +197,6 @@ function isSameOrigin(request: Request): boolean {
 function clientIdentifier(request: Request): string {
   const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0].trim();
   return (forwarded || request.headers.get("x-real-ip") || "unknown").slice(0, 64);
-}
-
-function consumeAdviceQuota(client: string, now = Date.now()): number | null {
-  for (const [key, entry] of Array.from(adviceRateLimits.entries())) {
-    if (now - entry.windowStartedAt >= RATE_LIMIT_WINDOW_MS) {
-      adviceRateLimits.delete(key);
-    }
-  }
-  const entry = adviceRateLimits.get(client);
-  if (!entry) {
-    while (adviceRateLimits.size >= MAX_RATE_LIMIT_CLIENTS) {
-      const oldest = adviceRateLimits.keys().next().value as string | undefined;
-      if (!oldest) break;
-      adviceRateLimits.delete(oldest);
-    }
-    adviceRateLimits.set(client, { count: 1, windowStartedAt: now });
-    return null;
-  }
-  if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
-    return Math.max(
-      1,
-      Math.ceil((RATE_LIMIT_WINDOW_MS - (now - entry.windowStartedAt)) / 1000),
-    );
-  }
-  entry.count += 1;
-  return null;
 }
 
 function buildPrompt(body: AdviceRequestBody): string {
@@ -427,7 +389,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const retryAfter = consumeAdviceQuota(clientIdentifier(request));
+  const retryAfter = await consumeAdviceQuota(clientIdentifier(request));
   if (retryAfter !== null) {
     return NextResponse.json(
       { error: "Too many advice requests. Please wait and try again." },
