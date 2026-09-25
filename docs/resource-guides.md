@@ -4,6 +4,8 @@ Approved for publication on 22 September 2026. The Resources library provides a 
 
 Four A4 guides (two pages each): crop rotation; companion planting; vegetable storage; seed storage and lifespan. Compiled by GrowGuide UK. The calendar now separates sage indoor sowing, terracotta outdoor sowing, outlined planting and blue-green harvest, with different printed markings.
 
+Each resource has a shareable page at `/resources/{id}`, using the ID in `data/resources.ts`. Choosing a resource updates the URL; opening or refreshing that link selects the same guide. Each page includes its own canonical URL, title, description and first-page preview image for social sharing. These pages are included in the sitemap automatically. `/resources` remains the library entrance.
+
 Regenerate guide PDFs with `scripts/build-resource-guides.py` using ReportLab and the bundled DM fonts. Regenerate calendars with `scripts/build-growing-calendar.py`. Render previews directly from the finished PDFs and update dimensions/file sizes in `data/resources.ts`. Source references inside each guide are clickable; the generator contains the full URL register.
 
 ## Vegetable storage revision, 25 September 2026

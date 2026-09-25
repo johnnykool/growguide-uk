@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 import { DownloadSimple } from "@phosphor-icons/react";
 import { RESOURCES } from "@/data/resources";
 import { ICON_WEIGHT } from "@/lib/icons";
 import ResourcePreview from "@/components/ResourcePreview";
 
-export default function ResourceLibrary() {
-  const [selected, setSelected] = useState(0);
+export default function ResourceLibrary({ resourceId }: { resourceId?: string }) {
+  const selected = RESOURCES.find((resource) => resource.id === resourceId) ?? RESOURCES[0];
   return (
     <main className="mx-auto max-w-[1440px] px-4 py-10 sm:px-8 sm:py-12">
       <div className="max-w-2xl">
@@ -16,10 +16,10 @@ export default function ResourceLibrary() {
       </div>
 
       <div role="group" aria-label="Choose a resource" className="mt-8 flex flex-wrap gap-2">
-        {RESOURCES.map((resource, index) => <button key={resource.id} type="button" aria-pressed={selected === index} onClick={() => setSelected(index)} className={`min-h-11 rounded-btn border border-dark-earth px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth ${selected === index ? "bg-dark-earth text-cream" : "hover:bg-light-sage/40"}`}>{resource.subtitle}</button>)}
+        {RESOURCES.map((resource) => <Link key={resource.id} href={`/resources/${resource.id}`} scroll={false} aria-current={resourceId === resource.id ? "page" : undefined} className={`min-h-11 rounded-btn border border-dark-earth px-4 py-2 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dark-earth ${selected.id === resource.id ? "bg-dark-earth text-cream" : "hover:bg-light-sage/40"}`}>{resource.subtitle}</Link>)}
       </div>
       <div className="mt-7">
-        {[RESOURCES[selected]].map((resource) => (
+        {[selected].map((resource) => (
           <article key={resource.id} id={resource.id} aria-labelledby={`${resource.id}-title`} className="scroll-mt-24 border-t border-moss/50 pt-8 sm:pt-10">
             <div className="grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
               <ResourcePreview title={resource.title} editions={resource.editions} />

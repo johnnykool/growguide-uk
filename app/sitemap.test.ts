@@ -12,6 +12,11 @@ describe("sitemap", () => {
       "https://growguideuk.co.uk/varieties/courgettes",
       "https://growguideuk.co.uk/varieties/spring-onions",
       "https://growguideuk.co.uk/varieties/cucumbers",
+      "https://growguideuk.co.uk/resources/growing-calendar",
+      "https://growguideuk.co.uk/resources/crop-rotation",
+      "https://growguideuk.co.uk/resources/companion-planting",
+      "https://growguideuk.co.uk/resources/vegetable-storage",
+      "https://growguideuk.co.uk/resources/seed-storage-and-lifespan",
     ]);
     expect(JSON.stringify(sitemap())).not.toContain("/api/");
     expect(JSON.stringify(sitemap())).not.toContain("vercel.app");

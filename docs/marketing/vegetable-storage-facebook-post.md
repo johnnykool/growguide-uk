@@ -1,6 +1,6 @@
 # Vegetable storage Facebook post
 
-Draft only. Pair with page 1 of the corrected vegetable-storage guide. Link to the Resources page so readers can preview and download it.
+Draft only. Pair with page 1 of the corrected vegetable-storage guide. Link directly to the guide so readers can preview and download it.
 
 ---
 
@@ -10,7 +10,7 @@ I've put together a free vegetable-storage guide for GrowGuide UK, covering long
 
 It's a simple two-page PDF you can save or print and keep handy when bringing in your harvest.
 
-You'll find it under Vegetable storage on the Resources page:
-https://growguideuk.co.uk/resources
+Take a look and download your free copy here:
+https://growguideuk.co.uk/resources/vegetable-storage
 
 What have you got plenty of in your garden or allotment at the moment?

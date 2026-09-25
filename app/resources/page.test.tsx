@@ -1,19 +1,22 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import ResourcesPage, { metadata } from "./page";
 import { RESOURCES } from "@/data/resources";
+import ResourceLibrary from "@/components/ResourceLibrary";
 
 afterEach(cleanup);
 
 describe("resources page", () => {
   it("offers previews and downloads backed by real public files", () => {
-    render(<ResourcesPage />);
+    const { rerender } = render(<ResourcesPage />);
     expect(screen.getByRole("heading", { level: 1, name: "Resources" })).toBeVisible();
     expect(screen.getByRole("img")).toBeVisible();
     for (const resource of RESOURCES) {
-      fireEvent.click(screen.getByRole("button", { name: resource.subtitle }));
+      expect(screen.getByRole("link", { name: resource.subtitle })).toHaveAttribute("href", `/resources/${resource.id}`);
+      rerender(<ResourceLibrary resourceId={resource.id} />);
+      expect(screen.getByRole("link", { name: resource.subtitle })).toHaveAttribute("aria-current", "page");
       for (const edition of resource.editions) {
         const link = screen.getByRole("link", { name: `Download ${edition.format} PDF` });
         expect(link).toHaveAttribute("href", edition.href);
