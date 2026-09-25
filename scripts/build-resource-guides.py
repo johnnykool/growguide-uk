@@ -197,19 +197,19 @@ def companions():
 def storage():
     c=new_pdf('vegetable-storage','Vegetable storage')
     p=Page(c,'03','Keep the harvest.','Vegetable storage for UK homes, sheds and allotments',1,'Vegetable storage / the longer keepers')
-    p.para('Store only sound produce. Separate anything damaged for prompt use if still safe, and discard mouldy or rotten vegetables. Harvest gently and label batches. The conditions matter more than a calendar date.')
+    p.para('Store only good quality produce. Separate any damaged or marked crops for immediate use if still safe, and discard mouldy or rotten vegetables. Always harvest gently and label the batches.')
     p.table(['CROP','PREPARE & STORE','KEEPING EXPECTATION'],[
-      ['<b>Maincrop potatoes</b>','Let surfaces dry; brush off loose soil. Store in darkness in paper sacks or breathable bags, protected from frost.','Weeks to months, depending on variety and store. Check for rot and sprouts.'],
-      ['<b>Onions, garlic & shallots</b>','Dry under cover with airflow until skins and necks are thoroughly dry. Store cool, dry and ventilated.','Storage varieties can last months. Use thick-necked or damaged bulbs first if sound.'],
-      ['<b>Carrot, parsnip, beetroot, swede & turnip</b>','Remove tops without cutting the crown. Pack sound, unwashed roots in slightly damp sand or coir; keep very cool, about 0-4°C, without freezing.','Several weeks or longer in a suitable store. Check that packing is not wet and roots are not shrivelling.'],
-      ['<b>Pumpkin & winter squash</b>','Harvest mature fruit before frost. Keep the stalk intact; cure skin in a warm, dry, airy place. Store around 10-15°C with fruits apart.','Often months when properly matured. Immature or frost-damaged fruit stores poorly.'],
-      ['<b>Winter cabbage</b>','Choose firm storage varieties. Keep sound heads very cool, about 0-4°C, with airflow and frost protection.','Weeks to months. Spring cabbage and loose heads are for quicker use.'],
+      ['<b>Maincrop potatoes</b>','Let the surfaces dry; brush off loose soil. Store in darkness in paper sacks or breathable bags, protected from frost.','Weeks to months, depending on variety and store. Check for rot and sprouting.'],
+      ['<b>Onions, garlic & shallots</b>','Dry under cover with airflow until skins and necks are thoroughly dry. Store cool, dry and ventilated.','Storage varieties can last months. Use thick-necked or damaged bulbs first if good.'],
+      ['<b>Carrot, parsnip, beetroot, swede & turnip</b>','Remove tops without cutting the crown. Pack quality, unwashed roots in slightly damp sand or coir; keep very cool, about 0-4°C, without freezing.','Several weeks or longer in suitable storage. Check that packing is not wet and roots are not shrivelling.'],
+      ['<b>Pumpkin & winter squash</b>','Harvest mature fruit before frost. Keep the stalk intact; cure the skin in a warm, dry, airy place. Store approximately 10-15°C, with fruits separated.','Often months when properly matured. Immature or frost-damaged fruit stores poorly.'],
+      ['<b>Winter cabbage</b>','Choose firm storage varieties. Keep the heads very cool, about 0-4°C, with airflow and frost protection.','Weeks to months. Spring cabbage and loose heads are for quicker use.'],
     ],[113,263,CW-376],size=9.4,pad=8)
     p.para('These are broad expectations for suitable varieties and good storage, not guaranteed shelf lives. The root-packing, bulb-drying and squash conditions are different: one damp shed corner will not suit them all.',size=9.2,leading=12.5)
     p.note('A UK shed is not automatically a safe store','Check actual temperatures with a min/max thermometer. Protect from rain, rodents and frost; avoid condensation. If your store is unsuitable, keep smaller batches in the house or fridge and freeze a glut.')
     p.end()
     p=Page(c,'03','Fresh for the week.','A fridge guide and simple habits that reduce waste',2,'Vegetable storage / everyday harvests')
-    p.para('Keep the fridge at 0-5°C; check with a thermometer. The times below are approximate quality windows for fresh, whole produce in good condition. Cut produce needs prompt refrigeration; follow any use-by date.')
+    p.para('Keep the fridge at 0-5°C; check with a thermometer. The times below are approximate quality windows for fresh, whole produce in good condition. Cut produce needs prompt refrigeration.')
     p.table(['CROP','WHERE & HOW','USE AS A GUIDE'],[
       ['Lettuce, spinach, kale','Fridge; a container or bag limits wilting. Keep leaves from sitting in water.','3-5 days'],
       ['Broccoli, sprouts; peas','Fridge; cool promptly after picking.','3-5 days'],
@@ -221,8 +221,8 @@ def storage():
       ['Ripe tomatoes','Refrigerate to slow deterioration; bring to room temperature to serve. Ripen unripe whole fruit indoors first.','Use within a few days'],
     ],[140,268,CW-408],size=9.2,pad=6.7)
     p.cols([
-      ('Still in the ground?','Suitable winter leeks, parsnips and hardy brassicas can be harvested as needed. Lift a small supply before frozen ground makes access difficult. Waterlogging, pests and exposed sites can make outdoor storage unreliable.'),
-      ('A glut to freeze','Freeze while quality is good. Most vegetables need blanching first; use a crop-specific method. Cool cooked food and refrigerate within 1-2 hours. Keep leftovers for no more than 48 hours, or freeze.'),
+      ('Still in the ground?','Suitable winter leeks, parsnips and hardy brassicas can be harvested as needed. Lift a small supply before frozen ground makes digging them out difficult. Waterlogging, pests and exposed sites can make outdoor storage unreliable.'),
+      ('A glut to freeze','Freeze while quality is good. Most vegetables need blanching first; check for a crop-specific method. Cool cooked food and refrigerate within 1-2 hours. Keep leftovers for no more than 48 hours, or freeze.'),
     ])
     p.para('<b>Potato check:</b> current UK advice allows fridge storage as well as a cool, dark, dry place. Remove sprouts and green portions; discard extensively green, bitter, mouldy or rotten potatoes. Wash all produce before preparing or eating it.',size=9.5,leading=13)
     p.end();c.save()

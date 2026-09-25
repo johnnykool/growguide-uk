@@ -163,13 +163,13 @@ export const RESOURCES: PrintableResource[] = [
       "previews": [
         {
           "src": "/images/resources/vegetable-storage-1.png",
-          "alt": "GrowGuide UK Vegetable storage A4 guide, page 1 of 2.",
+          "alt": "GrowGuide UK vegetable storage guide, page 1 of 2: storage conditions for potatoes, onions, roots, squash and winter cabbage.",
           "width": 2122,
           "height": 3000
         },
         {
           "src": "/images/resources/vegetable-storage-2.png",
-          "alt": "GrowGuide UK Vegetable storage A4 guide, page 2 of 2.",
+          "alt": "GrowGuide UK vegetable storage guide, page 2 of 2: fridge storage chart, harvesting through winter and freezing a glut.",
           "width": 2122,
           "height": 3000
         }

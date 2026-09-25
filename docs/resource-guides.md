@@ -6,6 +6,12 @@ Four A4 guides (two pages each): crop rotation; companion planting; vegetable st
 
 Regenerate guide PDFs with `scripts/build-resource-guides.py` using ReportLab and the bundled DM fonts. Regenerate calendars with `scripts/build-growing-calendar.py`. Render previews directly from the finished PDFs and update dimensions/file sizes in `data/resources.ts`. Source references inside each guide are clickable; the generator contains the full URL register.
 
+## Vegetable storage revision, 25 September 2026
+
+The storage generator incorporates the author's V2 wording, with spelling and grammar corrections and the bitter-potato warning retained. Rebuilding from the source table fixes the displaced potato-row background from the Draw edit. The website keeps its existing download URL and refreshed previews; a genuine `growguide-uk-vegetable-storage-V2.pdf` is also provided. The displayed download size remains 356 KB, rounded from 364,766 bytes.
+
+The original V2 was an OpenDocument drawing despite its `.pdf` filename. A local editable backup is retained in `output/pdf/growguide-uk-vegetable-storage-user-edits.odg`; it is not a website asset. In LibreOffice, use Export as PDF for a downloadable PDF. Future wording edits should also be applied to `storage()` in the generator so rebuilding preserves them.
+
 ## Editorial decisions
 
 - Four-year rotation is a planning baseline, with return in year five and three intervening growing years. Botanical families and combined planning groups are distinguished. Clubroot and allium white rot need disease-specific management.
