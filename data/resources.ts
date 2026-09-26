@@ -211,5 +211,110 @@ export const RESOURCES: PrintableResource[] = [
       ]
     }
   ]
+},
+{
+  "id": "autumn-plot-clear-up",
+  "title": "Clear with care.",
+  "subtitle": "Autumn plot clear-up",
+  "description": "Clear finished crops, sort garden waste and prepare your plot for winter without losing useful wildlife shelter.",
+  "highlights": [
+    "A keep, clear or set-aside chart",
+    "Composting and disease-aware clear-up advice",
+    "A printable checklist for your next plot visit"
+  ],
+  "printNote": "Print both A4 pages in portrait at actual size. September-November guidance; adjust to your local weather and growing conditions.",
+  "editions": [
+    {
+      "format": "A4",
+      "label": "A4 guide",
+      "description": "Two pages for your autumn garden folder",
+      "href": "/downloads/growguide-uk-autumn-plot-clear-up.pdf",
+      "fileSize": "355 KB",
+      "previews": [
+        {
+          "src": "/images/resources/autumn-plot-clear-up-1.png",
+          "alt": "GrowGuide UK Autumn plot clear-up, page 1 of 2: Keep, clear or set-aside chart for autumn vegetable beds.",
+          "width": 2122,
+          "height": 3000
+        },
+        {
+          "src": "/images/resources/autumn-plot-clear-up-2.png",
+          "alt": "GrowGuide UK Autumn plot clear-up, page 2 of 2: One-bed-at-a-time clear-up checklist and compost sorting.",
+          "width": 2122,
+          "height": 3000
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "winter-soil-care",
+  "title": "Cover for winter.",
+  "subtitle": "Winter soil care",
+  "description": "Choose mulch or a timely green manure, make leafmould and protect empty vegetable beds through the UK winter.",
+  "highlights": [
+    "A practical winter soil-cover chart",
+    "Autumn green manure sowing windows",
+    "Leafmould steps and a mulch-volume example"
+  ],
+  "printNote": "Print both A4 pages in portrait at actual size. September-November guidance; adjust to your local weather and growing conditions.",
+  "editions": [
+    {
+      "format": "A4",
+      "label": "A4 guide",
+      "description": "Two pages for your autumn garden folder",
+      "href": "/downloads/growguide-uk-winter-soil-care.pdf",
+      "fileSize": "356 KB",
+      "previews": [
+        {
+          "src": "/images/resources/winter-soil-care-1.png",
+          "alt": "GrowGuide UK Winter soil care, page 1 of 2: Winter soil-cover choices and a mulch-volume calculation.",
+          "width": 2122,
+          "height": 3000
+        },
+        {
+          "src": "/images/resources/winter-soil-care-2.png",
+          "alt": "GrowGuide UK Winter soil care, page 2 of 2: Autumn green manure chart, leafmould and a winter checklist.",
+          "width": 2122,
+          "height": 3000
+        }
+      ]
+    }
+  ]
+},
+{
+  "id": "autumn-tools-and-greenhouse",
+  "title": "Clean. Dry. Put away.",
+  "subtitle": "Tools & greenhouse care",
+  "description": "Clean, dry and store garden equipment, then give your greenhouse a practical end-of-season reset.",
+  "highlights": [
+    "Tool, pot and support storage chart",
+    "Six-step greenhouse cleaning checklist",
+    "Repair notes for a spring-ready growing space"
+  ],
+  "printNote": "Print both A4 pages in portrait at actual size. September-November guidance; adjust to your local weather and growing conditions.",
+  "editions": [
+    {
+      "format": "A4",
+      "label": "A4 guide",
+      "description": "Two pages for your autumn garden folder",
+      "href": "/downloads/growguide-uk-autumn-tools-and-greenhouse.pdf",
+      "fileSize": "356 KB",
+      "previews": [
+        {
+          "src": "/images/resources/autumn-tools-and-greenhouse-1.png",
+          "alt": "GrowGuide UK Tools & greenhouse care, page 1 of 2: Autumn cleaning and storage chart for tools, pots and supports.",
+          "width": 2122,
+          "height": 3000
+        },
+        {
+          "src": "/images/resources/autumn-tools-and-greenhouse-2.png",
+          "alt": "GrowGuide UK Tools & greenhouse care, page 2 of 2: Greenhouse cleaning checklist and equipment repair notes.",
+          "width": 2122,
+          "height": 3000
+        }
+      ]
+    }
+  ]
 }
 ];

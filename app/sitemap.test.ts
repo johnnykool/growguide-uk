@@ -17,6 +17,9 @@ describe("sitemap", () => {
       "https://growguideuk.co.uk/resources/companion-planting",
       "https://growguideuk.co.uk/resources/vegetable-storage",
       "https://growguideuk.co.uk/resources/seed-storage-and-lifespan",
+      "https://growguideuk.co.uk/resources/autumn-plot-clear-up",
+      "https://growguideuk.co.uk/resources/winter-soil-care",
+      "https://growguideuk.co.uk/resources/autumn-tools-and-greenhouse",
     ]);
     expect(JSON.stringify(sitemap())).not.toContain("/api/");
     expect(JSON.stringify(sitemap())).not.toContain("vercel.app");

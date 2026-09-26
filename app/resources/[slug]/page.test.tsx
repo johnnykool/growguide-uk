@@ -25,11 +25,13 @@ describe("individual resource pages", () => {
     expect(metadata.twitter).toMatchObject({ images: ["https://growguideuk.co.uk/images/resources/vegetable-storage-1.png"] });
   });
 
-  it("prebuilds all five guide URLs and rejects unknown guides", async () => {
+  it("prebuilds all guide URLs and rejects unknown guides", async () => {
     expect(generateStaticParams()).toEqual([
       { slug: "growing-calendar" }, { slug: "crop-rotation" },
       { slug: "companion-planting" }, { slug: "vegetable-storage" },
       { slug: "seed-storage-and-lifespan" },
+      { slug: "autumn-plot-clear-up" }, { slug: "winter-soil-care" },
+      { slug: "autumn-tools-and-greenhouse" },
     ]);
     const params = Promise.resolve({ slug: "missing-guide" });
     await expect(ResourcePage({ params })).rejects.toThrow("NEXT_HTTP_ERROR_FALLBACK;404");

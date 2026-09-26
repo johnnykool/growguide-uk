@@ -3,7 +3,7 @@ import ResourceLibrary from "@/components/ResourceLibrary";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
 const title = `Free growing resources | ${SITE_NAME}`;
-const description = "Preview and download free printable resources for your UK garden. Explore our growing calendar, crop rotation, companion planting, vegetable storage and seed care guides.";
+const description = "Free printable guides for your UK garden: autumn plot clearing, winter soil care, tools and greenhouse cleaning, vegetable storage, seed care and growing plans.";
 
 export const metadata: Metadata = {
   title,

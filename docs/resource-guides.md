@@ -14,7 +14,15 @@ The storage generator incorporates the author's V2 wording, with spelling and gr
 
 The original V2 was an OpenDocument drawing despite its `.pdf` filename. A local editable backup is retained in `output/pdf/growguide-uk-vegetable-storage-user-edits.odg`; it is not a website asset. In LibreOffice, use Export as PDF for a downloadable PDF. Future wording edits should also be applied to `storage()` in the generator so rebuilding preserves them.
 
-## Editorial decisions
+## Autumn companions, 26 September 2026
+
+Three additional two-page A4 guides cover September-November: `autumn-plot-clear-up`, `winter-soil-care` and `autumn-tools-and-greenhouse`. They complement the existing vegetable-storage and seed-care guides. Each has its own page URL, social metadata, two previews and a PDF download.
+
+Build only these guides with `scripts/build-autumn-guides.py`; it imports the existing page template without rebuilding the author's other PDFs. Render each PDF with Poppler at a 3000px long edge into `public/images/resources/{id}-{page}.png`. Final review copies also go into `output/pdf/`. Update file sizes and preview dimensions in the resource catalogue after rebuilding.
+
+Timing is conditional on crop stage, frost forecasts and soil conditions. Retain established winter crops and healthy wildlife habitat. Separate persistent weeds and unidentified diseased material from a cool compost heap; follow disease-specific and local disposal advice. Green-manure windows are approximate, with rotation and spring-clearance caveats. Routine greenhouse cleaning uses warm water; disinfection is not prescribed as a blanket treatment. Checked against RHS and Garden Organic guidance; research details are retained privately in `docs/provenance/autumn-guides-2026-09-26.md`.
+
+## Existing guide decisions
 
 - Four-year rotation is a planning baseline, with return in year five and three intervening growing years. Botanical families and combined planning groups are distinguished. Clubroot and allium white rot need disease-specific management.
 - Companion benefits are labelled as practical, habitat-based, trial-supported or traditional. The French marigold trial concerns glasshouse whitefly on tomatoes, not universal pest control.
