@@ -10,9 +10,11 @@ Regenerate guide PDFs with `scripts/build-resource-guides.py` using ReportLab an
 
 ## Vegetable storage revision, 25 September 2026
 
-The storage generator incorporates the author's V2 wording, with spelling and grammar corrections and the bitter-potato warning retained. Rebuilding from the source table fixes the displaced potato-row background from the Draw edit. The website keeps its existing download URL and refreshed previews; a genuine `growguide-uk-vegetable-storage-V2.pdf` is also provided. The displayed download size remains 356 KB, rounded from 364,766 bytes.
+The storage generator incorporates the author's V2 wording, with spelling and grammar corrections and the bitter-potato warning retained. Rebuilding from the source table fixes the displaced potato-row background from the Draw edit. The website keeps its existing download URL and refreshed previews; a genuine reference copy of the author's edit is also provided, alongside the live guide rather than instead of it. The displayed download size remains 356 KB, rounded from 364,766 bytes.
 
 The original V2 was an OpenDocument drawing despite its `.pdf` filename. A local editable backup is retained in `output/pdf/growguide-uk-vegetable-storage-user-edits.odg`; it is not a website asset. In LibreOffice, use Export as PDF for a downloadable PDF. Future wording edits should also be applied to `storage()` in the generator so rebuilding preserves them.
+
+**27 September 2026:** `growguide-uk-vegetable-storage-V2.pdf` is replaced by `growguide-uk-vegetable-storage-V2a.pdf`, a further author edit (82 KB). It is a fresh LibreOffice Draw export, not run through the site's generator: it embeds Liberation Serif/Sans rather than the site's DM Sans/DM Serif Display, and its potatoes row reads "Store In darkness" (capital I, not yet corrected). Its wording is not the live guide's: "Let the surfaces fully dry" and "protected from any potential frost" against the live guide's "Let the surfaces dry" and "protected from frost". Treat V2a as the author's working reference for the next wording pass into `storage()`, not as camera-ready or as a preview of what the live guide currently says.
 
 ## Autumn companions, 26 September 2026
 
