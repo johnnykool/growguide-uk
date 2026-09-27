@@ -107,6 +107,7 @@ export const CUCUMBER_GUIDE: VarietyGuide = {
     "The right cucumber starts with the right growing place. A sheltered outdoor bed, a warm greenhouse and a small patio pot each call for a different plant.",
     "Choose outdoor or greenhouse suitability first, then the size of fruit you enjoy. Small fruits do not always mean a small plant, so check the mature size as well.",
   ],
+  image: { src: "/images/veg/cucumber.jpg", alt: "A pile of freshly picked smooth-skinned cucumbers" },
   varieties: CUCUMBER_VARIETIES,
   comparisonIntro: "Marketmore suits outdoor beds; Carmen and Mini Munch need greenhouse warmth. Quick Snack is the compact choice where a tall climber will not fit.",
   timing: [

@@ -23,7 +23,7 @@ export const VEG_PHOTOS: Record<string, string> = {
   "runner-bean": "/images/veg/runner-bean.jpg",
   "french-bean": "/images/veg/french-bean.jpg",
   "broad-bean": "/images/veg/broad-bean.jpg",
-  // cucumber has no photo yet: no correctly-labelled source image was supplied.
+  cucumber: "/images/veg/cucumber.jpg",
   aubergine: "/images/veg/aubergine.jpg",
   beetroot: "/images/veg/beetroot.jpg",
   parsnip: "/images/veg/parsnip.jpg",
