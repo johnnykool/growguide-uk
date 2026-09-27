@@ -81,6 +81,7 @@ export const SPRING_ONION_GUIDE: VarietyGuide = {
     "A few spring onions can lift a salad, soup or stir-fry. Growing your own lets you choose the stem, colour and picking season that suit the way you cook.",
     "These four varieties work in modest spaces. Some are bulb-forming onions harvested young; others are non-bulbing types that can stay in the garden longer.",
   ],
+  image: { src: "/images/veg/spring-onion.jpg", alt: "Freshly picked spring onions tied in bunches, with white stems and trailing roots" },
   varieties: SPRING_ONION_VARIETIES,
   comparisonIntro: "For a quick salad crop, sow thinly and harvest young. Give Ishikura and Performer more room if you intend to keep them as established plants.",
   timing: [
