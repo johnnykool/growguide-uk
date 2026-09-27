@@ -12,7 +12,8 @@ describe("resources page", () => {
   it("offers previews and downloads backed by real public files", () => {
     const { rerender } = render(<ResourcesPage />);
     expect(screen.getByRole("heading", { level: 1, name: "Resources" })).toBeVisible();
-    expect(screen.getByRole("img")).toBeVisible();
+    expect(screen.getByRole("img", { name: /basket/i })).toBeVisible();
+    expect(screen.getByRole("img", { name: RESOURCES[0].editions[0].previews[0].alt })).toBeVisible();
     for (const resource of RESOURCES) {
       expect(screen.getByRole("link", { name: resource.subtitle })).toHaveAttribute("href", `/resources/${resource.id}`);
       rerender(<ResourceLibrary resourceId={resource.id} />);

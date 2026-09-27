@@ -9,6 +9,8 @@
 
 export const HERO_HARVEST = "/images/hero-harvest.jpg";
 export const HERO_SOIL = "/images/hero-soil.jpg";
+export const HERO_ALLOTMENT = "/images/hero-allotment.jpg";
+export const HERO_BASKET = "/images/hero-resources.jpg";
 
 // Vegetable id → photo. Not every vegetable has one; fall back to its emoji.
 export const VEG_PHOTOS: Record<string, string> = {
