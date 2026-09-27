@@ -6,7 +6,7 @@ Four A4 guides (two pages each): crop rotation; companion planting; vegetable st
 
 Each resource has a shareable page at `/resources/{id}`, using the ID in `data/resources.ts`. Choosing a resource updates the URL; opening or refreshing that link selects the same guide. Each page includes its own canonical URL, title, description and first-page preview image for social sharing. These pages are included in the sitemap automatically. `/resources` remains the library entrance.
 
-Regenerate guide PDFs with `scripts/build-resource-guides.py` using ReportLab and the bundled DM fonts. Regenerate calendars with `scripts/build-growing-calendar.py`. Render previews directly from the finished PDFs and update dimensions/file sizes in `data/resources.ts`. Source references inside each guide are clickable; the generator contains the full URL register.
+Regenerate guide PDFs with `scripts/build-resource-guides.py` using ReportLab and the bundled DM fonts. Regenerate calendars with `scripts/build-growing-calendar.py`. Render previews directly from the finished PDFs and update dimensions/file sizes in `data/resources.ts`. Guides print no source references or reviewer citations; the generator's `SOURCES` table stays in the file as an unpublished record of where each fact came from. The autumn guides add one printed, clickable link to a related resource page (see below).
 
 ## Vegetable storage revision, 25 September 2026
 
